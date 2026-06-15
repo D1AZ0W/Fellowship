@@ -79,7 +79,7 @@ const renderUsers = () => {
                   <div>${phone}</div>
                 </div>
                 <div class="flex max-w-full w-full gap-6">
-                  <a href="./profile.html" class=" p-10 w-full text-center bg-blue-400 hover:bg-blue-600 font-bold rounded-2xl">Profile</a>
+                  <a href="./profile.html?id=${id}" class=" p-10 w-full text-center bg-blue-400 hover:bg-blue-600 font-bold rounded-2xl">Profile</a>
                   <a href="./posts.html" class="p-10 w-full text-center bg-green-400 hover:bg-green-600 font-bold rounded-2xl">Posts</a>
                 </div>
               </div>
