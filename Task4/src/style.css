@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@layer base {
+  * {
+    @apply p-0 m-0;
+  }
+
+  body {
+    @apply bg-slate-900 text-slate-100 min-h-screen;
+  }
+
+  header {
+    @apply justify-center flex text-4xl font-bold p-5 h-20 items-center;
+  }
+  h1 {
+    @apply text-3xl font-bold text-center mb-2 mt-5;
+  }
+}
+
+@layer components {
+  .navLink {
+    @apply transition-all duration-200;
+    &:hover {
+      @apply underline underline-offset-4 decoration-green-500;
+    }
+  }
+}
