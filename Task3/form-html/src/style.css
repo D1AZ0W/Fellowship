@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    @apply p-0 m-0;
+  }
+
+  body {
+    @apply dark:bg-slate-900 dark:text-slate-100 min-h-screen bg-blue-400 text-red-800;
+  }
+
+  header {
+    @apply justify-center flex text-4xl font-bold p-5 h-20 items-center;
+  }
+  h1 {
+    @apply text-3xl font-bold text-center mb-2;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-purple-200 rounded-lg px-20 py-10 shadow-2xl text-black text-center font-bold transition-all w-full;
+    @variant hover,focus {
+      @apply bg-purple-300 scale-110;
+    }
+  }
+  .inputField {
+    @apply w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500;
+  }
+  .errorText {
+    @apply text-red-500 text-sm mt-1;
+  }
+}
+
+@custom-variant dark (&:where(.dark, .dark *));

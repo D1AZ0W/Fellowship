@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <title>Home page</title>
+    <script src="./src/main.js"></script>
+  </head>
+  <body>
+    <header>Home Page</header>
+    <h2 id="welcomeText" class="m-10 text-xl mt-4"></h2>
+    <div class="flex mt-10 justify-center mx-10 space-x-10">
+      <a href="./src/form.html" class="card">Register</a>
+      <a href="./src/profile.html" class="card" id="profileLink">Profile</a>
+    </div>
+    <script>
+      const user = JSON.parse(localStorage.getItem("user"));
+      const welcomeText = document.getElementById("welcomeText");
+      const profileLink = document.getElementById("profileLink");
+
+      if (user) {
+        welcomeText.textContent = `Welcome, ${user.username}!`;
+        profileLink.style.display = "block";
+      } else {
+        welcomeText.textContent = "Welcome Guest! Please register.";
+        profileLink.style.display = "none";
+      }
+    </script>
+  </body>
+</html>

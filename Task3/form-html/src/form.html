@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>form</title>
+  </head>
+  <body>
+    <header>Registration Form</header>
+    <aside class="ml-10 transition-all duration-300 hover:text-red-300">
+      <a href="/">Go Back</a>
+    </aside>
+    <div class="flex items-center justify-center text-black my-10">
+      <div class="bg-white w-full max-w-xl rounded-3xl p-8">
+        <h1>Create Account</h1>
+        <p class="text-center text-gray-500 mb-8">Register Your Information</p>
+        <form id="form" class="space-y-5" onsubmit="handleSubmit(event)">
+          <div>
+            <label for="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter your username"
+              class="inputField"
+            />
+            <p class="errorText" id="usernameError"></p>
+          </div>
+          <div>
+            <label for="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email address"
+              class="inputField"
+            />
+            <p class="text-red-500 text-sm mt-1" id="emailError"></p>
+          </div>
+          <div>
+            <label for="Address">Address:</label>
+            <textarea
+              id="address"
+              placeholder="Enter your address"
+              rows="3"
+              class="inputField"
+            ></textarea>
+            <p class="text-red-500 text-sm mt-1" id="addressError"></p>
+          </div>
+          <div>
+            <label for="Phone">Phone:</label>
+            <input
+              type="tel"
+              id="phone"
+              placeholder="Enter your 10 digits phone number"
+              class="inputField"
+            />
+            <p class="text-red-500 text-sm mt-1" id="phoneError"></p>
+          </div>
+          <div>
+            <label for="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              class="inputField"
+            />
+            <p class="text-red-500 text-sm mt-1" id="passwordError"></p>
+          </div>
+          <div>
+            <label for="confirmPassword">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm Password"
+              class="inputField"
+            />
+            <p class="text-red-500 text-sm mt-1" id="confirmPasswordError"></p>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-linear-to-b from-purple-300 to-slate-800 text-white p-3 rounded-lg font-semibold hover:to-blue-300 hover:text-black hover:scale-110 transition-all"
+          >
+            Register
+          </button>
+
+          <p
+            id="successMessage"
+            class="text-green-600 text-center font-medium"
+          ></p>
+        </form>
+      </div>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
