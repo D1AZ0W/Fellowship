@@ -90,6 +90,5 @@ const renderUsers = () => {
     </ul>
   `;
 };
-
-fetchUsers();
 setLoading();
+fetchUsers();
