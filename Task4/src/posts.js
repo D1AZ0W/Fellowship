@@ -61,8 +61,8 @@ const fetchPosts = async (pageNumber) => {
     );
     if (!res.ok) {
       loading = false;
-      throw new Error("Bad request");
       posts = null;
+      throw new Error("Bad request");
       return;
     } else {
       posts = await res.json();
@@ -120,11 +120,57 @@ setLoading();
 fetchPosts(pageNumber);
 
 const handleCreate = () => {};
-const handleUpdate = (id) => {
-  let newUser = Number(prompt("Enter userId"));
-  (posts,
-    {
-      method,
-    });
+const handleUpdate = async (id) => {
+  const post = posts.find((p) => p.id === id);
+  if (!post) return;
+  const userId = Number(prompt("Enter new userId", post.userId));
+  const title = prompt("Enter new title", post.title);
+  const body = prompt("Enter new description", post.body);
+  try {
+    const res = await fetch(
+      `https://jsonplaceholder.typicode.com/posts/${id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          id,
+          userId,
+          title,
+          body,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    if (!res.ok) throw new Error("Failed to update post");
+    const updatedPost = await res.json();
+    posts = posts.map((post) => (post.id === id ? updatedPost : post));
+    renderPosts();
+    alert("Post updated successfully");
+  } catch (err) {
+    loading = false;
+    error = err;
+    displayError();
+  }
 };
-const handleDelete = () => {};
+const handleDelete = async (id) => {
+  const confirmDelete = confirm("Confirm Delete?");
+  if (!confirmDelete) return;
+  try {
+    const res = await fetch(
+      `https://jsonplaceholder.typicode.com/posts/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    if (!res.ok) throw new Error("Failed to delete post");
+    posts = posts.filter((post) => post.id !== id);
+    renderPosts();
+    alert("Post deleted successfully");
+  } catch (err) {
+    loading = false;
+    error = err;
+    displayError();
+  }
+};
