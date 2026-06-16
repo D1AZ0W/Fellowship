@@ -1,12 +1,13 @@
 let loading = true;
 let error = "";
 let posts = null;
+var pageNumber = 1;
 
 const setLoading = () => {
   if (loading) {
     document.getElementById("postList").innerHTML = `
       <ul class="space-y-4 grid grid-cols-1 md:grid-cols-3 space-x-4">
-        ${Array(9)
+        ${Array(6)
           .fill()
           .map(
             () => `
@@ -41,9 +42,20 @@ const displayError = () => {
   loading = false;
   document.getElementById("postList").innerHTML = error;
 };
-const fetchPosts = async () => {
+const updatePage = (next) => {
+  if (next) {
+    pageNumber += 1;
+  } else {
+    pageNumber -= 1;
+  }
+  document.getElementById("pageNumber").innerHTML = `${pageNumber}`;
+  fetchPosts(pageNumber);
+};
+const fetchPosts = async (pageNumber) => {
   try {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const res = await fetch(
+      `https://jsonplaceholder.typicode.com/posts?_page=${pageNumber}&_limit=6`,
+    );
     if (!res.ok) {
       loading = false;
       throw new Error("Bad request");
@@ -92,5 +104,8 @@ const renderPosts = () => {
     </ul>
   `;
 };
+(() => {
+  document.getElementById("pageNumber").innerHTML = `${pageNumber}`;
+})();
 setLoading();
-fetchPosts();
+fetchPosts(pageNumber);
