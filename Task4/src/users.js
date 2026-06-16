@@ -58,7 +58,7 @@ const renderUsers = () => {
           ({ id, name, username, email, phone }) => `
             <li>
               <div class="flex rounded-xl flex-col bg-slate-700 p-8 gap-5 text-md">
-                <h1>
+                <h1 class="flex">
                   <label>ID:</label>
                   <div>${id}</div>
                 </h1>
@@ -79,8 +79,8 @@ const renderUsers = () => {
                   <div>${phone}</div>
                 </div>
                 <div class="flex max-w-full w-full gap-6">
-                  <a href="./profile.html?id=${id}" class=" p-10 w-full text-center bg-blue-400 hover:bg-blue-600 font-bold rounded-2xl">Profile</a>
-                  <a href="./posts.html" class="p-10 w-full text-center bg-green-400 hover:bg-green-600 font-bold rounded-2xl">Posts</a>
+                  <a href="./profile.html?id=${id}" class=" p-10 w-full text-center bg-blue-400 text-black transition-all hover:bg-blue-600 font-bold rounded-2xl">Profile</a>
+                  <a href="./posts.html" class="p-10 w-full text-center bg-green-400 text-black transition-all hover:bg-green-600 font-bold rounded-2xl">Posts</a>
                 </div>
               </div>
             </li>

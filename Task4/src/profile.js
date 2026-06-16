@@ -24,31 +24,31 @@ const renderUser = () => {
   const profile = document.getElementById("details");
   profile.innerHTML = `
     <div class="flex flex-col bg-slate-700 rounded-xl p-8 gap-5">
-      <div>
+      <div class="flex gap-2">
         <label>ID:</label>
         <div>${user.id}</div>
       </div>
-      <div>
+      <div class="flex gap-2">
         <label>Name:</label>
         <div>${user.name}</div>
       </div>
-      <div>
+      <div class="flex gap-2">
         <label>Username:</label>
         <div>${user.username}</div>
       </div>
-      <div>
+      <div class="flex gap-2">
         <label>Email:</label>
         <div>${user.email}</div>
       </div>
-      <div>
+      <div class="flex gap-2">
         <label>Phone:</label>
         <div>${user.phone}</div>
       </div>
-      <div>
+      <div class="flex gap-2">
         <label>Website:</label>
         <div>${user.website}</div>
       </div>
-      <div>
+      <div class="flex gap-2">
         <label>Company:</label>
         <div>${user.company.name}</div>
       </div>
