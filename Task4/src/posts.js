@@ -2,6 +2,7 @@ let loading = true;
 let error = "";
 let posts = null;
 var pageNumber = 1;
+const params = new URLSearchParams(window.location.search);
 
 const setLoading = () => {
   if (loading) {
@@ -49,12 +50,14 @@ const updatePage = (next) => {
     pageNumber -= 1;
   }
   document.getElementById("pageNumber").innerHTML = `${pageNumber}`;
+  params.set("page", pageNumber);
+  history.pushState({}, "", `${window.location.pathname}?${params}`);
   fetchPosts(pageNumber);
 };
 const fetchPosts = async (pageNumber) => {
   try {
     const res = await fetch(
-      `https://jsonplaceholder.typicode.com/posts?_page=${pageNumber}&_limit=6`,
+      `https://jsonplaceholder.typicode.com/posts?_page=${pageNumber}&_limit=6`, //alternatively i couldve done https://jsonplaceholder.typicode.com/posts?_start=${pageNumber}&_limit=6
     );
     if (!res.ok) {
       loading = false;
@@ -106,6 +109,8 @@ const renderPosts = () => {
 };
 (() => {
   document.getElementById("pageNumber").innerHTML = `${pageNumber}`;
+  params.set("page", pageNumber);
+  history.pushState({}, "", `${window.location.pathname}?${params}`);
 })();
 setLoading();
 fetchPosts(pageNumber);
