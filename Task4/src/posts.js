@@ -119,7 +119,34 @@ const renderPosts = () => {
 setLoading();
 fetchPosts(pageNumber);
 
-const handleCreate = () => {};
+const handleCreate = async () => {
+  const userId = Number(prompt("Enter userId"));
+  const title = prompt("Enter title");
+  const body = prompt("Enter description");
+  if (!userId || !title || !body) return;
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        userId,
+        title,
+        body,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) throw new Error("Failed to create post");
+    const newPost = await res.json();
+    posts.unshift(newPost);
+    renderPosts();
+    alert("Post created successfully");
+  } catch (err) {
+    loading = false;
+    error = err;
+    displayError();
+  }
+};
 const handleUpdate = async (id) => {
   const post = posts.find((p) => p.id === id);
   if (!post) return;
