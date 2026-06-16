@@ -1,8 +1,8 @@
 let loading = true;
 let error = "";
 let posts = null;
-var pageNumber = 1;
 const params = new URLSearchParams(window.location.search);
+var pageNumber = params.get("page") || 1;
 
 const setLoading = () => {
   if (loading) {
