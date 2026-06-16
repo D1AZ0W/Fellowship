@@ -3,6 +3,8 @@ let error = "";
 let posts = null;
 const params = new URLSearchParams(window.location.search);
 var pageNumber = Number(params.get("page")) || 1;
+let searchPost = "";
+let filterUser = "";
 
 const setLoading = () => {
   if (loading) {
@@ -76,14 +78,27 @@ const fetchPosts = async (pageNumber) => {
   }
 };
 const renderPosts = () => {
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchPost) ||
+      post.body.toLowerCase().includes(searchPost);
+
+    const matchesUser = filterUser === "" || post.userId === Number(filterUser);
+
+    return matchesSearch && matchesUser;
+  });
+
   const postList = document.getElementById("postList");
+
   postList.innerHTML = `
     <ul class="space-y-4 grid grid-cols-1 md:grid-cols-3 space-x-4">
-      ${posts
-        .map(
-          ({ userId, id, title, body }) => `
+      ${
+        filteredPosts.length
+          ? filteredPosts
+              .map(
+                ({ userId, id, title, body }) => `
           <li>
-            <div class= "flex rounded-xl flex-col bg-slate-700 p-8 gap-5 text-md w-full h-full">
+            <div class="flex rounded-xl flex-col bg-slate-700 p-8 gap-5 text-md w-full h-full">
                 <h1 class="flex">
                     <label>Post ID:</label>
                     <div>${id}</div>
@@ -106,8 +121,10 @@ const renderPosts = () => {
             </div>
           </li>
         `,
-        )
-        .join("")}
+              )
+              .join("")
+          : `<h2 class="text-center text-2xl col-span-3">No posts found</h2>`
+      }
     </ul>
   `;
 };
@@ -195,6 +212,36 @@ const handleDelete = async (id) => {
     posts = posts.filter((post) => post.id !== id);
     renderPosts();
     alert("Post deleted successfully");
+  } catch (err) {
+    loading = false;
+    error = err;
+    displayError();
+  }
+};
+const handleSearch = (value) => {
+  searchPost = value.toLowerCase();
+  fetchAll();
+  renderPosts();
+};
+const handleFilter = (value) => {
+  filterUser = value;
+  fetchAll();
+  renderPosts();
+};
+
+const fetchAll = async () => {
+  try {
+    const res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+    if (!res.ok) {
+      loading = false;
+      posts = null;
+      throw new Error("Bad request");
+      return;
+    } else {
+      posts = await res.json();
+      loading = false;
+      renderPosts();
+    }
   } catch (err) {
     loading = false;
     error = err;
