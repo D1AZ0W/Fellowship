@@ -2,7 +2,7 @@ let loading = true;
 let error = "";
 let posts = null;
 const params = new URLSearchParams(window.location.search);
-var pageNumber = params.get("page") || 1;
+var pageNumber = Number(params.get("page")) || 1;
 
 const setLoading = () => {
   if (loading) {
@@ -83,7 +83,7 @@ const renderPosts = () => {
         .map(
           ({ userId, id, title, body }) => `
           <li>
-            <div class= "flex rounded-xl flex-col bg-slate-700 p-8 gap-5 text-md w-full h-full min-w-sm min-h-xl">
+            <div class= "flex rounded-xl flex-col bg-slate-700 p-8 gap-5 text-md w-full h-full">
                 <h1 class="flex">
                     <label>Post ID:</label>
                     <div>${id}</div>
@@ -95,9 +95,13 @@ const renderPosts = () => {
                 <h1 class="flex justify-center">
                     ${title}
                 </h1>
-                <span>
+                <span class="flex flex-col grow">
                     <label>Description:</label>
                     <div>${body}</div>
+                </span>
+                <span class="flex bottom-5 w-full justify-between">
+                    <button type="button" onclick="handleUpdate(${id})" class="p-5 mt-5 ml-5 bg-cyan-300 hover:bg-green-500 text-black rounded-lg font-bold">Update</button>
+                    <button type="button" onclick="handleDelete(${id})" class="p-5 mt-5 bg-cyan-300 hover:bg-red-500 text-black rounded-lg font-bold">Delete</button>
                 </span>
             </div>
           </li>
@@ -114,3 +118,13 @@ const renderPosts = () => {
 })();
 setLoading();
 fetchPosts(pageNumber);
+
+const handleCreate = () => {};
+const handleUpdate = (id) => {
+  let newUser = Number(prompt("Enter userId"));
+  (posts,
+    {
+      method,
+    });
+};
+const handleDelete = () => {};
