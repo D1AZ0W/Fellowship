@@ -1,1 +1,1 @@
-echo "Commited"
+npx lint-staged
