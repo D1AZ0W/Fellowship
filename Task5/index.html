@@ -9,14 +9,14 @@
   </head>
   <body class="flex flex-col">
     <h1 class="justify-center">Task 5: Personal Expense Tracker</h1>
-    <section class="m-10 space-y-10">
+    <section class="mx-auto w-full p-6 space-y-6">
       <button
         class="flex p-5 bg-blue-500 hover:bg-blue-700 rounded-2xl cursor-pointer w-full justify-center sm:w-2/4"
         onclick="handleCreate()"
       >
         Add Expenses
       </button>
-      <div class="grid grid-cols-1 md:grid-cols-2 mt-10 items-center w-[140px]">
+      <div class="grid grid-cols-1 sm:grid-cols-2 mt-10 items-center w-35">
         <span class="overflow-visible mb-3">Filters : </span>
         <div class="space-x-8 flex">
           <select
@@ -50,5 +50,6 @@
     <footer class="flex justify-center bg-slate-600 mt-auto p-5">
       Made by Ansh Shrestha &copy;
     </footer>
+    <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
