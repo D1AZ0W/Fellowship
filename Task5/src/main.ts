@@ -1,11 +1,11 @@
-import { type Expense } from './type/type';
+import { type BaseExpense } from './type/type';
 import { getExpenses, addExpense } from './data/data';
 
-const Expense1: Expense = {
-  id: '4',
-  title: 'Electricity Bill',
+const Expense1: BaseExpense = {
+  id: '3',
+  title: 'BhatBhatini groceries',
   amount: 5000,
-  category: 'Bills',
+  category: 'Groceries',
   date: `${new Date().getDate()}`,
 };
 addExpense(Expense1);
