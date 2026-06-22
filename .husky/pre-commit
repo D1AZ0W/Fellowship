@@ -1,1 +1,1 @@
-echo "Commited by 𝗔𝗻𝘀𝗵"
+cd Task5 && npm run lint

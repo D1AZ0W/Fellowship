@@ -1,4 +1,4 @@
-export type Category = 'Food' | 'Entertainment' | 'Groceries' | 'Bills';
+export type Category = "Food" | "Entertainment" | "Groceries" | "Bills";
 
 export interface BaseExpense {
   id: string;

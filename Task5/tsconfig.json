@@ -1,23 +1,23 @@
 {
   "compilerOptions": {
     "target": "es2023",
-    "module": "esnext",
     "lib": ["ES2023", "DOM"],
-    "types": ["vite/client"],
-    "skipLibCheck": true,
+    "moduleDetection": "force",
+    "module": "esnext",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "types": ["vite/client"],
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
 
+    "noFallthroughCasesInSwitch": true,
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "skipLibCheck": true
   },
   "include": ["src"]
 }

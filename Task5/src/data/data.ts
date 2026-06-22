@@ -1,12 +1,13 @@
-import { type BaseExpense } from '../type/type';
-const key = 'expenses';
+import type { BaseExpense } from "../type/type";
 
-export const getExpenses = (): BaseExpense[] => {
-  return JSON.parse(localStorage.getItem(key) || '[]');
-};
+const key = "expenses";
 
-export const addExpense = (expense: BaseExpense) => {
+export function getExpenses(): BaseExpense[] {
+  return JSON.parse(localStorage.getItem(key) || "[]");
+}
+
+export function addExpense(expense: BaseExpense) {
   const expenses = getExpenses();
   expenses.push(expense);
   localStorage.setItem(key, JSON.stringify(expenses));
-};
+}

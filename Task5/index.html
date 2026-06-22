@@ -16,35 +16,20 @@
       >
         Add Expenses
       </button>
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 mt-10 items-center w-35 sm:gap-50"
-      >
+      <div class="grid grid-cols-1 sm:grid-cols-2 mt-10 items-center w-35 sm:gap-50">
         <div class="flex justfiy-center space-x-5 w-xl mb-5 items-center">
           <span class="mb-3">Filters :</span>
-          <button
-            type="reset"
-            class="bg-red-500 hover:bg-red-800 rounded-4xl px-6 py-3"
-            id="clear"
-          >
-            Clear
-          </button>
+          <button type="reset" class="bg-red-500 hover:bg-red-800 rounded-4xl px-6 py-3" id="clear">Clear</button>
         </div>
         <div class="space-x-8 flex">
-          <select
-            id="useFilter"
-            class="p-3 bg-slate-500 rounded cursor-pointer"
-          >
+          <select id="useFilter" class="p-3 bg-slate-500 rounded cursor-pointer">
             <option value="">All</option>
             <option value="Food">Food</option>
             <option value="Entertainment">Entertainment</option>
             <option value="Groceries">Groceries</option>
             <option value="Bills">Bills</option>
           </select>
-          <input
-            type="date"
-            id="calendar"
-            class="cursor-pointer p-3 bg-slate-500 rounded"
-          />
+          <input type="date" id="calendar" class="cursor-pointer p-3 bg-slate-500 rounded" />
         </div>
       </div>
       <div id="expenseList">
@@ -56,9 +41,7 @@
         <div id="details"></div>
       </div>
     </section>
-    <footer class="flex justify-center bg-slate-600 mt-auto p-5">
-      Made by Ansh Shrestha &copy;
-    </footer>
+    <footer class="flex justify-center bg-slate-600 mt-auto p-5">Made by Ansh Shrestha &copy;</footer>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

@@ -1,23 +1,32 @@
 {
   "name": "task5",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.1",
+    "lint": "^1.2.2",
+    "lint-staged": "^17.0.8",
+    "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^9.0.0",
+    "@eslint-react/eslint-plugin": "^5.9.1",
+    "eslint": "^10.5.0",
+    "eslint-plugin-react-refresh": "^0.5.3",
     "husky": "^9.1.7",
     "typescript": "~6.0.2",
     "vite": "^8.0.12"
   },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.3.1",
-    "eslint": "^10.5.0",
-    "lint": "^1.2.2",
-    "tailwindcss": "^4.3.1"
+  "lint-staged": {
+    "*": "npm run lint"
   }
 }

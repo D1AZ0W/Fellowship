@@ -1,28 +1,28 @@
-import { getExpenses, addExpense } from './data/data';
-import { type BaseExpense, type Category } from './type/type';
+import type { BaseExpense, Category } from "./type/type";
+import { addExpense, getExpenses } from "./data/data";
 
-const categories: Category[] = ['Food', 'Entertainment', 'Groceries', 'Bills'];
-const createBtn = document.getElementById('create') as HTMLButtonElement;
-const useFilter = document.getElementById('useFilter') as HTMLSelectElement;
-const calendar = document.getElementById('calendar') as HTMLInputElement;
-const expenseTable = document.getElementById('expenseTable') as HTMLDivElement;
-const details = document.getElementById('details') as HTMLDivElement;
-const clearBtn = document.getElementById('clear') as HTMLButtonElement;
+const categories: Category[] = ["Food", "Entertainment", "Groceries", "Bills"];
+const createBtn = document.getElementById("create") as HTMLButtonElement;
+const useFilter = document.getElementById("useFilter") as HTMLSelectElement;
+const calendar = document.getElementById("calendar") as HTMLInputElement;
+const expenseTable = document.getElementById("expenseTable") as HTMLDivElement;
+const details = document.getElementById("details") as HTMLDivElement;
+const clearBtn = document.getElementById("clear") as HTMLButtonElement;
 
 const formatCurrency = (amount: number): string => `Rs. ${amount.toFixed(2)}`;
 
-const getFilteredExpenses = (): BaseExpense[] => {
+function getFilteredExpenses(): BaseExpense[] {
   const all = getExpenses();
   const category = useFilter.value;
   const date = calendar.value;
   return all.filter(
-    (e) =>
-      (category === '' || e.category == category) &&
-      (date === '' || e.date == date),
+    e =>
+      (category === "" || e.category === category)
+      && (date === "" || e.date === date),
   );
-};
+}
 
-const renderTable = (expenses: BaseExpense[]) => {
+function renderTable(expenses: BaseExpense[]) {
   if (expenses.length === 0) {
     expenseTable.innerHTML = `<p class="text-slate-400 italic py-6 text-center">No expenses found.</p>`;
     return;
@@ -41,7 +41,7 @@ const renderTable = (expenses: BaseExpense[]) => {
         <tbody>
         ${expenses
           .map(
-            (e) => `
+            e => `
           <tr class="border border-slate-700">
             <td class="p-3">${e.title}</td>
             <td class="p-3">${formatCurrency(e.amount)}</td>
@@ -50,14 +50,14 @@ const renderTable = (expenses: BaseExpense[]) => {
           </tr>
         `,
           )
-          .join('')}
+          .join("")}
         </tbody>
       </table>
     </div>
   `;
-};
+}
 
-const renderStatistics = (expenses: BaseExpense[]) => {
+function renderStatistics(expenses: BaseExpense[]) {
   if (expenses.length === 0) {
     details.innerHTML = `<p class="text-slate-400 italic py-4">No data yet.</p>`;
     return;
@@ -77,9 +77,8 @@ const renderStatistics = (expenses: BaseExpense[]) => {
     if (expense.amount > highest.amount) {
       highest = expense;
     }
-  }
 
-  details.innerHTML = `
+    details.innerHTML = `
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-3">
       <div class="bg-slate-700 rounded-2xl p-4">
         <p class="font-semibold mb-2">Category Totals</p>
@@ -110,26 +109,28 @@ const renderStatistics = (expenses: BaseExpense[]) => {
       </div>
     </div>
   `;
-};
+  }
+}
 
-const renderAll = () => {
+function renderAll() {
   const filtered = getFilteredExpenses();
   renderTable(filtered);
   renderStatistics(filtered);
-};
+}
 
 let modalEl: HTMLDivElement | null = null;
-const closeModal = () => {
+function closeModal() {
   if (modalEl) {
     modalEl.remove();
     modalEl = null;
   }
-};
+}
 
-const openModal = () => {
-  if (modalEl) return;
-  modalEl = document.createElement('div');
-  modalEl.className = 'fixed flex top-1/5 justify-center max-w-screen w-full';
+function openModal() {
+  if (modalEl)
+    return;
+  modalEl = document.createElement("div");
+  modalEl.className = "fixed flex top-1/5 justify-center max-w-screen w-full";
   modalEl.innerHTML = `
     <div class="bg-slate-800 rounded-2xl p-6 w-full sm:w-1/2 lg:w-1/3 space-y-4">
       <h2 class="font-bold text-xl">Add Expense</h2>
@@ -145,7 +146,7 @@ const openModal = () => {
         <div>
           <label class="block mb-1" for="category">Category</label>
           <select id="category" name="category" required class="w-full p-3 bg-slate-500 rounded cursor-pointer">
-            ${categories.map((cat) => `<option value="${cat}">${cat}</option>`).join('')}
+            ${categories.map(cat => `<option value="${cat}">${cat}</option>`).join("")}
           </select>
         </div>
         <div>
@@ -161,19 +162,19 @@ const openModal = () => {
   `;
 
   document.body.appendChild(modalEl);
-  const cancelBtn = document.getElementById('cancelBtn') as HTMLButtonElement;
-  cancelBtn.addEventListener('click', closeModal);
+  const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement;
+  cancelBtn.addEventListener("click", closeModal);
 
-  const expenseForm = document.getElementById('expenseForm') as HTMLFormElement;
-  expenseForm.addEventListener('submit', handleFormSubmit);
-};
+  const expenseForm = document.getElementById("expenseForm") as HTMLFormElement;
+  expenseForm.addEventListener("submit", handleFormSubmit);
+}
 
-const handleFormSubmit = (e: Event) => {
+function handleFormSubmit(e: Event) {
   e.preventDefault();
-  const titleF = document.getElementById('title') as HTMLInputElement;
-  const amountF = document.getElementById('amount') as HTMLInputElement;
-  const categoryF = document.getElementById('category') as HTMLSelectElement;
-  const dateInput = document.getElementById('date') as HTMLInputElement;
+  const titleF = document.getElementById("title") as HTMLInputElement;
+  const amountF = document.getElementById("amount") as HTMLInputElement;
+  const categoryF = document.getElementById("category") as HTMLSelectElement;
+  const dateInput = document.getElementById("date") as HTMLInputElement;
 
   const title = titleF.value.trim();
   const amount = Number(amountF.value);
@@ -181,7 +182,8 @@ const handleFormSubmit = (e: Event) => {
   const date = dateInput.value;
 
   if (!title || !amount || amount <= 0 || !date) {
-    alert('Please fill all fields correctly');
+    // eslint-disable-next-line no-alert
+    alert("Please fill all fields correctly");
     return;
   }
 
@@ -196,17 +198,18 @@ const handleFormSubmit = (e: Event) => {
   addExpense(newExpense);
   closeModal();
   renderAll();
-  alert('Expense added successfully');
-};
-const clearFilter = () => {
-  useFilter.value = '';
-  calendar.value = '';
+  // eslint-disable-next-line no-alert
+  alert("Expense added successfully");
+}
+function clearFilter() {
+  useFilter.value = "";
+  calendar.value = "";
   renderAll();
-};
+}
 
-createBtn.addEventListener('click', openModal);
-useFilter.addEventListener('change', renderAll);
-calendar.addEventListener('change', renderAll);
-clearBtn.addEventListener('click', clearFilter);
+createBtn.addEventListener("click", openModal);
+useFilter.addEventListener("change", renderAll);
+calendar.addEventListener("change", renderAll);
+clearBtn.addEventListener("click", clearFilter);
 
 renderAll();
