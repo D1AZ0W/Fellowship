@@ -16,8 +16,19 @@
       >
         Add Expenses
       </button>
-      <div class="grid grid-cols-1 sm:grid-cols-2 mt-10 items-center w-35">
-        <span class="overflow-visible mb-3">Filters : </span>
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 mt-10 items-center w-35 sm:gap-50"
+      >
+        <div class="flex justfiy-center space-x-5 w-xl mb-5 items-center">
+          <span class="mb-3">Filters :</span>
+          <button
+            type="reset"
+            class="bg-red-500 hover:bg-red-800 rounded-4xl px-6 py-3"
+            id="clear"
+          >
+            Clear
+          </button>
+        </div>
         <div class="space-x-8 flex">
           <select
             id="useFilter"
@@ -34,13 +45,6 @@
             id="calendar"
             class="cursor-pointer p-3 bg-slate-500 rounded"
           />
-          <button
-            type="reset"
-            class="bg-red-500 hover:bg-red-800 rounded-4xl px-6"
-            id="clear"
-          >
-            Clear
-          </button>
         </div>
       </div>
       <div id="expenseList">
