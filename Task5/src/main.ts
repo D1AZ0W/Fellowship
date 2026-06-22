@@ -7,6 +7,7 @@ const useFilter = document.getElementById('useFilter') as HTMLSelectElement;
 const calendar = document.getElementById('calendar') as HTMLInputElement;
 const expenseTable = document.getElementById('expenseTable') as HTMLDivElement;
 const details = document.getElementById('details') as HTMLDivElement;
+const clearBtn = document.getElementById('clear') as HTMLButtonElement;
 
 const formatCurrency = (amount: number): string => `Rs. ${amount.toFixed(2)}`;
 
@@ -197,9 +198,15 @@ const handleFormSubmit = (e: Event) => {
   renderAll();
   alert('Expense added successfully');
 };
+const clearFilter = () => {
+  useFilter.value = '';
+  calendar.value = '';
+  renderAll();
+};
 
 createBtn.addEventListener('click', openModal);
 useFilter.addEventListener('change', renderAll);
 calendar.addEventListener('change', renderAll);
+clearBtn.addEventListener('click', clearFilter);
 
 renderAll();
