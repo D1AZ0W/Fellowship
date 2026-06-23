@@ -1,4 +1,5 @@
 import type { BaseExpense, Category } from "./type/type";
+import { format } from "date-fns";
 import { addExpense, getExpenses } from "./data/data";
 
 const categories: Category[] = ["Food", "Entertainment", "Groceries", "Bills"];
@@ -10,6 +11,7 @@ const details = document.getElementById("details") as HTMLDivElement;
 const clearBtn = document.getElementById("clear") as HTMLButtonElement;
 
 const formatCurrency = (amount: number): string => `Rs. ${amount.toFixed(2)}`;
+const formatDate = (date: string): string => format((date), "MMM d, yyyy");
 
 function getFilteredExpenses(): BaseExpense[] {
   const all = getExpenses();
@@ -46,7 +48,7 @@ function renderTable(expenses: BaseExpense[]) {
             <td class="p-3">${e.title}</td>
             <td class="p-3">${formatCurrency(e.amount)}</td>
             <td class="p-3">${e.category}</td>
-            <td class="p-3">${e.date}</td>
+            <td class="p-3">${formatDate(e.date)}</td>
           </tr>
         `,
           )
