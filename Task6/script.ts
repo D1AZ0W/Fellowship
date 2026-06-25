@@ -39,6 +39,9 @@ function updateInventory(item: { productId: string; price: number; quantity: num
 function sendAnalytics(item: { productId: string; price: number; quantity: number }) {
   console.log(`[Analytics] Tracked addition of ${item.productId} ($${item.price})`);
 }
+function successCheckout(item: { orderId: string; totalAmount: number }) {
+  console.log(`[Checkout] Successful checkout of orderId: ${item.orderId} Total Amount:($${item.totalAmount})`);
+}
 
 shopBus.on('cart:addItem', updateInventory);
 shopBus.on('cart:addItem', sendAnalytics);
@@ -50,3 +53,6 @@ shopBus.emit('cart:addItem', { productId: 'mouse-456', price: 25, quantity: 2 })
 shopBus.off('cart:addItem', updateInventory);
 // shopBus.on('cart:delete', () => {});
 // shopBus.emit('cart:addItem', { productId: 'abc', price: 'free', quantity: 1 });
+shopBus.emit('checkout:success', { orderId: 'mouse-123', totalAmount: 5 }); // this does not work rn but
+shopBus.on('checkout:success', successCheckout);
+shopBus.emit('checkout:success', { orderId: '12323423543', totalAmount: 120 });
