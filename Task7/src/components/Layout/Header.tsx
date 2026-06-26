@@ -12,9 +12,6 @@ export const Header = () => {
         <NavLink to="/form1" className="px-2 m-2 text-xl sm:text-lg">
           Form1
         </NavLink>
-        <NavLink to="/form2" className="px-2 m-2 text-xl sm:text-lg">
-          Form2
-        </NavLink>
         <NavLink to="/profile" className="px-2 m-2 text-xl sm:text-lg">
           Profile
         </NavLink>
