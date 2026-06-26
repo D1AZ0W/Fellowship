@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@layer components {
+  .formCheck {
+    @apply m-10 flex h-20 w-80 items-center justify-center rounded-xl border-2 border-blue-500 bg-blue-400 p-6 text-2xl font-bold text-amber-200 hover:bg-blue-950;
+  }
+  .formlinks {
+    @apply h-16 w-64 rounded-full  flex flex-center text-white text-xl font-sans font-bold;
+  }
+  .formField {
+    @apply flex flex-col gap-1.5;
+  }
+  .formlabel {
+    @apply text-sm font-medium text-white;
+  }
+  .formInput {
+    @apply w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-slate-100 outline-none placeholder:text-slate-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30;
+  }
+  .active {
+    @apply underline underline-offset-8 decoration-2 decoration-green-500;
+  }
+}
+
+@utility flex-center {
+  @apply flex items-center justify-center;
+}
+
+@layer base {
+  html,
+  body {
+    @apply min-h-screen overflow-y-scroll bg-slate-950;
+  }
+
+  h2 {
+    @apply text-2xl font-bold text-cyan-200 sm:text-3xl;
+  }
+  a {
+    @apply hover:underline;
+  }
+  div {
+    @apply text-lg text-white;
+  }
+}
