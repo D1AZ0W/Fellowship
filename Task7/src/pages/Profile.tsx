@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { getUser, hasUser, type User, removeUser } from "../data/data";
+import { getUser, removeUser } from "../data/data";
 export const Profile = () => {
+  const user = getUser();
   const navigate = useNavigate();
-  if (hasUser()) {
-    const user: User | null = getUser();
+  if (user) {
     return (
       <div className="flex items-center justify-center min-h-[70vh]">
         <div className="bg-slate-500 shadow-lg rounded-3xl p-8 max-w-md w-full">
@@ -12,22 +12,22 @@ export const Profile = () => {
           <div className="space-y-4 text-black mt-3">
             <div>
               <p className="formlabel">Username</p>
-              <p className="font-semibold">{user?.username}</p>
+              <p className="font-semibold">{user.username}</p>
             </div>
 
             <div>
               <p className="formlabel">Email</p>
-              <p className="font-semibold">{user?.email}</p>
+              <p className="font-semibold">{user.email}</p>
             </div>
 
             <div>
               <p className="formlabel">Address</p>
-              <p className="font-semibold">{user?.address}</p>
+              <p className="font-semibold">{user.address}</p>
             </div>
 
             <div>
               <p className="formlabel">Phone Number</p>
-              <p className="font-semibold">{user?.phone}</p>
+              <p className="font-semibold">{user.phone}</p>
             </div>
           </div>
 

@@ -1,5 +1,5 @@
 import { useState, type SubmitEvent } from "react";
-import { setUser, hasUser } from "../data/data";
+import { setUser, getUser } from "../data/data";
 import { useNavigate } from "react-router-dom";
 import { emailRegex, passRegex, phoneRegex } from "../components/regex";
 
@@ -104,7 +104,7 @@ export const Register = () => {
       setSuccessMessage("");
     }
   };
-  const userExists = hasUser();
+  const userExists = getUser()?.username != null ? true : false;
 
   return (
     <>
@@ -119,6 +119,7 @@ export const Register = () => {
                 <input
                   type="text"
                   id="username"
+                  name="username"
                   placeholder="Enter your username"
                   className="formInput"
                   value={formData.username}
@@ -135,6 +136,7 @@ export const Register = () => {
                 <input
                   type="email"
                   id="email"
+                  name="email"
                   placeholder="Enter your email address"
                   className="formInput"
                   value={formData.email}
@@ -150,6 +152,7 @@ export const Register = () => {
                 <label htmlFor="address">Address:</label>
                 <textarea
                   id="address"
+                  name="address"
                   placeholder="Enter your address"
                   rows={3}
                   className="formInput"
@@ -167,6 +170,7 @@ export const Register = () => {
                 <input
                   type="tel"
                   id="phone"
+                  name="phone"
                   placeholder="Enter your 10 digits phone number"
                   className="formInput"
                   value={formData.phone}
@@ -183,6 +187,7 @@ export const Register = () => {
                 <input
                   type="password"
                   id="password"
+                  name="password"
                   placeholder="Password"
                   className="formInput"
                   value={formData.password}
@@ -199,6 +204,7 @@ export const Register = () => {
                 <input
                   type="password"
                   id="confirmPassword"
+                  name="confirmPassword"
                   placeholder="Confirm Password"
                   className="formInput"
                   value={formData.confirmPassword}

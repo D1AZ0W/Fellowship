@@ -24,7 +24,3 @@ export function getUser(): User | null {
 export function removeUser(): void {
   localStorage.removeItem(USER_KEY);
 }
-
-export function hasUser(): boolean {
-  return localStorage.getItem(USER_KEY) !== null;
-}
