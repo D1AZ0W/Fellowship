@@ -9,6 +9,13 @@ export type User = {
   company: { name: string };
 };
 
+export type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
+
 interface TypedResponse<T> extends Response {
   json(): Promise<T>;
 }
@@ -17,17 +24,23 @@ declare function fetch<T = unknown>(
   init?: RequestInit,
 ): Promise<TypedResponse<T>>;
 
-export const fetchUsers = async (): Promise<User[]> => {
-  try {
-    const res = await fetch<User[]>(
-      "https://jsonplaceholder.typicode.com/users",
-    );
-    if (res.status === 200) {
-      return await res.json();
-    }
-    return [];
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return [];
+const url = "https://jsonplaceholder.typicode.com";
+export const fetchData = async <T>(specifier: string): Promise<T> => {
+  const res = await fetch<T>(url + "/" + specifier);
+  if (!res.ok) {
+    throw new Error("Request failed: " + res.status);
   }
+  return res.json();
+};
+
+export const fetchUsers = async (): Promise<User[]> => {
+  return fetchData<User[]>(`users`);
+};
+
+export const fetchPosts = async (page = 1, limit = 8): Promise<Post[]> => {
+  return fetchData<Post[]>(`posts?_page=${page}&_limit=${limit}`);
+};
+
+export const fetchAllPosts = async (): Promise<Post[]> => {
+  return fetchData<Post[]>(`posts`);
 };

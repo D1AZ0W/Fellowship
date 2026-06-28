@@ -36,3 +36,32 @@ export const UsersSkeleton = () => (
     ))}
   </div>
 );
+
+export const PostsSkeleton = () => (
+  <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {Array.from({ length: 8 }).map((_, index) => (
+      <div
+        key={index}
+        className="animate-pulse rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+      >
+        <header className="mb-3 flex items-center justify-between border-b border-gray-200 pb-2">
+          <div className="space-y-2">
+            <div className="h-4 w-20 rounded bg-gray-200" />
+            <div className="h-3 w-14 rounded bg-gray-200" />
+          </div>
+        </header>
+
+        <div className="space-y-2">
+          <div className="h-4 w-3/4 rounded bg-gray-200" />
+          <div className="h-4 w-1/2 rounded bg-gray-200" />
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="h-3 w-full rounded bg-gray-200" />
+          <div className="h-3 w-full rounded bg-gray-200" />
+          <div className="h-3 w-5/6 rounded bg-gray-200" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
