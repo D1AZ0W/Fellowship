@@ -37,8 +37,8 @@ export const fetchUsers = async (): Promise<User[]> => {
   return fetchData<User[]>(`users`);
 };
 
-export const fetchPosts = async (page = 1, limit = 8): Promise<Post[]> => {
-  return fetchData<Post[]>(`posts?_page=${page}&_limit=${limit}`);
+export const fetchPosts = async (page = 1): Promise<Post[]> => {
+  return fetchData<Post[]>(`posts?_page=${page}&_limit=8`);
 };
 
 export const fetchAllPosts = async (): Promise<Post[]> => {
