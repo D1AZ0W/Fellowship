@@ -6,6 +6,12 @@
   body {
     @apply min-h-screen bg-linear-to-b from-white to-blue-50;
   }
+  h1 {
+    @apply font-extrabold text-3xl justify-center flex;
+  }
+  h2 {
+    @apply text-xl font-bold;
+  }
 }
 @layer components {
   .navLink {

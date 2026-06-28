@@ -38,7 +38,7 @@ export const Home = () => {
         <li>Follow TypeScript best practices with proper type definitions.</li>
         <li>
           Configure and use the following development tools:
-          <ul className="list-circle list-inside ml-6 mt-2 space-y-1">
+          <ul className="list-decimal list-inside ml-6 mt-2 space-y-1">
             <li>Husky</li>
             <li>ESLint</li>
             <li>Prettier</li>
