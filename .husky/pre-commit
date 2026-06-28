@@ -1,1 +1,1 @@
-cd Task7 && npm exec lint-staged
+cd Task8 && npm exec lint-staged

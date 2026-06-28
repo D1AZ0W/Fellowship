@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@layer base {
+  * {
+    @apply p-0 m-0;
+  }
+  body {
+    @apply min-h-screen bg-linear-to-b from-white to-blue-50;
+  }
+}
+@layer components {
+  .navLink {
+    @apply transition-all duration-300 p-3 flex rounded-3xl;
+    &:hover {
+      @apply underline underline-offset-8 decoration-2 decoration-amber-200;
+    }
+    &.active {
+      @apply underline underline-offset-8 decoration-2 decoration-amber-200;
+    }
+  }
+}
