@@ -104,11 +104,12 @@ export const Register = () => {
       setSuccessMessage("");
     }
   };
+  const userExists = hasUser();
 
   return (
     <>
       <h2 className="justify-center flex">Registration Form</h2>
-      {!hasUser() && (
+      {!userExists && (
         <div className="flex items-center justify-center text-black my-10">
           <div className="bg-slate-500 w-full max-w-xl rounded-3xl p-8">
             <h1>Create Account</h1>
@@ -233,7 +234,7 @@ export const Register = () => {
           </div>
         </div>
       )}
-      {hasUser() && (
+      {userExists && (
         <div className="flex items-center justify-center min-h-[70vh]">
           <div className="bg-slate-600 rounded-3xl shadow-lg p-8 max-w-md w-full text-center">
             <h2 className="font-bold mb-4">Already Registered</h2>
