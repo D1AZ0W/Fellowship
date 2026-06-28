@@ -34,11 +34,20 @@ export const Posts = () => {
       </div>
     );
   }
+  const handlePage = (add: boolean) => {
+    setLoading(true);
+    if (add) {
+      setPageNumber((prev) => prev - 1);
+    } else {
+      setPageNumber((prev) => prev + 1);
+    }
+  };
   return (
     <div>
       <GoBack />
       <h1 className="py-3">Posts</h1>
       {loading && <PostsSkeleton />}
+
       <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {posts.map((post) => (
           <PostCard key={post.id} post={post} />
@@ -47,7 +56,7 @@ export const Posts = () => {
       <div className="my-4 flex items-center justify-center gap-4">
         <button
           type="button"
-          onClick={() => setPageNumber((prev) => prev - 1)}
+          onClick={() => handlePage(false)}
           disabled={pageNumber == 1 ? true : false}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
@@ -65,7 +74,7 @@ export const Posts = () => {
 
         <button
           type="button"
-          onClick={() => setPageNumber((prev) => prev + 1)}
+          onClick={() => handlePage(true)}
           disabled={pageNumber == 13 ? true : false}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
