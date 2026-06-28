@@ -2,6 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { getUser, removeUser } from "../data/data";
 export const Profile = () => {
   const user = getUser();
+  const handleLogout = () => {
+    removeUser();
+    navigate("/form1");
+  };
   const navigate = useNavigate();
   if (user) {
     return (
@@ -40,10 +44,7 @@ export const Profile = () => {
             </button>
 
             <button
-              onClick={() => {
-                removeUser();
-                navigate("/form1");
-              }}
+              onClick={handleLogout}
               className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-800"
             >
               Logout
