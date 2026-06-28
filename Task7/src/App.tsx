@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "./components/Layout/MainLayout.tsx";
 import { Home } from "./pages/Home.tsx";
-import { Form1 } from "./pages/Form1.tsx";
+import { Register } from "./pages/RegisterPage.tsx";
 import { Profile } from "./pages/Profile.tsx";
 
 const router = createBrowserRouter([
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
       },
       {
         path: "form1",
-        element: <Form1 />,
+        element: <Register />,
       },
       {
         path: "profile",
