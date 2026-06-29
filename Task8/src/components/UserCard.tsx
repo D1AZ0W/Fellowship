@@ -1,4 +1,4 @@
-import type { User } from "../../data/data";
+import type { User } from "../data/data";
 
 type UserCardProps = {
   user: User;

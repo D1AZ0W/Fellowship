@@ -41,6 +41,52 @@ export const fetchPosts = async (page = 1): Promise<Post[]> => {
   return fetchData<Post[]>(`posts?_page=${page}&_limit=8`);
 };
 
-export const fetchAllPosts = async (): Promise<Post[]> => {
-  return fetchData<Post[]>(`posts`);
+export const searchPosts = (search: string, userId?: number) => {
+  const params = new URLSearchParams();
+
+  if (search) params.append("q", search);
+  if (userId) params.append("userId", userId.toString());
+
+  return fetchData<Post[]>(`posts?${params.toString()}`);
+};
+
+export const createPost = async (post: Omit<Post, "id">): Promise<Post> => {
+  const res = await fetch(`${url}/posts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(post),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to create post");
+  }
+
+  return res.json() as Promise<Post>;
+};
+
+export const updatePost = async (post: Post): Promise<Post> => {
+  const res = await fetch(`${url}/posts/${post.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(post),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update post");
+  }
+
+  return res.json() as Promise<Post>;
+};
+
+export const deletePost = async (id: number): Promise<void> => {
+  const res = await fetch(`${url}/posts/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete post");
+  }
 };
