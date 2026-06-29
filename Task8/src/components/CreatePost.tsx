@@ -28,7 +28,6 @@ export const CreatePost = ({ setPosts }: CreatePostProps) => {
 
     try {
       const createdPost = await createPost(formField);
-
       setPosts((prev) => [createdPost, ...prev.slice(0, 7)]);
 
       resetForm();

@@ -2,7 +2,7 @@ import { GoBack } from "../components/GoBackButton";
 import { PostsSkeleton } from "../components/UI/LoadingSkeleton";
 import { PostCard } from "../components/PostCard";
 import type { Post } from "../data/data";
-import { fetchPosts } from "../data/data";
+import { fetchPosts, deletePost, updatePost } from "../data/data";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CreatePost } from "../components/CreatePost";
@@ -51,6 +51,36 @@ export const Posts = () => {
       setPageNumber((prev) => prev - 1);
     }
   };
+  const handleDelete = async (id: number) => {
+    const confirmDelete = confirm("Delete this post?");
+    if (!confirmDelete) return;
+    try {
+      await deletePost(id);
+      setPosts((prev) => prev.filter((post) => post.id !== id));
+    } catch {
+      alert("Failed to delete post.");
+    }
+  };
+  const handleUpdate = async (post: Post) => {
+    const title = prompt("Title", post.title);
+    if (!title) return;
+
+    const body = prompt("Body", post.body);
+    if (!body) return;
+    try {
+      const updatedPost = await updatePost({
+        ...post,
+        title,
+        body,
+      });
+
+      setPosts((prev) =>
+        prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)),
+      );
+    } catch {
+      alert("Failed to update post.");
+    }
+  };
   return (
     <div>
       <GoBack />
@@ -63,7 +93,12 @@ export const Posts = () => {
         <>
           <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <PostCard
+                key={post.id}
+                post={post}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
+              />
             ))}
           </div>
 
