@@ -42,7 +42,7 @@ export const CreatePost = ({ setPosts }: CreatePostProps) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="ml-5 rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+        className="rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
       >
         Create Post
       </button>

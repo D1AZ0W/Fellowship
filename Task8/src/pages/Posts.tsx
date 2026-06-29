@@ -2,14 +2,16 @@ import { GoBack } from "../components/GoBackButton";
 import { PostsSkeleton } from "../components/UI/LoadingSkeleton";
 import { PostCard } from "../components/PostCard";
 import type { Post } from "../data/data";
-import { fetchPosts, deletePost, updatePost } from "../data/data";
+import { fetchPosts, deletePost, updatePost, searchPosts } from "../data/data";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CreatePost } from "../components/CreatePost";
+import { Filters } from "../components/Filters";
+import { Errors } from "../components/UI/Error";
 export const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [pageNumber, setPageNumber] = useState(
     Number(searchParams.get("page") || 1),
@@ -22,7 +24,7 @@ export const Posts = () => {
         if (mounted) setPosts(data);
       })
       .catch(() => {
-        if (mounted) setError(true);
+        if (mounted) setError("Error fetching data");
       })
       .finally(() => {
         if (mounted) setLoading(false);
@@ -36,13 +38,6 @@ export const Posts = () => {
     setSearchParams({ page: pageNumber.toString() });
   }, [pageNumber, setSearchParams]);
 
-  if (error) {
-    return (
-      <div className="p-6 text-sm text-red-600">
-        Couldn't load posts. Try again later.
-      </div>
-    );
-  }
   const handlePage = (next: boolean) => {
     setLoading(true);
     if (next) {
@@ -73,7 +68,6 @@ export const Posts = () => {
         title,
         body,
       });
-
       setPosts((prev) =>
         prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)),
       );
@@ -81,15 +75,32 @@ export const Posts = () => {
       alert("Failed to update post.");
     }
   };
+  const handleSearch = async (query: string, userId?: number) => {
+    setLoading(true);
+    try {
+      const filteredPosts = await searchPosts(query, userId);
+      setPosts(filteredPosts);
+      if (filteredPosts.length === 0) {
+        setError("No such Data..");
+      } else {
+        setError("");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       <GoBack />
       <h1 className="py-3">Posts</h1>
-      <CreatePost setPosts={setPosts} />
+      <div className="space-x-3 ml-6 flex">
+        <CreatePost setPosts={setPosts} />
+        <Filters handleSearch={handleSearch} />
+      </div>
 
-      {loading ? (
-        <PostsSkeleton />
-      ) : (
+      {loading && <PostsSkeleton />}
+      {!loading && error && <Errors error={error} />}
+      {!loading && !error && (
         <>
           <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {posts.map((post) => (
@@ -101,7 +112,6 @@ export const Posts = () => {
               />
             ))}
           </div>
-
           <div className="my-4 flex items-center justify-center gap-4">
             <button
               type="button"
