@@ -39,7 +39,7 @@ export const Users = () => {
       {loading && <UsersSkeleton />}
       <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4">
         {users.map((user) => (
-          <UserCard user={user} />
+          <UserCard user={user} key={user.id} />
         ))}
       </div>
     </div>
