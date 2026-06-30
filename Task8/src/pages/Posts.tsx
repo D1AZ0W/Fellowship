@@ -11,10 +11,11 @@ import {
 } from "../data/data";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { CreatePost } from "../components/CreatePost";
 import { Filters } from "../components/Filters";
 import { Errors } from "../components/UI/Error";
 import { PageHandle } from "../components/UI/PageHandle";
+import { FormModal } from "../components/UI/FormModal";
+
 export const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,9 @@ export const Posts = () => {
   const [pageNumber, setPageNumber] = useState(
     Number(searchParams.get("page") || 1),
   );
+  type Form = "create" | "edit" | null;
+  const [view, setView] = useState<Form>(null);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -73,23 +77,20 @@ export const Posts = () => {
     }
   };
   const handleUpdate = async (post: Post) => {
-    const title = prompt("Title", post.title);
-    if (!title) return;
-
-    const body = prompt("Body", post.body);
-    if (!body) return;
     try {
-      const updatedPost = await updatePost({
-        ...post,
-        title,
-        body,
-      });
+      const updatedPost = await updatePost(post);
+
       setPosts((prev) =>
         prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)),
       );
     } catch {
       alert("Failed to update post.");
     }
+  };
+
+  const EditOpen = (post: Post) => {
+    setView("edit");
+    setEditingPost(post);
   };
   const handleSearch = async (query: string, userId?: number) => {
     setLoading(true);
@@ -129,7 +130,13 @@ export const Posts = () => {
       <GoBack />
       <h1 className="py-3">Posts</h1>
       <div className="space-x-3 ml-6 flex">
-        <CreatePost handleCreate={handleCreate} />
+        <button
+          type="button"
+          onClick={() => setView("create")}
+          className="rounded-lg bg-blue-950 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+        >
+          Create Post
+        </button>
         <Filters handleSearch={handleSearch} />
       </div>
 
@@ -137,13 +144,33 @@ export const Posts = () => {
       {!loading && error && <Errors error={error} />}
       {!loading && !error && (
         <>
+          {view === "create" && (
+            <FormModal
+              key="create"
+              mode="create"
+              onCreate={handleCreate}
+              onClose={() => setView(null)}
+            />
+          )}
+          {view === "edit" && editingPost && (
+            <FormModal
+              key={editingPost.id}
+              mode="edit"
+              post={editingPost}
+              onEdit={handleUpdate}
+              onClose={() => {
+                setView(null);
+                setEditingPost(null);
+              }}
+            />
+          )}
           <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {posts.map((post) => (
               <PostCard
                 key={post.id}
                 post={post}
                 onDelete={handleDelete}
-                onUpdate={handleUpdate}
+                onUpdate={EditOpen}
               />
             ))}
           </div>
