@@ -1,16 +1,11 @@
-import {
-  useState,
-  type Dispatch,
-  type SetStateAction,
-  type SubmitEvent,
-} from "react";
-import { createPost, type Post } from "../data/data";
+import { useState, type SubmitEvent } from "react";
+import { type Post } from "../data/data";
 
 type CreatePostProps = {
-  setPosts: Dispatch<SetStateAction<Post[]>>;
+  handleCreate: (formField: Omit<Post, "id">) => void;
 };
 
-export const CreatePost = ({ setPosts }: CreatePostProps) => {
+export const CreatePost = ({ handleCreate }: CreatePostProps) => {
   const [open, setOpen] = useState(false);
 
   const [formField, setFormField] = useState({
@@ -23,20 +18,12 @@ export const CreatePost = ({ setPosts }: CreatePostProps) => {
     setFormField({ userId: 1, title: "", body: "" });
   };
 
-  const handleCreate = async (e: SubmitEvent) => {
+  const onSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
-
-    try {
-      const createdPost = await createPost(formField);
-      setPosts((prev) => [createdPost, ...prev.slice(0, 7)]);
-
-      resetForm();
-      setOpen(false);
-    } catch {
-      alert("Failed to create post.");
-    }
+    await handleCreate(formField);
+    resetForm();
+    setOpen(false);
   };
-
   return (
     <>
       <button
@@ -65,7 +52,7 @@ export const CreatePost = ({ setPosts }: CreatePostProps) => {
               </button>
             </div>
 
-            <form onSubmit={handleCreate} className="space-y-4">
+            <form onSubmit={onSubmit} className="space-y-4">
               <div>
                 <label className="mb-1 block text-sm font-medium">
                   User ID

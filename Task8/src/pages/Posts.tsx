@@ -2,12 +2,19 @@ import { GoBack } from "../components/GoBackButton";
 import { PostsSkeleton } from "../components/UI/LoadingSkeleton";
 import { PostCard } from "../components/PostCard";
 import type { Post } from "../data/data";
-import { fetchPosts, deletePost, updatePost, searchPosts } from "../data/data";
+import {
+  fetchPosts,
+  deletePost,
+  updatePost,
+  searchPosts,
+  createPost,
+} from "../data/data";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CreatePost } from "../components/CreatePost";
 import { Filters } from "../components/Filters";
 import { Errors } from "../components/UI/Error";
+import { PageHandle } from "../components/UI/PageHandle";
 export const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,14 +45,23 @@ export const Posts = () => {
     setSearchParams({ page: pageNumber.toString() });
   }, [pageNumber, setSearchParams]);
 
-  const handlePage = (next: boolean) => {
+  function handlePage(next: boolean): void;
+  function handlePage(page: number): void;
+
+  function handlePage(value: boolean | number) {
     setLoading(true);
-    if (next) {
-      setPageNumber((prev) => prev + 1);
+    if (typeof value === "boolean") {
+      if (value) {
+        setPageNumber((prev) => prev + 1);
+      } else {
+        setPageNumber((prev) => prev - 1);
+      }
     } else {
-      setPageNumber((prev) => prev - 1);
+      if (value >= 1 && value <= 13) {
+        setPageNumber(value);
+      }
     }
-  };
+  }
   const handleDelete = async (id: number) => {
     const confirmDelete = confirm("Delete this post?");
     if (!confirmDelete) return;
@@ -89,12 +105,31 @@ export const Posts = () => {
       setLoading(false);
     }
   };
+  const handleCreate = async (formField: Omit<Post, "id">): Promise<void> => {
+    const previousPosts = posts;
+
+    const optimistic: Post = {
+      id: 0,
+      ...formField,
+    };
+    setPosts((prev) => [optimistic, ...prev.slice(0, 7)]);
+
+    try {
+      const createdPost = await createPost(formField);
+      setPosts((prev) =>
+        prev.map((post) => (post.id === 0 ? createdPost : post)),
+      );
+    } catch {
+      setPosts(previousPosts);
+      alert("Failed to create post.");
+    }
+  };
   return (
     <div>
       <GoBack />
       <h1 className="py-3">Posts</h1>
       <div className="space-x-3 ml-6 flex">
-        <CreatePost setPosts={setPosts} />
+        <CreatePost handleCreate={handleCreate} />
         <Filters handleSearch={handleSearch} />
       </div>
 
@@ -112,42 +147,9 @@ export const Posts = () => {
               />
             ))}
           </div>
-          <div className="my-4 flex items-center justify-center gap-4">
-            <button
-              type="button"
-              onClick={() => handlePage(false)}
-              disabled={pageNumber === 1}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Previous
-            </button>
-
-            <input
-              type="number"
-              min={1}
-              max={13}
-              value={pageNumber}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-
-                if (value >= 1 && value <= 13) {
-                  setPageNumber(value);
-                }
-              }}
-              className="w-20 rounded-lg border border-gray-200 bg-white px-4 py-2 text-center text-sm font-semibold"
-            />
-
-            <button
-              type="button"
-              onClick={() => handlePage(true)}
-              disabled={pageNumber === 13}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
         </>
       )}
+      <PageHandle pageNumber={pageNumber} handlePage={handlePage} />
     </div>
   );
 };
