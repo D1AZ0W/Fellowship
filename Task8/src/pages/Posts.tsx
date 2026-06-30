@@ -29,20 +29,18 @@ export const Posts = () => {
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    let mounted = true;
-    fetchPosts(pageNumber)
-      .then((data) => {
-        if (mounted) setPosts(data);
-      })
-      .catch(() => {
-        if (mounted) setError("Error fetching data");
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-    return () => {
-      mounted = false;
+    const getPostData = async () => {
+      try {
+        const data = await fetchPosts(pageNumber);
+        setPosts(data);
+      } catch {
+        setError("Error while fetching");
+      } finally {
+        setLoading(false);
+      }
     };
+
+    getPostData();
   }, [pageNumber]);
 
   useEffect(() => {
@@ -117,9 +115,8 @@ export const Posts = () => {
 
     try {
       const createdPost = await createPost(formField);
-      setPosts((prev) =>
-        prev.map((post) => (post.id === 0 ? createdPost : post)),
-      );
+
+      setPosts((prev) => prev.map((p) => (p.id === 0 ? createdPost : p)));
     } catch {
       setPosts(previousPosts);
       alert("Failed to create post.");

@@ -9,22 +9,18 @@ export const Users = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-    fetchUsers()
-      .then((data) => {
-        if (mounted) setUsers(data);
-      })
-      .catch(() => {
-        if (mounted) setError(true);
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-    return () => {
-      mounted = false;
+    const getUserData = async () => {
+      try {
+        const data = await fetchUsers();
+        setUsers(data);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
+    getUserData();
   }, []);
-
   if (error) {
     return (
       <div className="p-6 text-sm text-red-600">
