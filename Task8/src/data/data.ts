@@ -90,3 +90,7 @@ export const deletePost = async (id: number): Promise<void> => {
     throw new Error("Failed to delete post");
   }
 };
+
+export const fetchIndv = async (id: number): Promise<User> => {
+  return fetchData<User>(`users/${id}`);
+};

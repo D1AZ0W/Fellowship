@@ -2,8 +2,8 @@ import type { Post } from "../data/data";
 
 type PostCardProps = {
   post: Post;
-  onDelete: (id: number) => void;
-  onUpdate: (post: Post) => void;
+  onDelete?: (id: number) => void;
+  onUpdate?: (post: Post) => void;
 };
 
 export const PostCard = ({ post, onDelete, onUpdate }: PostCardProps) => {
@@ -25,20 +25,22 @@ export const PostCard = ({ post, onDelete, onUpdate }: PostCardProps) => {
           {post.body}
         </p>
       </div>
-      <div className="flex pt-3 justify-between text-sm font-bold text-white">
-        <button
-          className="p-3 bg-blue-950 rounded-xl hover:scale-110 transition-all duration-300"
-          onClick={() => onUpdate(post)}
-        >
-          Update
-        </button>
-        <button
-          className="p-3 bg-blue-950 rounded-xl hover:scale-110 transition-all duration-300"
-          onClick={() => onDelete(post.id)}
-        >
-          Delete
-        </button>
-      </div>
+      {onDelete && onUpdate && (
+        <div className="flex pt-3 justify-between text-sm font-bold text-white">
+          <button
+            className="p-3 bg-blue-950 rounded-xl hover:scale-110 transition-all duration-300"
+            onClick={() => onUpdate(post)}
+          >
+            Update
+          </button>
+          <button
+            className="p-3 bg-blue-950 rounded-xl hover:scale-110 transition-all duration-300"
+            onClick={() => onDelete(post.id)}
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };

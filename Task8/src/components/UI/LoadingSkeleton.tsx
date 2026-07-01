@@ -1,6 +1,7 @@
 export const UsersSkeleton = () => (
   <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4">
     {Array.from({ length: 10 }).map((_, index) => (
+      //(_,index) when not added caused key warning in array
       <div
         key={index}
         className="animate-pulse rounded-xl border border-gray-200 bg-white p-5 shadow-sm"

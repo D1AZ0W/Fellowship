@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "./components/Layout/MainLayout.tsx";
 import { Users } from "./pages/Users.tsx";
 import { Posts } from "./pages/Posts.tsx";
+import { UserDetails } from "./pages/UserDetails.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <Users />,
+      },
+      {
+        path: "/users/:id",
+        element: <UserDetails />,
       },
       {
         path: "/posts",

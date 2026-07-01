@@ -2,6 +2,7 @@ import { GoBack } from "../components/GoBackButton";
 import { UsersSkeleton } from "../components/UI/LoadingSkeleton";
 import { type User, fetchUsers } from "../data/data";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { UserCard } from "../components/UserCard";
 export const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -35,7 +36,9 @@ export const Users = () => {
       {loading && <UsersSkeleton />}
       <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4">
         {users.map((user) => (
-          <UserCard user={user} key={user.id} />
+          <Link to={`/users/${user.id}`}>
+            <UserCard user={user} key={user.id} />
+          </Link>
         ))}
       </div>
     </div>
