@@ -39,7 +39,7 @@ export const UserDetails = () => {
       <GoBack />
       {loading && (
         <div className="flex flex-col">
-          <h1 className="py-3">User Details of ______</h1>
+          <h1 className="py-3 ">User Details</h1>
           <div className="mx-10 mt-5 flex flex-col justify-center rounded-xl shadow-2xl p-5 max-w-full">
             <div className="flex items-center gap-2 justify-center font-bold text-2xl">
               <label>ID:</label>
@@ -78,7 +78,10 @@ export const UserDetails = () => {
           <PostsSkeleton />
         </div>
       )}
-      <h1 className="py-3">User Details of {user?.name}</h1>
+      <h1 className="py-3">User Details</h1>
+      <h2 className="flex justify-center text-blue-950">
+        Welcome to {user?.name}'s page
+      </h2>
       <div className="mx-10 mt-5 flex flex-col justify-center rounded-xl shadow-2xl p-5 max-w-full">
         <div className="flex items-center gap-2 justify-center font-bold text-2xl">
           <label>ID:</label>
