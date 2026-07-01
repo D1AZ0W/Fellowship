@@ -75,6 +75,14 @@ export const Posts = () => {
     }
   };
   const handleUpdate = async (post: Post) => {
+    const previousPosts = posts;
+
+    const optimistic: Post = {
+      ...post,
+    };
+    setPosts((prev) =>
+      prev.map((p) => (p.id === optimistic.id ? optimistic : p)),
+    );
     try {
       const updatedPost = await updatePost(post);
 
@@ -82,6 +90,7 @@ export const Posts = () => {
         prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)),
       );
     } catch {
+      setPosts(previousPosts);
       alert("Failed to update post.");
     }
   };
