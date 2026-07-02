@@ -24,6 +24,7 @@ export const Posts = () => {
   const [pageNumber, setPageNumber] = useState(
     Number(searchParams.get("page") || 1),
   );
+  const newParams = new URLSearchParams(searchParams);
   type Form = "create" | "edit" | null;
   const [view, setView] = useState<Form>(null);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
@@ -39,12 +40,11 @@ export const Posts = () => {
         setLoading(false);
       }
     };
-
     getPostData();
-  }, [pageNumber]);
-
-  useEffect(() => {
-    setSearchParams({ page: pageNumber.toString() });
+    if (newParams.has("page")) {
+      newParams.set("page", pageNumber.toString());
+      setSearchParams(newParams);
+    }
   }, [pageNumber, setSearchParams]);
 
   function handlePage(next: boolean): void;
