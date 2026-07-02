@@ -61,24 +61,6 @@ export const FormModal = ({
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium">User ID</label>
-
-            <input
-              type="number"
-              min={1}
-              max={10}
-              value={formField.userId}
-              onChange={(e) =>
-                setFormField((prev) => ({
-                  ...prev,
-                  userId: Number(e.target.value),
-                }))
-              }
-              className="w-full rounded-lg border border-gray-300 px-3 py-2"
-            />
-          </div>
-
-          <div>
             <label className="mb-1 block text-sm font-medium">Title</label>
 
             <input
