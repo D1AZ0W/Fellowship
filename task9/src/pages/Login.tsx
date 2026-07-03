@@ -1,7 +1,9 @@
+import { LoginCard } from "#/components/LoginCard";
+
 export const Login = () => {
   return (
-    <div>
-      <h1>Hello</h1>
+    <div className="flex justify-center mt-5">
+      <LoginCard />
     </div>
-  )
-}
+  );
+};

@@ -7,7 +7,7 @@ type RatingProps = {
 
 export const RatingHandler = ({ rate, count }: RatingProps) => {
   return (
-    <div className="flex items-center gap-1 text-sm">
+    <div className="flex items-center gap-1 text-sm ">
       <div className="flex text-yellow-500">
         {Array.from({ length: 5 }).map((_, index) => {
           const star = index + 1;

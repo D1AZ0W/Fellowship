@@ -19,14 +19,15 @@ type ProductCardProps = {
 export function ProductCard(prop: ProductCardProps) {
   const product = prop.product;
   return (
-    <Card className="relative mx-auto w-full max-w-sm pt-0">
+    <Card className="relative mx-auto w-full max-w-sm pt-0 max-h-120 h-full">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
       <img
         src={product.image}
         alt={product.title}
-        className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
+
+        className="relative z-20 aspect-video w-full object-cover brightness-60 dark:brightness-40"
       />
-      <CardHeader className="flex grow flex-col justify-center items-center align-text-bottom">
+      <CardHeader className="flex grow flex-col justify-center items-center line-clamp-3 ">
         <CardTitle>{product.title}</CardTitle>
       </CardHeader>
       <CardAction className="flex px-3">
