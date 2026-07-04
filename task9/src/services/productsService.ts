@@ -1,9 +1,5 @@
 import type { Product } from "#/types/productType";
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "https://fakestoreapi.com",
-});
+import { api } from "./api";
 
 export const fetchProducts = async () => {
   try {
