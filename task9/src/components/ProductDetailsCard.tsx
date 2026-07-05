@@ -1,6 +1,5 @@
 import type { Product } from "#/types/productType";
 import { RatingHandler } from "./RatingHandler";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,28 +35,21 @@ export const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
               count={product.rating.count}
             />
           </div>
-
           <Separator />
-
           <div>
             <h2 className="text-4xl font-bold text-primary">
-              ${product.price}
+              ${product.price}/-
             </h2>
           </div>
-
           <Separator />
-
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Description</h3>
-
             <p className="leading-7 text-muted-foreground">
               {product.description}
             </p>
           </div>
-
           <div className="flex flex-col gap-3 pt-4 sm:flex-row">
             <Button className="flex-1">Add to Cart</Button>
-
             <Button variant="secondary" className="flex-1">
               Buy Now
             </Button>
