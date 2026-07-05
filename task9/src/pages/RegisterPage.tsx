@@ -1,9 +1,9 @@
-import { LoginCard } from "#/components/LoginCard";
+import { RegisterCard } from "#/components/RegisterCard";
 
 export const RegisterPage = () => {
   return (
     <div className="flex justify-center mt-5">
-      <LoginCard />
+      <RegisterCard />
     </div>
   );
 };

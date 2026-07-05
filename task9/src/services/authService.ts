@@ -10,6 +10,11 @@ type LoginResponse = {
 export const login = async (
   credentials: LoginRequest,
 ): Promise<LoginResponse> => {
-  const res = await api.post("/auth/login", credentials);
+  const res = await api.post<LoginResponse>("/auth/login", credentials);
+  return res.data;
+};
+
+export const register = async (registerField: User): Promise<LoginResponse> => {
+  const res = await api.post("/users", registerField);
   return res.data;
 };
