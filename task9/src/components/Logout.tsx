@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { redirect } from "@tanstack/react-router";
 import { useAuth } from "#/hooks/useAuth";
 import {
   AlertDialog,
@@ -14,17 +14,16 @@ import {
 import { toast } from "react-toastify";
 
 export function Logout() {
-  const navigate = useNavigate();
   const auth = useAuth();
 
   const handleLogout = () => {
     auth.logout();
     toast.success("Logged out successfully");
-    navigate({ to: "/login" });
+    redirect({ to: "/login" });
   };
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="text-primary underline-offset-4 hover:underline text-sm">
+      <AlertDialogTrigger className="text-primary underline-offset-4 hover:underline text-smx">
         Logout
       </AlertDialogTrigger>
       <AlertDialogContent>
