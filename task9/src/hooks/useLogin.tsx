@@ -12,8 +12,5 @@ export const useLogin = () => {
       auth.login(data.token);
       navigate({ to: "/products" });
     },
-    onError: (error) => {
-      console.error(error);
-    },
   });
 };

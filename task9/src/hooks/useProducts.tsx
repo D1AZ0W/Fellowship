@@ -4,12 +4,12 @@ import { fetchProducts } from "#/services/productsService";
 export const useProducts = () => {
   const {
     data: products,
-    isLoading,
+    isPending,
     isError,
     error,
   } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
-  return { products, isLoading, isError, error };
+  return { products, isPending, isError, error };
 };

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "@tanstack/react-router";
 import { useRegister } from "#/hooks/useRegister";
+import { AlertMessage } from "./AlertMessage";
 
 export function RegisterCard() {
   const navigate = useNavigate();
@@ -64,6 +65,13 @@ export function RegisterCard() {
 
   return (
     <Card className="w-full max-w-md">
+      {registerMutation.isError && (
+        <AlertMessage
+          title="Error Occured"
+          variant="destructive"
+          message={registerMutation.error.message}
+        />
+      )}
       <CardHeader>
         <CardTitle>Create your account</CardTitle>
 

@@ -10,8 +10,5 @@ export const useRegister = () => {
       console.log("Successful login");
       navigate({ to: "/login" });
     },
-    onError: (error) => {
-      console.error(error);
-    },
   });
 };

@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin } from "#/hooks/useLogin";
 import { useNavigate } from "@tanstack/react-router";
+import { AlertMessage } from "./AlertMessage";
 
 export function LoginCard() {
   const navigate = useNavigate();
@@ -39,6 +40,13 @@ export function LoginCard() {
 
   return (
     <Card className="w-full max-w-sm">
+      {loginMutation.isError && (
+        <AlertMessage
+          title="Error Occured"
+          variant="destructive"
+          message={loginMutation.error.message}
+        />
+      )}
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
