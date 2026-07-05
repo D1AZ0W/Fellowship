@@ -6,9 +6,9 @@ export const useRegister = () => {
   const navigate = useNavigate();
   return useMutation({
     mutationFn: register,
-    onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      navigate({ to: "/products" });
+    onSuccess: () => {
+      console.log("Successful login");
+      navigate({ to: "/login" });
     },
     onError: (error) => {
       console.error(error);
