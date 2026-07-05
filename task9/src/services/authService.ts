@@ -1,4 +1,4 @@
-import type { User } from "#/types/user";
+import type { User } from "#/types/userType";
 import { api } from "./api";
 
 type LoginRequest = Pick<User, "username" | "password">;

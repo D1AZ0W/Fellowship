@@ -2,9 +2,12 @@ import { useAuth } from "#/hooks/useAuth";
 import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { Logout } from "./Logout";
+import { IoCart } from "react-icons/io5";
+import { useCart } from "#/hooks/useCart";
 
 export const NavBar = () => {
   const auth = useAuth();
+  const cart = useCart();
 
   return (
     <nav className="bg-sidebar-primary-foreground px-4 py-4 text-white">
@@ -55,7 +58,9 @@ export const NavBar = () => {
                 activeOptions={{ exact: true }}
                 className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
               >
-                <Button variant="link">Cart</Button>
+                <Button variant="link">
+                  <IoCart /> {cart.items.length}
+                </Button>
               </Link>
 
               <Logout />

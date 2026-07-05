@@ -11,7 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 
 export function Logout() {
@@ -25,8 +24,8 @@ export function Logout() {
   };
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
-        <Button variant="link">Logout</Button>
+      <AlertDialogTrigger className="text-primary underline-offset-4 hover:underline text-sm">
+        Logout
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

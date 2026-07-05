@@ -4,6 +4,7 @@ import { routeTree } from "./routeTree.gen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
+import { CartProvider } from "./context/CartContext";
 
 const router = createRouter({
   routeTree,
@@ -25,8 +26,14 @@ if (!rootElement.innerHTML) {
   root.render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RouterProvider router={router} />
-        <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+        <CartProvider>
+          <RouterProvider router={router} />
+          <ToastContainer
+            position="top-left"
+            autoClose={2000}
+            theme="colored"
+          />
+        </CartProvider>
       </AuthProvider>
     </QueryClientProvider>,
   );

@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "#/hooks/useCart";
 
 type ProductDetailsCardProps = {
   product: Product;
 };
 
 export const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
+  const cart = useCart();
   return (
     <Card className="mx-auto w-full max-w-6xl overflow-hidden p-6">
       <div className="grid gap-10 md:grid-cols-2">
@@ -49,7 +51,9 @@ export const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
             </p>
           </div>
           <div className="flex flex-col gap-3 pt-4 sm:flex-row">
-            <Button className="flex-1">Add to Cart</Button>
+            <Button className="flex-1" onClick={() => cart.addToCart(product)}>
+              Add to Cart
+            </Button>
             <Button variant="secondary" className="flex-1">
               Buy Now
             </Button>

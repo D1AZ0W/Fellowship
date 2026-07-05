@@ -1,4 +1,4 @@
-import type { User } from "#/types/user";
+import type { User } from "#/types/userType";
 import type { RegisterFormData } from "#/schemas/registerSchema";
 import { registerSchema } from "#/schemas/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
