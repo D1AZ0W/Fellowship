@@ -1,11 +1,11 @@
 import { ProductSkeleton } from "#/components/LoadingSkeleton";
 import { ProductCard } from "#/components/ProductCard";
 import { Link } from "@tanstack/react-router";
-import { useProducts } from "#/hooks/useProducts";
+import { useFetchProduct } from "#/hooks/useProducts";
 import { AlertMessage } from "#/components/AlertMessage";
 
 export const Products = () => {
-  const { products, isPending, isError, error } = useProducts();
+  const { products, isPending, isError, error } = useFetchProduct();
 
   if (isPending) {
     return <ProductSkeleton />;

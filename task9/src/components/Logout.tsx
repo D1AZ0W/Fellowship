@@ -12,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 
 export function Logout() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export function Logout() {
 
   const handleLogout = () => {
     auth.logout();
+    toast.success("Logged out successfully");
     navigate({ to: "/login" });
   };
   return (

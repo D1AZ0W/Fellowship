@@ -64,146 +64,159 @@ export function RegisterCard() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      {registerMutation.isError && (
-        <AlertMessage
-          title="Error Occured"
-          variant="destructive"
-          message={registerMutation.error.message}
-        />
-      )}
-      <CardHeader>
-        <CardTitle>Create your account</CardTitle>
+    <>
+      <Card className="w-full max-w-md">
+        {registerMutation.isError && (
+          <AlertMessage
+            title="Error Occured"
+            variant="destructive"
+            message={registerMutation.error.message}
+          />
+        )}
+        <CardHeader>
+          <CardTitle>Create your account</CardTitle>
 
-        <CardDescription>
-          Fill in the details below to create an account.
-        </CardDescription>
+          <CardDescription>
+            Fill in the details below to create an account.
+          </CardDescription>
 
-        <CardAction>
-          <Button variant="link" onClick={() => navigate({ to: "/login" })}>
-            Login
-          </Button>
-        </CardAction>
-      </CardHeader>
+          <CardAction>
+            <Button variant="link" onClick={() => navigate({ to: "/login" })}>
+              Login
+            </Button>
+          </CardAction>
+        </CardHeader>
 
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              placeholder="Enter username"
-              {...register("username")}
-            />
-            {errors.username && (
-              <p className="text-sm text-red-500">{errors.username.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="firstname">First Name</Label>
-            <Input
-              id="firstname"
-              placeholder="First name"
-              {...register("firstname")}
-            />
-            {errors.firstname && (
-              <p className="text-sm text-red-500">{errors.firstname.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="lastname">Last Name</Label>
-            <Input
-              id="lastname"
-              placeholder="Last name"
-              {...register("lastname")}
-            />
-            {errors.lastname && (
-              <p className="text-sm text-red-500">{errors.lastname.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              placeholder="Phone number"
-              {...register("phone")}
-            />
-            {errors.phone && (
-              <p className="text-sm text-red-500">{errors.phone.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="street">Street</Label>
-            <Input id="street" placeholder="Street" {...register("street")} />
-            {errors.street && (
-              <p className="text-sm text-red-500">{errors.street.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="city">City</Label>
-            <Input id="city" placeholder="City" {...register("city")} />
-            {errors.city && (
-              <p className="text-sm text-red-500">{errors.city.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm password"
-              {...register("confirmPassword")}
-            />
-            {errors.confirmPassword && (
-              <p className="text-sm text-red-500">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={registerMutation.isPending}
+        <CardContent>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
           >
-            {registerMutation.isPending
-              ? "Creating Account..."
-              : "Create Account"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                placeholder="Enter username"
+                {...register("username")}
+              />
+              {errors.username && (
+                <p className="text-sm text-red-500">
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="firstname">First Name</Label>
+              <Input
+                id="firstname"
+                placeholder="First name"
+                {...register("firstname")}
+              />
+              {errors.firstname && (
+                <p className="text-sm text-red-500">
+                  {errors.firstname.message}
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="lastname">Last Name</Label>
+              <Input
+                id="lastname"
+                placeholder="Last name"
+                {...register("lastname")}
+              />
+              {errors.lastname && (
+                <p className="text-sm text-red-500">
+                  {errors.lastname.message}
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                placeholder="Phone number"
+                {...register("phone")}
+              />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.phone.message}</p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="street">Street</Label>
+              <Input id="street" placeholder="Street" {...register("street")} />
+              {errors.street && (
+                <p className="text-sm text-red-500">{errors.street.message}</p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="city">City</Label>
+              <Input id="city" placeholder="City" {...register("city")} />
+              {errors.city && (
+                <p className="text-sm text-red-500">{errors.city.message}</p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm password"
+                {...register("confirmPassword")}
+              />
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={registerMutation.isPending}
+            >
+              {registerMutation.isPending
+                ? "Creating Account..."
+                : "Create Account"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </>
   );
 }

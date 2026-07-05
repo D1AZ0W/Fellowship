@@ -3,6 +3,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const router = createRouter({
   routeTree,
@@ -25,6 +26,7 @@ if (!rootElement.innerHTML) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouterProvider router={router} />
+        <ToastContainer position="top-right" autoClose={3000} theme="colored" />
       </AuthProvider>
     </QueryClientProvider>,
   );
