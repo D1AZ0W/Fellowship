@@ -10,7 +10,7 @@ export const ProductDetails = () => {
     Number(id),
   );
 
-  if (isPending) return <ProductSkeleton />;
+  if (isPending) return <ProductSkeleton count={1} />;
 
   if (isError) {
     return <AlertMessage variant="destructive" title="Error" message={error} />;

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchIndvProducts, fetchProducts } from "#/services/productsService";
+import type { Product } from "#/types/productType";
 
 export const useFetchProduct = () => {
   const {
@@ -25,4 +26,13 @@ export const useFetchIndvProduct = (id: number) => {
     queryFn: async () => fetchIndvProducts(id),
   });
   return { product, isPending, isError, error };
+};
+
+export const fetchLimited = async (pageParam: number): Promise<Product[]> => {
+  const products = await fetchProducts();
+  const start = ((pageParam - 1) * 8) % products.length;
+  return Array.from(
+    { length: 8 },
+    (_, i) => products[(start + i) % products.length],
+  );
 };
