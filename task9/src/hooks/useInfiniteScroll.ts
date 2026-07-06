@@ -12,7 +12,7 @@ export const useInfiniteScroll = () => {
     isError,
     isPending,
   } = useInfiniteQuery({
-    queryKey: ["products"],
+    queryKey: ["products-infinite"],
     queryFn: ({ pageParam }) => fetchLimited(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {

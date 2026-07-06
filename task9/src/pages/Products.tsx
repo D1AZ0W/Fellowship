@@ -1,59 +1,49 @@
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
-import { AlertMessage } from "#/components/AlertMessage";
-import { ProductSkeleton } from "#/components/LoadingSkeleton";
-import { ProductCard } from "#/components/ProductCard";
-import { useInfiniteScroll } from "#/hooks/useInfiniteScroll";
-
-import { Link } from "@tanstack/react-router";
+import { Filters } from "#/components/Filter";
+import { Route } from "#/routes/products";
+import { useNavigate } from "@tanstack/react-router";
+import { FilteredProducts } from "#/components/FilteredProducts";
+import { InfiniteProducts } from "#/components/InfiniteProducts";
 
 export const Products = () => {
-  const {
-    data,
-    isPending,
-    error,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useInfiniteScroll();
+  const { search, category } = Route.useSearch();
 
-  const { ref, inView } = useInView({
-    threshold: 0,
-  });
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  if (isPending) {
-    return <ProductSkeleton count={8} />;
-  }
-
-  if (error) {
-    return (
-      <AlertMessage
-        variant="destructive"
-        title="Error Occurred"
-        message={error}
-      />
-    );
-  }
+  const isFiltering = search.trim() !== "" || category !== "all";
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-6 py-6 px-20 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {data.map((product) => (
-          <Link to="/products/$id" params={{ id: product.id.toString() }}>
-            <ProductCard product={product} />
-          </Link>
-        ))}
+      <div className="px-20 py-6">
+        <Filters
+          search={search}
+          category={category}
+          onSearchChange={(value) =>
+            navigate({
+              to: "/products",
+              search: (prev) => ({
+                ...prev,
+                search: value,
+              }),
+              replace: true,
+            })
+          }
+          onCategoryChange={(value) =>
+            navigate({
+              to: "/products",
+              search: (prev) => ({
+                ...prev,
+                category: value,
+              }),
+            })
+          }
+        />
       </div>
 
-      <div ref={ref} className="h-10 flex justify-center">
-        {isFetchingNextPage && <ProductSkeleton count={8} />}
-      </div>
+      {isFiltering ? (
+        <FilteredProducts search={search} category={category} />
+      ) : (
+        <InfiniteProducts />
+      )}
     </div>
   );
 };

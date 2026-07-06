@@ -1,4 +1,4 @@
-import { redirect } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "#/hooks/useAuth";
 import {
   AlertDialog,
@@ -15,11 +15,12 @@ import { toast } from "react-toastify";
 
 export function Logout() {
   const auth = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     auth.logout();
     toast.success("Logged out successfully");
-    redirect({ to: "/login" });
+    navigate({ to: "/login" });
   };
   return (
     <AlertDialog>

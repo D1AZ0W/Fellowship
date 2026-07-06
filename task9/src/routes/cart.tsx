@@ -6,7 +6,7 @@ export const Route = createFileRoute("/cart")({
   beforeLoad: () => {
     if (!isAuthenticated()) {
       throw redirect({
-        to: "/login",
+        to: "/",
       });
     }
   },
