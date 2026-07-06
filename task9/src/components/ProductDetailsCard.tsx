@@ -1,21 +1,16 @@
 import type { Product } from "#/types/productType";
 import { RatingHandler } from "./RatingHandler";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
-import { useCart } from "#/hooks/useCart";
-import { isAuthenticated } from "#/utils/auth";
-import { useNavigate } from "@tanstack/react-router";
+import { AddToCart } from "./AddToCart";
 
 type ProductDetailsCardProps = {
   product: Product;
 };
 
 export const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
-  const cart = useCart();
-  const naviagte = useNavigate();
   return (
     <Card className="mx-auto w-full max-w-6xl overflow-hidden p-6">
       <div className="grid gap-10 md:grid-cols-2">
@@ -54,19 +49,7 @@ export const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
             </p>
           </div>
           <div className="flex flex-col gap-3 pt-4 sm:flex-row">
-            <Button
-              className="flex-1"
-              onClick={() =>
-                isAuthenticated()
-                  ? cart.addToCart(product)
-                  : naviagte({ to: "/login" })
-              }
-            >
-              Add to Cart
-            </Button>
-            <Button variant="secondary" className="flex-1">
-              Buy Now
-            </Button>
+            <AddToCart product={product} />
           </div>
         </CardContent>
       </div>

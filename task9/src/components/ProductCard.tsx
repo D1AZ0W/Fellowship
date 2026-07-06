@@ -8,9 +8,11 @@ import {
   CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AddToCart } from "./AddToCart";
 
 type ProductCardProps = {
   product: Product;
@@ -51,6 +53,9 @@ export function ProductCard({ product }: ProductCardProps) {
             count={product.rating.count}
           />
         </div>
+        <CardFooter onClick={(e) => e.preventDefault()}>
+          <AddToCart product={product} />
+        </CardFooter>
       </CardContent>
     </Card>
   );

@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Logout } from "./Logout";
 import { IoCart } from "react-icons/io5";
 import { useCart } from "#/hooks/useCart";
+import { quantity } from "#/utils/quantity";
 
 export const NavBar = () => {
   const auth = useAuth();
@@ -59,7 +60,7 @@ export const NavBar = () => {
                 className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
               >
                 <Button variant="link">
-                  <IoCart /> {cart.items.length}
+                  <IoCart /> {quantity(cart.items)}
                 </Button>
               </Link>
 
