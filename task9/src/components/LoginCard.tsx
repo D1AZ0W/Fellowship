@@ -14,9 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin } from "#/hooks/useLogin";
-import { redirect } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 export function LoginCard() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -43,7 +44,7 @@ export function LoginCard() {
           Enter your username below to login to your account.
         </CardDescription>
         <CardAction>
-          <Button variant="link" onClick={() => redirect({ to: "/register" })}>
+          <Button variant="link" onClick={() => navigate({ to: "/register" })}>
             Sign Up
           </Button>
         </CardAction>

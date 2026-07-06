@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { redirect } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useRegister } from "#/hooks/useRegister";
 import { AlertMessage } from "./AlertMessage";
 
 export function RegisterCard() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -79,7 +80,7 @@ export function RegisterCard() {
           </CardDescription>
 
           <CardAction>
-            <Button variant="link" onClick={() => redirect({ to: "/login" })}>
+            <Button variant="link" onClick={() => navigate({ to: "/login" })}>
               Login
             </Button>
           </CardAction>
