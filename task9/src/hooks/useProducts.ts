@@ -25,9 +25,7 @@ export const useFetchIndvProduct = (id: number) => {
 
 export const fetchLimited = async (pageParam: number): Promise<Product[]> => {
   const products = await fetchProducts();
-  const start = ((pageParam - 1) * 8) % products.length;
-  return Array.from(
-    { length: 8 },
-    (_, i) => products[(start + i) % products.length],
-  );
+  const start = (pageParam - 1) * 5;
+  const end = pageParam * 5;
+  return products.slice(start, end);
 };

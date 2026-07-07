@@ -16,7 +16,7 @@ export const useInfiniteScroll = () => {
     queryFn: ({ pageParam }) => fetchLimited(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length === 8 ? allPages.length + 1 : undefined;
+      return lastPage.length <= 5 ? allPages.length + 1 : undefined;
     },
   });
   return {

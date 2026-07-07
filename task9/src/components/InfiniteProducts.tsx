@@ -17,7 +17,7 @@ export const InfiniteProducts = () => {
   } = useInfiniteScroll();
 
   const { ref, inView } = useInView({
-    threshold: 0,
+    threshold: 0.1,
   });
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const InfiniteProducts = () => {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isPending) {
-    return <ProductSkeleton count={8} />;
+    return <ProductSkeleton count={5} />;
   }
 
   if (error) {
