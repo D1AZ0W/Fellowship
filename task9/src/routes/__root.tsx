@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "../styles.css";
 import { NavBar } from "#/components/NavBar";
+import { Footer } from "#/components/Footer";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -12,9 +13,12 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <NavBar />
-      <Outlet />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
       <TanStackDevtools
         config={{
           position: "bottom-right",
@@ -24,6 +28,6 @@ function RootComponent() {
           { name: "TanStack Query", render: <ReactQueryDevtools /> },
         ]}
       />
-    </>
+    </div>
   );
 }
