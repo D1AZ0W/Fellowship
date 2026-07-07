@@ -25,7 +25,7 @@ export const Filters = ({ handleSearch }: FilterProps) => {
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [search, filter]);
+  }, [search, filter, handleSearch, newParams, setSearchParams]);
 
   return (
     <div className="flex flex-wrap gap-5 text-sm">

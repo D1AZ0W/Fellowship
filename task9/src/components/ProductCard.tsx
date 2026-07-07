@@ -28,19 +28,17 @@ export function ProductCard({ product }: ProductCardProps) {
           className="h-full w-full object-contain p-6"
         />
       </AspectRatio>
-      <CardHeader className="space-y-3">
-        <CardAction className="flex justify-between">
-          <Badge variant="secondary" className="capitalize">
-            {product.category}
-          </Badge>
-
-          <Badge>${product.price}</Badge>
-        </CardAction>
-
+      <CardHeader className="space-y-3 grid grid-cols-1">
         <CardTitle className="line-clamp-2 min-h-14 text-center text-lg">
           {product.title}
         </CardTitle>
+        <Badge variant="secondary" className="capitalize">
+          {product.category}
+        </Badge>
       </CardHeader>
+      <CardTitle className="flex px-5 ">
+        <Badge className="text-xl px-3 py-4">${product.price}</Badge>
+      </CardTitle>
 
       <CardContent className="flex flex-1 flex-col gap-4">
         <CardDescription className="line-clamp-3">

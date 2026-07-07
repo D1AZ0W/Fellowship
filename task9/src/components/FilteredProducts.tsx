@@ -4,7 +4,6 @@ import { ProductCard } from "./ProductCard";
 import { ProductSkeleton } from "./LoadingSkeleton";
 import { useFetchProduct } from "#/hooks/useProducts";
 import { useFetchCategory } from "#/hooks/useFetchCategory";
-import { useMemo } from "react";
 
 type FilteredProductsProps = {
   search: string;
@@ -20,14 +19,10 @@ export const FilteredProducts = ({
 
   const { data, isPending, isError, error } =
     category === "all" ? allProductsResult : categoryResult;
-  console.dir(data);
-  const filteredProducts = useMemo(() => {
-    if (!data) return [];
-    const term = search.trim().toLowerCase();
-    return term === ""
-      ? data
-      : data.filter((product) => product.title.toLowerCase().includes(term));
-  }, [data, search]);
+
+  const filteredProducts = (data ?? []).filter((product) =>
+    product.title.toLowerCase().includes(search.trim().toLowerCase()),
+  );
 
   if (isPending) {
     return <ProductSkeleton count={8} />;
