@@ -1,7 +1,7 @@
 import { useCart } from "#/hooks/useCart";
-import { CartItem } from "#/components/CartItem";
-import { CartSummary } from "#/components/CartSummary";
-import { AlertMessage } from "#/components/AlertMessage";
+import { CartItem } from "#/components/cartComponents/CartItem";
+import { CartSummary } from "#/components/cartComponents/CartSummary";
+import { AlertMessage } from "#/components/sharedComponents/AlertMessage";
 
 export const Cart = () => {
   const { items } = useCart();

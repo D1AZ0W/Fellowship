@@ -1,4 +1,4 @@
-import { RegisterCard } from "#/components/RegisterCard";
+import { RegisterCard } from "#/components/authComponents/RegisterCard";
 
 export const RegisterPage = () => {
   return (

@@ -2,7 +2,7 @@ import { useCart } from "#/hooks/useCart";
 import type { Product } from "#/types/productType";
 import { isAuthenticated } from "#/utils/auth";
 import { useNavigate } from "@tanstack/react-router";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 type AddToCartProps = {
   product: Product;

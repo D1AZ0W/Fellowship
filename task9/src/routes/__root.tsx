@@ -4,8 +4,8 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "../styles.css";
-import { NavBar } from "#/components/NavBar";
-import { Footer } from "#/components/Footer";
+import { NavBar } from "#/components/sharedComponents/NavBar";
+import { Footer } from "#/components/sharedComponents/Footer";
 
 export const Route = createRootRoute({
   component: RootComponent,

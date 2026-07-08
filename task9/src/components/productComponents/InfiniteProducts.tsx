@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useInView } from "react-intersection-observer";
-import { AlertMessage } from "./AlertMessage";
+import { AlertMessage } from "../sharedComponents/AlertMessage";
 import { ProductCard } from "./ProductCard";
 import { ProductSkeleton } from "./LoadingSkeleton";
 import { useInfiniteScroll } from "#/hooks/useInfiniteScroll";

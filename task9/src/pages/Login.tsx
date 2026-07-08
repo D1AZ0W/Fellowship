@@ -1,5 +1,5 @@
-import { AlertMessage } from "#/components/AlertMessage";
-import { LoginCard } from "#/components/LoginCard";
+import { AlertMessage } from "#/components/sharedComponents/AlertMessage";
+import { LoginCard } from "#/components/authComponents/LoginCard";
 
 export const Login = () => {
   const token = localStorage.getItem("token");

@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "@tanstack/react-router";
 import { useRegister } from "#/hooks/useRegister";
-import { AlertMessage } from "./AlertMessage";
+import { AlertMessage } from "../sharedComponents/AlertMessage";
 
 export function RegisterCard() {
   const navigate = useNavigate();

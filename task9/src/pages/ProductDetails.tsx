@@ -1,6 +1,6 @@
-import { AlertMessage } from "#/components/AlertMessage";
-import { ProductSkeleton } from "#/components/LoadingSkeleton";
-import { ProductDetailsCard } from "#/components/ProductDetailsCard";
+import { AlertMessage } from "#/components/sharedComponents/AlertMessage";
+import { ProductSkeleton } from "#/components/productComponents/LoadingSkeleton";
+import { ProductDetailsCard } from "#/components/productComponents/ProductDetailsCard";
 import { useFetchIndvProduct } from "#/hooks/useProducts";
 import { Route } from "#/routes/products/$id";
 

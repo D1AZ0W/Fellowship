@@ -1,8 +1,8 @@
-import { Filters } from "#/components/Filter";
+import { Filters } from "#/components/productComponents/Filter";
 import { Route } from "#/routes/products";
 import { useNavigate } from "@tanstack/react-router";
-import { FilteredProducts } from "#/components/FilteredProducts";
-import { InfiniteProducts } from "#/components/InfiniteProducts";
+import { FilteredProducts } from "#/components/productComponents/FilteredProducts";
+import { InfiniteProducts } from "#/components/productComponents/InfiniteProducts";
 
 export const Products = () => {
   const { search, category } = Route.useSearch();

@@ -1,7 +1,7 @@
 import { useAuth } from "#/hooks/useAuth";
 import { Link } from "@tanstack/react-router";
-import { Button } from "./ui/button";
-import { Logout } from "./Logout";
+import { Button } from "../ui/button";
+import { Logout } from "../authComponents/Logout";
 import { IoCart } from "react-icons/io5";
 import { useCart } from "#/hooks/useCart";
 

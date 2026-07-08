@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useCategory } from "#/hooks/useCategory";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import { SearchIcon } from "lucide-react";
 
 type FiltersProps = {

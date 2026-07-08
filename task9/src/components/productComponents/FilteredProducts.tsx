@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { AlertMessage } from "./AlertMessage";
+import { AlertMessage } from "../sharedComponents/AlertMessage";
 import { ProductCard } from "./ProductCard";
 import { ProductSkeleton } from "./LoadingSkeleton";
 import { useFetchProduct } from "#/hooks/useProducts";
