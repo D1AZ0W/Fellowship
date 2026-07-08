@@ -6,7 +6,7 @@ export const registerSchema = z
       .string()
       .trim()
       .min(4, "Username must be at least 4 characters"),
-    email: z.string().email("Please enter a valid email address"),
+    email: z.email("Please enter a valid email address"),
     password: z.string().min(6, "Password should be at least 6 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
     firstname: z.string().min(1, "First name is required"),
