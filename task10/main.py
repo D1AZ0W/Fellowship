@@ -22,24 +22,25 @@ def main():
     my_inventory = i.load_inventory("inventory.json")
     print(f"Loaded Inventory : {my_inventory}")
 
-    # # Process Loot
-    # print("\n--- Processing Incomming Loot ---")
-    # incomming_loot = [
-    #     "gold coin",
-    #     "   dagger   ",
-    #     "GOLD COIN",
-    #     "",
-    #     None,
-    #     "ruby",
-    #     "iron ore",
-    #     "iron ore",
-    #     "iron ore",
-    #     "iron ore",
-    # ]
+    # Process Loot
+    print("\n--- Processing Incomming Loot ---")
+    incomming_loot = [
+        "gold coin",
+        "   dagger   ",
+        "GOLD COIN",
+        "",
+        None,
+        "ruby",
+        "iron ore",
+        "iron ore",
+        "iron ore",
+        "iron ore",
+    ]
 
-    # my_inventory, items_dropped = add_to_inventory(
-    #     my_inventory, incomming_loot
-    # )
+    my_inventory = i.add_to_inventory(my_inventory, incomming_loot)
+
+    print(f"Loaded Inventory : {my_inventory}")
+    i.generate_report(my_inventory)
 
     # if items_dropped:
     #     logger.warning(f"Max weight reached! Left behind: {items_dropped}")
