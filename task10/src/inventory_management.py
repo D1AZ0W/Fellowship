@@ -17,24 +17,24 @@ MAX_WEIGHT = 50.0
 
 def load_inventory(fileName):
     try:
-        with open(path_inventory) as f:
+        with open(f"src/{fileName}") as f:
             inventory = json.loads(f.read())
             return inventory
     except json.decoder.JSONDecodeError:
         print("Error: Inventory decode error")
-        return {}
+        return False
     except FileNotFoundError:
         print("Error: Couldnt find file")
-        return {}
+        return False
 
 
 def add_to_inventory(inventory, new_items):
     try:
-        if not (isinstance(new_items, list) or isinstance(new_items, list)):
+        if not (isinstance(new_items, list) or isinstance(new_items, dict)):
             raise ValueError
         items_dropped = []
         for item in new_items:
-            if item == "" or isinstance(item, int or float) or item is None:
+            if item == "" or isinstance(item, (int, float)) or item is None:
                 continue
             if calc_current_weight(inventory) >= 50.0:
                 items_dropped.append(item)
@@ -55,9 +55,9 @@ def add_to_inventory(inventory, new_items):
 
 def border(func):
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args):
         print("\n----------------------------------------------------------")
-        result = func(*args, **kwargs)
+        result = func(*args)
         print("\n----------------------------------------------------------")
         return result
 
@@ -76,7 +76,7 @@ def display_inventory(inventory):
 
 def save_inventory(inventory, fileName):
     try:
-        with open(path_inventory, "w") as f:
+        with open(f"src/{fileName}", "w") as f:
             f.write(json.dumps(inventory))
         print("Saved to inventory")
     except FileNotFoundError:
