@@ -36,10 +36,13 @@ def add_to_inventory(inventory, new_items):
         for item in new_items:
             if item == "" or isinstance(item, (int, float)) or item is None:
                 continue
-            if calc_current_weight(inventory) >= 50.0:
-                items_dropped.append(item)
 
             current = item.lower().strip()
+            new_weight = calc_current_weight(inventory) + weight_calc(current)
+            if new_weight >= MAX_WEIGHT:
+                items_dropped.append(current)
+                continue
+
             current_quantity = inventory.get(current)
             if current_quantity is not None:
                 quantity = current_quantity + 1
@@ -96,6 +99,6 @@ def weight_calc(item):
 
 def calc_current_weight(inventory):
     total_weight = 0.0
-    for item in inventory:
-        total_weight += weight_calc(item)
+    for item, quantity in inventory.items():
+        total_weight += weight_calc(item) * quantity
     return total_weight
