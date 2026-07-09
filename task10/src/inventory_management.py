@@ -41,9 +41,9 @@ def add_to_inventory(inventory, new_items):
 def border(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        print("\n--------------------------")
+        print("\n----------------------------------------------------------")
         result = func(*args, **kwargs)
-        print("\n--------------------------")
+        print("\n----------------------------------------------------------")
         return result
 
     return wrapper
@@ -53,7 +53,7 @@ def border(func):
 def generate_report(inventory):
     c = 0
     for item in inventory:
-        print(f"| {item} x{inventory[item]} |", end="")
+        print(f"| {item:<10} x{inventory[item]:>3} |", end="")
         c += 1
         if c == 3:
             print()
