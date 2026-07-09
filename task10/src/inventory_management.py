@@ -59,9 +59,8 @@ def add_to_inventory(inventory, new_items):
 def border(func):
     @functools.wraps(func)
     def wrapper(*args):
-        print("\n----------------------------------------------------------")
+        print("\n-------------------------------------------------------")
         result = func(*args)
-        print("\n----------------------------------------------------------")
         return result
 
     return wrapper
@@ -71,10 +70,14 @@ def border(func):
 def display_inventory(inventory):
     c = 0
     for item in inventory:
-        print(f"| {item:<10} x{inventory[item]:>3} |", end="")
+        print(f"| {item:<10} x{inventory[item]:>3} ", end="")
         c += 1
         if c == 3:
-            print()
+            print("|")
+    print("\n-------------------------------------------------------")
+    print(
+        f"Total Inventory Weight = {calc_current_weight(inventory)} / 50.0 \n"
+    )
 
 
 def save_inventory(inventory, fileName):
