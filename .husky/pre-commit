@@ -1,1 +1,3 @@
-cd task9 && npm exec lint-staged
+uvx ruff check .
+uvx ruff format . --check
+echo "Check Successfull"
