@@ -1,5 +1,6 @@
 import functools
 import json
+from typing import TypeAlias
 
 path_inventory = "src/inventory.json"
 
@@ -15,24 +16,29 @@ WEIGHTS = {
 MAX_WEIGHT = 50.0
 
 
-def load_inventory(fileName):
+Inventory: TypeAlias = dict[str, int]
+
+
+def load_inventory(fileName: str) -> Inventory | None:
     try:
         with open(f"src/{fileName}") as f:
-            inventory = json.loads(f.read())
+            inventory: Inventory = json.loads(f.read())
             return inventory
     except json.decoder.JSONDecodeError:
         print("Error: Inventory decode error")
-        return False
+        return None
     except FileNotFoundError:
         print("Error: Couldnt find file")
-        return False
+        return None
 
 
-def add_to_inventory(inventory, new_items):
+def add_to_inventory(
+    inventory: Inventory, new_items: list[str] | dict[str, int]
+) -> tuple[Inventory, list[str]]:
     try:
         if not (isinstance(new_items, list) or isinstance(new_items, dict)):
             raise ValueError
-        items_dropped = []
+        items_dropped: list[str] = []
         for item in new_items:
             if item == "" or isinstance(item, (int, float)) or item is None:
                 continue
@@ -53,7 +59,7 @@ def add_to_inventory(inventory, new_items):
         return inventory, items_dropped
     except ValueError:
         print("Error: loot items should be in list or dictionary")
-        return inventory
+        return inventory, []
 
 
 def border(func):
@@ -67,7 +73,7 @@ def border(func):
 
 
 @border
-def display_inventory(inventory):
+def display_inventory(inventory: Inventory) -> None:
     c = 0
     for item in inventory:
         print(f"| {item:<10} x{inventory[item]:>3} ", end="")
@@ -76,11 +82,11 @@ def display_inventory(inventory):
             print("|")
     print("\n-------------------------------------------------------")
     print(
-        f"Total Inventory Weight = {calc_current_weight(inventory)} / 50.0 \n"
+        f"Total Inventory Weight = {calc_current_weight(inventory)} / {MAX_WEIGHT} \n"
     )
 
 
-def save_inventory(inventory, fileName):
+def save_inventory(inventory: Inventory, fileName: str) -> None:
     try:
         with open(f"src/{fileName}", "w") as f:
             f.write(json.dumps(inventory))
@@ -89,7 +95,7 @@ def save_inventory(inventory, fileName):
         print("Failed to save to inventory")
 
 
-def weight_calc(item):
+def weight_calc(item: str) -> float:
     try:
         if not isinstance(item, str):
             raise ValueError
@@ -100,7 +106,7 @@ def weight_calc(item):
         return 1
 
 
-def calc_current_weight(inventory):
+def calc_current_weight(inventory: Inventory) -> float:
     total_weight = 0.0
     for item, quantity in inventory.items():
         total_weight += weight_calc(item) * quantity

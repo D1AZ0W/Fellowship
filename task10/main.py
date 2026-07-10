@@ -10,11 +10,16 @@ def main():
     # Load Inventory
     print("\n--- Step 1: Loading Inventory ---")
     my_inventory = i.load_inventory("inventory.json")
-    print(f"Loaded Inventory : {my_inventory}")
+
+    if my_inventory is None:
+        logger.error("Failed to load inventory.")
+        return
+
+    print(f"Loaded Inventory: {my_inventory}")
 
     # Process Loot
-    print("\n--- Processing Incomming Loot ---")
-    incomming_loot = [
+    print("\n--- Processing Incoming Loot ---")
+    incoming_loot = [
         "gold coin",
         "   dagger   ",
         "GOLD COIN",
@@ -25,10 +30,11 @@ def main():
         "iron ore",
         "iron ore",
         "iron ore",
+        "enchanting rock",
     ]
 
     my_inventory, items_dropped = i.add_to_inventory(
-        my_inventory, incomming_loot
+        my_inventory, incoming_loot
     )
 
     if items_dropped:
@@ -38,8 +44,8 @@ def main():
     print("\n--- Visual Report ---")
     i.display_inventory(my_inventory)
 
-    # Save Inventory to a file
-    print("---Exporting Data ---")
+    # Save Inventory
+    print("--- Exporting Data ---")
     i.save_inventory(my_inventory, "inventory.json")
 
 
