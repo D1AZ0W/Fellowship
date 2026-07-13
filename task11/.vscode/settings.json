@@ -1,0 +1,10 @@
+// {
+//   "[sql]": {
+//     "editor.formatOnSave": true,
+//     "editor.defaultFormatter": "bradymholt.pgformatter",
+//     "editor.codeActionsOnSave": {
+//       "source.fixAll": "explicit",
+//       "source.organizeImports": "explicit"
+//     }
+//   }
+// }
