@@ -4,9 +4,21 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-class RegisterSerializer(serializers.Serializer):
+class RegisterSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(write_only=True, min_length=8)
 	confirm_password = serializers.CharField(write_only=True)
+
+	class Meta:
+		model = User
+		fields = [
+			'username',
+			'first_name',
+			'last_name',
+			'email',
+			'profile_picture',
+			'password',
+			'confirm_password',
+		]
 
 	def validate(self, attrs):
 		password = attrs.get('password')
