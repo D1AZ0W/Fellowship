@@ -1,0 +1,27 @@
+import { register } from '#/services/authService'
+import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
+import axios from 'axios'
+
+export const useRegister = () => {
+  const navigate = useNavigate()
+  return useMutation({
+    mutationFn: register,
+    onSuccess: () => {
+      toast.success('Sucessfully registered!!!')
+      navigate({ to: '/' })
+    },
+    onError: (error: Error) => {
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.errors.username[0] ?? 'Something went wrong'
+
+        const message2 =
+          error.response?.data?.errors.email[0] ?? 'Something went wrong'
+        toast.error(message2)
+        toast.error(message)
+      }
+    },
+  })
+}
