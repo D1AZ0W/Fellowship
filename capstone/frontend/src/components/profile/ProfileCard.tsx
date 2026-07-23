@@ -1,6 +1,6 @@
-import { useProfile } from '#/hooks/profileHook/useProfile'
+import { useProfile } from '#/hooks/profile/useProfile'
 
-import { AlertMessage } from '../sharedComponents/AlertMessage'
+import { AlertMessage } from '../shared/AlertMessage'
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'

@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useAuth } from '#/hooks/authHooks/useAuth'
+import { useAuth } from '#/hooks/auth/useAuth'
 import {
   AlertDialog,
   AlertDialogAction,

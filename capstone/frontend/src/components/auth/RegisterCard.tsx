@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useNavigate } from '@tanstack/react-router'
-import { useRegister } from '#/hooks/authHooks/useRegister'
+import { useRegister } from '#/hooks/auth/useRegister'
 
 export function RegisterCard() {
   const navigate = useNavigate()

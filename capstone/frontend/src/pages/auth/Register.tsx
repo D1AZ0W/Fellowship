@@ -1,4 +1,4 @@
-import { RegisterCard } from '#/components/authComponents/RegisterCard'
+import { RegisterCard } from '#/components/auth/RegisterCard'
 
 export const Register = () => {
   return (

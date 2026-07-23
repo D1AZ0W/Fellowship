@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { changePasswordSchema } from '#/schemas/changePasswordSchema'
 import type { ChangePasswordForm } from '#/schemas/changePasswordSchema'
-import { useChangePassword } from '#/hooks/profileHook/useChangePassword'
+import { useChangePassword } from '#/hooks/profile/useChangePassword'
 
 type Props = {
   open: boolean
