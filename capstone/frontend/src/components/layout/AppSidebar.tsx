@@ -45,7 +45,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link to="/">
+                <Link to="/dashboard">
                   <SidebarMenuButton>
                     <Home />
                     <span>Home</span>

@@ -2,7 +2,7 @@ import { useProfile } from '#/hooks/profile/useProfile'
 
 import { AlertMessage } from '../shared/AlertMessage'
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -35,14 +35,15 @@ export const ProfileCard = () => {
     <div className="mx-10 mt-8 px-5">
       <Card className=" max-w-screen w-full">
         <CardHeader className="items-center text-center">
-          <Avatar className="h-24 w-24">
-            {user.profile_picture != null && (
-              <AvatarImage src={user.profile_picture} />
-            )}
-            {user.profile_picture == null && (
-              <AvatarImage className="text-2xl">{initials}</AvatarImage>
-            )}
-          </Avatar>
+          <div className="flex justify-center">
+            <Avatar className="h-24 w-24">
+              {user.profile_picture && (
+                <AvatarImage src={user.profile_picture} alt={user.username} />
+              )}
+
+              <AvatarFallback className="text-xl">{initials}</AvatarFallback>
+            </Avatar>
+          </div>
 
           <CardTitle className="mt-4">
             {user.first_name} {user.last_name}
