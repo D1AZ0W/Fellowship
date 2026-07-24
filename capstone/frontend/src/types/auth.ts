@@ -27,12 +27,7 @@ export type Token = {
   refresh: string
 }
 
-export type LoginResponse = {
-  token: Token
-  msg: string
-}
-
-export type RegisterResponse = {
+export type AuthResponse = {
   token: Token
   msg: string
 }

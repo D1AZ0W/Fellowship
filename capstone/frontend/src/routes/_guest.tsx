@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { GuestLayout } from '#/components/layout/GuestLayout'
 
 export const Route = createFileRoute('/_guest')({

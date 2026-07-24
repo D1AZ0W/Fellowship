@@ -12,6 +12,7 @@ dependencies = [
     "djangorestframework-simplejwt>=5.5.1",
     "markdown>=3.10.2",
     "pillow>=12.3.0",
+    "psycopg2-binary>=2.9.12",
     "psycopg[binary]>=3.3.4",
     "ruff>=0.15.22",
 ]
@@ -24,6 +25,11 @@ quote-style = "single"
 indent-style = "tab"
 docstring-code-format = true
 docstring-code-line-length= 20
+
+[tool.uv.workspace]
+members = [
+    "venv",
+]
 
 [dependency-groups]
 dev = [
