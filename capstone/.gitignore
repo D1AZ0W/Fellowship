@@ -1,3 +1,4 @@
 .vscode
 DarkSchema.png
 __pycache__
+backend/media/

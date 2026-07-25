@@ -42,6 +42,7 @@ export const GroupList = () => {
             key={group.id}
             name={group.name}
             type={group.type}
+            image={group.image}
             createdAt={new Date(group.created_at).toLocaleDateString()}
           />
         )),

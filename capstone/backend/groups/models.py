@@ -7,7 +7,7 @@ from django.db import models
 class Groups(models.Model):
 	name = models.CharField(255)
 	image = models.ImageField(
-		upload_to='group/',
+		upload_to='media/groups/',
 		blank=True,
 		null=True,
 	)

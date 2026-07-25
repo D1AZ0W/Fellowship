@@ -4,19 +4,30 @@ import { Heart, Home, Notebook, Plane } from 'lucide-react'
 type GroupCardProps = {
   name: string
   type: string
+  image?: string | null
   createdAt: string
 }
 
-export const GroupCard = ({ name, type, createdAt }: GroupCardProps) => {
+export const GroupCard = ({ name, type, image, createdAt }: GroupCardProps) => {
   return (
     <Card className="cursor-pointer border-border transition-all hover:bg-accent">
-      <CardContent className="flex items-center p-5">
+      <CardContent className="flex items-center ">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            {type == 'Trip' && <Plane className="h-5 w-5" />}
-            {type == 'Home' && <Home className="h-5 w-5" />}
-            {type == 'Couple' && <Heart className="h-5 w-5" />}
-            {type == 'Other' && <Notebook className="h-5 w-5" />}
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden  bg-primary text-primary-foreground">
+            {image ? (
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}${image}`}
+                alt={type}
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              <>
+                {type === 'Trip' && <Plane className="h-5 w-5" />}
+                {type === 'Home' && <Home className="h-5 w-5" />}
+                {type === 'Couple' && <Heart className="h-5 w-5" />}
+                {type === 'Other' && <Notebook className="h-5 w-5" />}
+              </>
+            )}
           </div>
 
           <div className="space-y-1">
