@@ -4,6 +4,7 @@ import { Button } from '#/components/ui/button'
 import { Users } from 'lucide-react'
 import { useState } from 'react'
 import { CreateGroupForm } from '#/components/groups/CreateGroupForm'
+import { Link } from '@tanstack/react-router'
 
 export const GroupList = () => {
   const {
@@ -38,13 +39,18 @@ export const GroupList = () => {
       <CreateGroupForm open={open} onOpenChange={setOpen} />
       {data.pages.map((page) =>
         page.results.map((group) => (
-          <GroupCard
+          <Link
             key={group.id}
-            name={group.name}
-            type={group.type}
-            image={group.image}
-            createdAt={new Date(group.created_at).toLocaleDateString()}
-          />
+            to="/groups/$id"
+            params={{ id: group.id.toString() }}
+          >
+            <GroupCard
+              name={group.name}
+              type={group.type}
+              image={group.image}
+              createdAt={new Date(group.created_at).toLocaleDateString()}
+            />
+          </Link>
         )),
       )}
       {hasNextPage && (
