@@ -12,6 +12,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
+import { LogOut } from 'lucide-react'
+import { Button } from '../ui/button'
 
 export function Logout() {
   const auth = useAuth()
@@ -24,9 +26,15 @@ export function Logout() {
   }
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="text-primary underline-offset-4 hover:underline text-smx">
-        Logout
-      </AlertDialogTrigger>
+      <AlertDialogTrigger
+        className=" p-2 w-full rounded-lg cursor-pointer text-sm flex items-center justify-center gap-2 "
+        render={
+          <Button variant="destructive">
+            <LogOut />
+            Logout
+          </Button>
+        }
+      ></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>

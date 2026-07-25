@@ -23,6 +23,9 @@ class Groups(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	edited_at = models.DateTimeField(auto_now=True)
 
+	class Meta:
+		ordering = ['-created_at']
+
 	def __str__(self):
 		return self.name
 
@@ -30,10 +33,12 @@ class Groups(models.Model):
 class GroupMembers(models.Model):
 	ROLES_CHOICES = [('Owner', 'Owner'), ('Member', 'Member')]
 	user = models.ForeignKey(
-		settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+		settings.AUTH_USER_MODEL,
+		on_delete=models.CASCADE,
+		related_name='groups_joined',
 	)
 	group = models.ForeignKey(
-		Groups, on_delete=models.CASCADE, related_name='current_group'
+		Groups, on_delete=models.CASCADE, related_name='members'
 	)
 	joined_date = models.DateTimeField(auto_now_add=True)
 	role = models.CharField(

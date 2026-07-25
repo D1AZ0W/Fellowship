@@ -1,7 +1,5 @@
-import { Link, useNavigate } from '@tanstack/react-router'
-import { Home, LogOut, Receipt, User, Users } from 'lucide-react'
-
-import { useAuth } from '#/hooks/auth/useAuth'
+import { Link } from '@tanstack/react-router'
+import { Home, Receipt, User, Users } from 'lucide-react'
 
 import {
   Sidebar,
@@ -14,16 +12,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { Logout } from '../auth/Logout'
 
 export function AppSidebar() {
-  const { logout } = useAuth()
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    logout()
-    navigate({ to: '/login' })
-  }
-
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
@@ -87,10 +78,7 @@ export function AppSidebar() {
       <SidebarFooter className="border-t p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout}>
-              <LogOut />
-              <span>Logout</span>
-            </SidebarMenuButton>
+            <Logout />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

@@ -3,13 +3,16 @@ import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import axios from 'axios'
+import { useAuth } from './useAuth'
 
 export const useRegister = () => {
   const navigate = useNavigate()
+  const auth = useAuth()
   return useMutation({
     mutationFn: register,
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success('Sucessfully registered!!!')
+      auth.login(data.token)
       navigate({ to: '/' })
     },
     onError: (error: Error) => {

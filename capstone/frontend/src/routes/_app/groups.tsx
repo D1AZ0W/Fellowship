@@ -1,9 +1,6 @@
+import { GroupList } from '#/pages/groups/GroupList'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_app/groups')({
-  component: RouteComponent,
+  component: GroupList,
 })
-
-function RouteComponent() {
-  return <div>Hello "/_app/groups"!</div>
-}
