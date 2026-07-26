@@ -7,7 +7,7 @@ export type Group = {
   type: 'Trip' | 'Home' | 'Couple' | 'Other'
   created_at: string
 }
-type Members = User & {
+export type Members = User & {
   role: 'Owner' | 'Member'
 }
 export type GroupDetails = {

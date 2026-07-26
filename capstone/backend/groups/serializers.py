@@ -1,6 +1,9 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import GroupMembers, Groups
+
+User = get_user_model()
 
 
 class CreateGroupSerializer(serializers.ModelSerializer):
@@ -69,20 +72,24 @@ class ViewGroupSerializer(serializers.ModelSerializer):
 		return member.role
 
 
-# class InviteGroupSerializer(serializers.Serializer):
-# 	username = serializers.CharField()
-# 	Users = get_user_model()
+class InviteGroupSerializer(serializers.Serializer):
+	username = serializers.CharField()
 
-# 	def validate_username(self, value):
-# 		try:
-# 			return Users.objects.get(username=value)
-# 		except Users.DoesNotExist:
-# 			raise serializers.ValidationError('User does not exist')
-# 	def save(self, **kwargs):
-# 		group = kwargs['group']
-# 		user = self.validated_data['username']
-# 		if GroupMembers.objects.filter(user=user ,group=group).exists():
-# 			raise seria
+	def validate_username(self, value):
+		try:
+			return User.objects.get(username=value)
+		except User.DoesNotExist:
+			raise serializers.ValidationError('User does not exist')
+
+	def save(self, **kwargs):
+		group = kwargs['group']
+		user = self.validated_data['username']
+		if GroupMembers.objects.filter(user=user, group=group).exists():
+			raise serializers.ValidationError(
+				'User is already a member of this group'
+			)
+		GroupMembers.objects.create(user=user, group=group, role='Member')
+		return User
 
 
 class EditGroupSerializer(serializers.ModelSerializer):

@@ -6,10 +6,13 @@ from rest_framework.views import APIView
 
 from .models import Groups
 from .pagination import GroupPagination
+from .permissions import IsOwner
 from .renderers import GroupRenderer
 from .serializers import (
 	CreateGroupSerializer,
+	EditGroupSerializer,
 	GroupListSerializer,
+	InviteGroupSerializer,
 	ViewGroupSerializer,
 )
 
@@ -56,9 +59,52 @@ class GroupView(APIView):
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class EditView(APIView):
-	# permission_classes = [IsAuthenticated, isOwner]
+class EditGroupView(APIView):
+	permission_classes = [IsAuthenticated, IsOwner]
+	renderer_classes = [GroupRenderer]
+
+	def patch(self, request, pk):
+		group = get_object_or_404(Groups, pk=pk)
+		serializer = EditGroupSerializer(
+			group, data=request.data, partial=True
+		)
+
+		serializer.is_valid(raise_exception=True)
+		serializer.save()
+		return Response(
+			{
+				'message': 'Group updated successfully.',
+			},
+			status=status.HTTP_202_ACCEPTED,
+		)
+
+
+class InviteGroupView(APIView):
+	permission_classes = [IsAuthenticated, IsOwner]
 	renderer_classes = [GroupRenderer]
 
 	def post(self, request, pk):
-		pass
+		group = get_object_or_404(Groups, pk=pk)
+		serializer = InviteGroupSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		user = serializer.save(group=group)
+
+		return Response(
+			{'message': f'{user.username} was added successfully'},
+			status=status.HTTP_200_OK,
+		)
+
+
+class DeleteGroupView(APIView):
+	permission_classes = [IsAuthenticated, IsOwner]
+	renderer_classes = [GroupRenderer]
+
+	def delete(self, request, pk):
+		group = get_object_or_404(Groups, pk=pk)
+
+		group.delete()
+
+		return Response(
+			{'message': 'Group deleted successfully.'},
+			status=status.HTTP_200_OK,
+		)
