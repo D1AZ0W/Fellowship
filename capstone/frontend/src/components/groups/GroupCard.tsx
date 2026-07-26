@@ -1,5 +1,5 @@
+import { iconType } from '#/utils/iconType'
 import { Card, CardContent } from '@/components/ui/card'
-import { Heart, Home, Notebook, Plane } from 'lucide-react'
 
 type GroupCardProps = {
   name: string
@@ -21,12 +21,7 @@ export const GroupCard = ({ name, type, image, createdAt }: GroupCardProps) => {
                 className="h-full w-full object-contain"
               />
             ) : (
-              <>
-                {type === 'Trip' && <Plane className="h-5 w-5" />}
-                {type === 'Home' && <Home className="h-5 w-5" />}
-                {type === 'Couple' && <Heart className="h-5 w-5" />}
-                {type === 'Other' && <Notebook className="h-5 w-5" />}
-              </>
+              <>{iconType(type)}</>
             )}
           </div>
 

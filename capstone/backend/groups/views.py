@@ -54,3 +54,11 @@ class GroupView(APIView):
 		)
 		serializer = ViewGroupSerializer(group, context={'request': request})
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EditView(APIView):
+	# permission_classes = [IsAuthenticated, isOwner]
+	renderer_classes = [GroupRenderer]
+
+	def post(self, request, pk):
+		pass
