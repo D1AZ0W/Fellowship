@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { MoreVertical, Settings, Trash } from 'lucide-react'
+import { LogOut, MoreVertical, Settings, Trash } from 'lucide-react'
 
 import type { GroupDetails } from '#/types/group'
 import { iconType } from '#/utils/iconType'
+import { useLeaveGroup } from '#/hooks/groups/useLeaveGroup'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -14,6 +15,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 import { InviteGroupDialog } from './InviteGroupDialog'
 import { EditGroupDialog } from './EditGroupDialog'
@@ -24,9 +35,12 @@ type Props = {
 }
 
 export const GroupHeader = ({ group }: Props) => {
+  const leaveGroup = useLeaveGroup(group.id)
+
   const [inviteOpen, setInviteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [leaveOpen, setLeaveOpen] = useState(false)
 
   return (
     <>
@@ -56,7 +70,7 @@ export const GroupHeader = ({ group }: Props) => {
             </div>
           </div>
 
-          {group.role === 'Owner' && (
+          {group.role === 'Owner' ? (
             <div className="flex items-center gap-2">
               <Button onClick={() => setInviteOpen(true)}>Add Member</Button>
 
@@ -77,6 +91,24 @@ export const GroupHeader = ({ group }: Props) => {
                   >
                     <Trash className="mr-2 h-4 w-4" />
                     Delete Group
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <MoreVertical className="h-5 w-5" />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="min-w-44">
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setLeaveOpen(true)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Leave Group
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -102,6 +134,31 @@ export const GroupHeader = ({ group }: Props) => {
         onOpenChange={setDeleteOpen}
         groupId={group.id}
       />
+
+      <AlertDialog open={leaveOpen} onOpenChange={setLeaveOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Leave group?</AlertDialogTitle>
+
+            <AlertDialogDescription>
+              {`Are you sure you want to leave ${group.name}? You'll need to be re-invited to rejoin.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                leaveGroup.mutate()
+                setLeaveOpen(false)
+              }}
+            >
+              Leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

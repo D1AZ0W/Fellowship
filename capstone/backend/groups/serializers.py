@@ -89,7 +89,7 @@ class InviteGroupSerializer(serializers.Serializer):
 				'User is already a member of this group'
 			)
 		GroupMembers.objects.create(user=user, group=group, role='Member')
-		return User
+		return user
 
 
 class EditGroupSerializer(serializers.ModelSerializer):
@@ -150,4 +150,25 @@ class GroupKickSerializer(serializers.Serializer):
 			raise serializers.ValidationError('Owner cannot be removed')
 		member.delete()
 
+		return user
+
+
+class LeaveGroupSerializer(serializers.Serializer):
+	def save(self, **kwargs):
+		group = kwargs['group']
+		user = kwargs['user']
+		try:
+			member = GroupMembers.objects.get(
+				group=group,
+				user=user,
+			)
+		except GroupMembers.DoesNotExist:
+			raise serializers.ValidationError('Not a member of this group.')
+
+		if member.role == 'Owner':
+			raise serializers.ValidationError(
+				'Transfer ownership or delete the group before leaving.'
+			)
+
+		member.delete()
 		return user

@@ -8,6 +8,7 @@ from .views import (
 	GroupView,
 	InviteGroupView,
 	KickMemberView,
+	LeaveGroupView,
 	MakeOwnerView,
 )
 
@@ -18,6 +19,7 @@ urlpatterns = [
 	path('<int:pk>/edit/', EditGroupView.as_view(), name='edit'),
 	path('<int:pk>/invite/', InviteGroupView.as_view(), name='invite'),
 	path('<int:pk>/delete/', DeleteGroupView.as_view(), name='delete'),
-	path('<int:pk>/kick/', KickMemberView.as_view(), name='delete'),
-	path('<int:pk>/owner_transfer/', MakeOwnerView.as_view(), name='delete'),
+	path('<int:pk>/kick/', KickMemberView.as_view(), name='kick'),
+	path('<int:pk>/owner_transfer/', MakeOwnerView.as_view(), name='transfer'),
+	path('<int:pk>/leave/', LeaveGroupView.as_view(), name='leave'),
 ]

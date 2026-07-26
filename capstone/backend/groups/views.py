@@ -14,6 +14,7 @@ from .serializers import (
 	GroupKickSerializer,
 	GroupListSerializer,
 	InviteGroupSerializer,
+	LeaveGroupSerializer,
 	MakeOwnerSerializer,
 	ViewGroupSerializer,
 )
@@ -138,5 +139,24 @@ class KickMemberView(APIView):
 		user = serializer.save(group=group)
 		return Response(
 			{'msg': f'{user.username} was removed from the group'},
+			status=status.HTTP_200_OK,
+		)
+
+
+class LeaveGroupView(APIView):
+	permission_classes = [IsAuthenticated]
+	renderer_classes = [GroupRenderer]
+
+	def post(self, request, pk):
+		group = get_object_or_404(
+			Groups.objects.filter(members__user=request.user),
+			pk=pk,
+		)
+		serializer = LeaveGroupSerializer()
+		serializer.save(group=group, user=request.user)
+		return Response(
+			{
+				'msg': f'You left the group {group.name} successfully.',
+			},
 			status=status.HTTP_200_OK,
 		)

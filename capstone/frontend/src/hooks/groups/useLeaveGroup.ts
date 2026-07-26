@@ -1,18 +1,28 @@
-import { inviteMember } from '#/services/groupService'
+import { leaveGroup } from '#/services/groupService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 import axios from 'axios'
 import { toast } from 'sonner'
 
-export const useInviteGroup = (groupId: number) => {
+export const useLeaveGroup = (groupId: number) => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   return useMutation({
-    mutationFn: (username: string) => inviteMember(groupId, username),
+    mutationFn: () => leaveGroup(groupId),
 
     onSuccess: (data) => {
       toast.success(data.msg)
+
       queryClient.invalidateQueries({
+        queryKey: ['groups'],
+      })
+      queryClient.removeQueries({
         queryKey: ['group', groupId],
+      })
+
+      navigate({
+        to: '/groups',
       })
     },
     onError: (error) => {

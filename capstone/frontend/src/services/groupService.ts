@@ -62,3 +62,9 @@ export const kickMember = async (
   const res = await api.post(`/groups/${id}/kick/`, { username })
   return res.data
 }
+
+export const leaveGroup = async (id: number): Promise<MessageResponse> => {
+  const res = await api.post(`/groups/${id}/leave/`)
+
+  return res.data
+}
