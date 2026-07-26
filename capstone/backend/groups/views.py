@@ -11,8 +11,10 @@ from .renderers import GroupRenderer
 from .serializers import (
 	CreateGroupSerializer,
 	EditGroupSerializer,
+	GroupKickSerializer,
 	GroupListSerializer,
 	InviteGroupSerializer,
+	MakeOwnerSerializer,
 	ViewGroupSerializer,
 )
 
@@ -28,7 +30,7 @@ class CreateGroupView(APIView):
 		group = serializer.save(created_by=request.user)
 		return Response(
 			{
-				'message': 'Group created successfully.',
+				'msg': 'Group created successfully.',
 				'group': CreateGroupSerializer(group).data,
 			},
 			status=status.HTTP_201_CREATED,
@@ -73,7 +75,7 @@ class EditGroupView(APIView):
 		serializer.save()
 		return Response(
 			{
-				'message': 'Group updated successfully.',
+				'msg': 'Group updated successfully.',
 			},
 			status=status.HTTP_202_ACCEPTED,
 		)
@@ -90,7 +92,7 @@ class InviteGroupView(APIView):
 		user = serializer.save(group=group)
 
 		return Response(
-			{'message': f'{user.username} was added successfully'},
+			{'msg': f'{user.username} was added successfully'},
 			status=status.HTTP_200_OK,
 		)
 
@@ -105,6 +107,36 @@ class DeleteGroupView(APIView):
 		group.delete()
 
 		return Response(
-			{'message': 'Group deleted successfully.'},
+			{'msg': 'Group deleted successfully.'},
+			status=status.HTTP_200_OK,
+		)
+
+
+class MakeOwnerView(APIView):
+	permission_classes = [IsAuthenticated, IsOwner]
+	renderer_classes = [GroupRenderer]
+
+	def post(self, request, pk):
+		group = get_object_or_404(Groups, pk=pk)
+		serializer = MakeOwnerSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		user = serializer.save(owner=request.user, group=group)
+		return Response(
+			{'msg': f'{user.username} is now the owner of group {group.name}'},
+			status=status.HTTP_200_OK,
+		)
+
+
+class KickMemberView(APIView):
+	permission_classes = [IsAuthenticated, IsOwner]
+	renderer_classes = [GroupRenderer]
+
+	def post(self, request, pk):
+		group = get_object_or_404(Groups, pk=pk)
+		serializer = GroupKickSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		user = serializer.save(group=group)
+		return Response(
+			{'msg': f'{user.username} was removed from the group'},
 			status=status.HTTP_200_OK,
 		)

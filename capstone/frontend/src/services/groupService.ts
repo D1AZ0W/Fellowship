@@ -1,5 +1,6 @@
 import type { Group, PaginatedGroups, GroupDetails } from '#/types/group'
 import { api } from '#/lib/axios'
+import type { MessageResponse } from '#/types/auth'
 
 export const getGroups = async (pageNumber = 1): Promise<PaginatedGroups> => {
   const res = await api.get('/groups/', { params: { page: pageNumber } })
@@ -33,14 +34,31 @@ export const editGroup = async (
   return res.data
 }
 
-export const inviteMember = async (id: number, username: string) => {
-  const res = await api.post(`/groups/${id}/invite/`, {
-    username,
-  })
+export const inviteMember = async (
+  id: number,
+  username: string,
+): Promise<MessageResponse> => {
+  const res = await api.post(`/groups/${id}/invite/`, { username })
 
   return res.data
 }
 
 export const deleteGroup = async (id: number) => {
   await api.delete(`/groups/${id}/delete/`)
+}
+
+export const transferOwner = async (
+  id: number,
+  username: string,
+): Promise<MessageResponse> => {
+  const res = await api.post(`/groups/${id}/owner_transfer/`, { username })
+  return res.data
+}
+
+export const kickMember = async (
+  id: number,
+  username: string,
+): Promise<MessageResponse> => {
+  const res = await api.post(`/groups/${id}/kick/`, { username })
+  return res.data
 }

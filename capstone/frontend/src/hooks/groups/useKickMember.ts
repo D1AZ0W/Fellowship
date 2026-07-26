@@ -1,13 +1,11 @@
-import { inviteMember } from '#/services/groupService'
+import { kickMember } from '#/services/groupService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-export const useInviteGroup = (groupId: number) => {
+export const useKickMember = (groupId: number) => {
   const queryClient = useQueryClient()
-
   return useMutation({
-    mutationFn: (username: string) => inviteMember(groupId, username),
-
+    mutationFn: (username: string) => kickMember(groupId, username),
     onSuccess: (data) => {
       toast.success(data.msg)
       queryClient.invalidateQueries({

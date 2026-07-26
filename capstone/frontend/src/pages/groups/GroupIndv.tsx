@@ -24,7 +24,11 @@ export const GroupIndv = () => {
       <div className="grid gap-6 lg:grid-cols-3">
         <GroupExpenses />
 
-        <GroupMembers members={group.members} />
+        <GroupMembers
+          members={group.members}
+          currentRole={group.role}
+          groupId={group.id}
+        />
       </div>
     </div>
   )

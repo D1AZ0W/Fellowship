@@ -96,3 +96,58 @@ class EditGroupSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Groups
 		fields = ['name', 'image', 'type']
+
+
+class MakeOwnerSerializer(serializers.Serializer):
+	username = serializers.CharField()
+
+	def validate_username(self, value):
+		try:
+			return User.objects.get(username=value)
+		except User.DoesNotExist:
+			raise serializers.ValidationError('User does not exist')
+
+	def save(self, **kwargs):
+		group = kwargs['group']
+		current_owner = kwargs['owner']
+		new_owner = self.validated_data['username']
+		try:
+			new_owner_group = GroupMembers.objects.get(
+				user=new_owner, group=group
+			)
+		except GroupMembers.DoesNotExist:
+			raise serializers.ValidationError(
+				'User is not a member of this group'
+			)
+		current_owner_group = GroupMembers.objects.get(
+			user=current_owner, group=group
+		)
+		current_owner_group.role = 'Member'
+		new_owner_group.role = 'Owner'
+		current_owner_group.save()
+		new_owner_group.save()
+
+		return new_owner
+
+
+class GroupKickSerializer(serializers.Serializer):
+	username = serializers.CharField()
+
+	def validate_username(self, value):
+		try:
+			return User.objects.get(username=value)
+		except User.DoesNotExist:
+			raise serializers.ValidationError('User does not exist')
+
+	def save(self, **kwargs):
+		group = kwargs['group']
+		user = self.validated_data['username']
+		try:
+			member = GroupMembers.objects.get(group=group, user=user)
+		except GroupMembers.DoesNotExist:
+			raise serializers.ValidationError('User does not exist')
+		if member.role == 'Owner':
+			raise serializers.ValidationError('Owner cannot be removed')
+		member.delete()
+
+		return user
