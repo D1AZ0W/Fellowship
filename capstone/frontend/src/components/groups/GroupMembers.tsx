@@ -25,7 +25,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
 
 import { Crown, MoreVertical, Trash2 } from 'lucide-react'
 
@@ -88,9 +87,7 @@ export const GroupMembers = ({ members, groupId, currentRole }: Props) => {
                 {currentRole === 'Owner' && member.role !== 'Owner' && (
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
+                      <MoreVertical className="h-4 w-4" />
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end" className="min-w-44">
