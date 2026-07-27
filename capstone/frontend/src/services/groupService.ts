@@ -13,11 +13,7 @@ export const getGroup = async (id: number): Promise<GroupDetails> => {
 }
 
 export const createGroup = async (data: FormData): Promise<Group> => {
-  const res = await api.post('/groups/create/', data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  const res = await api.post('/groups/create/', data)
   return res.data.group
 }
 
@@ -25,11 +21,7 @@ export const editGroup = async (
   id: number,
   formData: FormData,
 ): Promise<GroupDetails> => {
-  const res = await api.patch(`/groups/${id}/edit/`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  const res = await api.patch(`/groups/${id}/edit/`, formData)
 
   return res.data
 }
@@ -39,7 +31,6 @@ export const inviteMember = async (
   username: string,
 ): Promise<MessageResponse> => {
   const res = await api.post(`/groups/${id}/invite/`, { username })
-
   return res.data
 }
 
@@ -65,6 +56,5 @@ export const kickMember = async (
 
 export const leaveGroup = async (id: number): Promise<MessageResponse> => {
   const res = await api.post(`/groups/${id}/leave/`)
-
   return res.data
 }

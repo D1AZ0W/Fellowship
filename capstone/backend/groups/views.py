@@ -153,6 +153,7 @@ class LeaveGroupView(APIView):
 			pk=pk,
 		)
 		serializer = LeaveGroupSerializer()
+		serializer.is_valid(raise_exception=True)
 		serializer.save(group=group, user=request.user)
 		return Response(
 			{

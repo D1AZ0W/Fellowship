@@ -22,7 +22,7 @@ export const GroupIndv = () => {
       <GroupHeader group={group} />
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <GroupExpenses />
+        <GroupExpenses groupId={group.id} members={group.members} />
 
         <GroupMembers
           members={group.members}

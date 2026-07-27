@@ -57,4 +57,4 @@ class GroupMembers(models.Model):
 		]
 
 	def __str__(self):
-		return f'{self.user} + of group  + {self.group}'
+		return f'{self.user}  of group  {self.group}'
