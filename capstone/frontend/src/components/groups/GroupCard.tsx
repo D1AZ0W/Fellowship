@@ -9,29 +9,35 @@ type GroupCardProps = {
 }
 
 export const GroupCard = ({ name, type, image, createdAt }: GroupCardProps) => {
+  const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
   return (
     <Card className="cursor-pointer border-border transition-all hover:bg-accent">
-      <CardContent className="flex items-center ">
-        <div className="flex items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden  bg-primary text-primary-foreground">
-            {image ? (
-              <img
-                src={`${import.meta.env.VITE_BASE_URL}${image}`}
-                alt={type}
-                className="h-full w-full object-contain"
-              />
-            ) : (
-              <>{iconType(type)}</>
-            )}
-          </div>
+      <CardContent className="flex items-center gap-4 p-3">
+        <div className="flex h-16 w-20 shrink-0 items-center rounded-md justify-center overflow-hidden  bg-primary text-primary-foreground">
+          {image ? (
+            <img
+              src={`${import.meta.env.VITE_BASE_URL}${image}`}
+              alt={type}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            iconType(type)
+          )}
+        </div>
 
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-foreground">{name}</h3>
+        <div className="min-w-0 space-y-1">
+          <h3 className="truncate text-lg font-semibold text-foreground">
+            {name}
+          </h3>
 
-            <p className="text-sm text-muted-foreground">
-              Created : {createdAt}
-            </p>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            {type} · Created {formattedDate}
+          </p>
         </div>
       </CardContent>
     </Card>
