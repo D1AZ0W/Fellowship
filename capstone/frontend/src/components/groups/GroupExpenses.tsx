@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import type { Members } from '#/types/group'
+import { Link } from '@tanstack/react-router'
+import { ExpenseCard } from '../expenses/ExpenseCard'
 
 type Props = {
   groupId: number
@@ -55,25 +57,20 @@ export const GroupExpenses = ({ groupId, members }: Props) => {
           ) : (
             <div className="space-y-3">
               {expenses?.map((expense) => (
-                <Card key={expense.id}>
-                  <CardContent className="flex items-center justify-between p-3">
-                    <div>
-                      <p className="font-semibold">{expense.title}</p>
-
-                      <p className="text-sm text-muted-foreground">
-                        Paid by {expense.paid_by}
-                      </p>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="font-semibold">Rs. {expense.amount}</p>
-
-                      <p className="text-sm text-muted-foreground">
-                        {expense.category}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <Link
+                  key={expense.id}
+                  to="/"
+                  params={{ id: expense.id.toString() }}
+                >
+                  <ExpenseCard
+                    title={expense.title}
+                    paid_by={expense.paid_by}
+                    amount={expense.amount}
+                    category={expense.category}
+                    date={expense.expense_date}
+                    image={expense.image}
+                  />
+                </Link>
               ))}
             </div>
           )}

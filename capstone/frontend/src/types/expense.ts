@@ -14,3 +14,10 @@ export type Expense = {
   expense_date: string
   paid_by: string
 }
+
+export type PaginatedExpense = {
+  count: number
+  next: string | null
+  previous: string | null
+  results: Expense[]
+}

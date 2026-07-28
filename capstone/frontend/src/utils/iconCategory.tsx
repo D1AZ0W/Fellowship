@@ -7,7 +7,7 @@ import {
   LayoutGrid,
 } from 'lucide-react'
 
-export const iconType = (type: string) => {
+export const iconCategory = (type: string) => {
   switch (type) {
     case 'Entertainment':
       return <Clapperboard className="h-5 w-5" />

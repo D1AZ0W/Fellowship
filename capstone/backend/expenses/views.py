@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from groups.models import Groups
 
 from .models import Expense
+from .pagination import GroupPagination
 from .renderers import ExpenseRenderer
 from .serializers import CreateExpenseSerializer, GroupExpenseSerializer
 
@@ -55,16 +56,15 @@ class GroupExpenseView(APIView):
 		return Response(serializer.data)
 
 
-# class UserExpenseView(APIView):
-# 	permission_classes = [IsAuthenticated]
-# 	renderer_classes = [ExpenseRenderer]
+class UserExpenseView(APIView):
+	permission_classes = [IsAuthenticated]
+	renderer_classes = [ExpenseRenderer]
 
-# 	def get(self, request):
-# 		expenses = Expense.objects.filter(
-# 			participants__user=request.user
-# 		).distinct()
-# 		serializer = GroupExpenseSerializer(
-# 			expenses,
-# 			many=True,
-# 		)
-# 		return Response(serializer.data)
+	def get(self, request):
+		expenses = Expense.objects.filter(
+			participant__user=request.user
+		).distinct()
+		paginator = GroupPagination()
+		page = paginator.paginate_queryset(expenses, request)
+		serializer = GroupExpenseSerializer(page, many=True)
+		return paginator.get_paginated_response(serializer.data)

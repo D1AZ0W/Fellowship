@@ -1,5 +1,5 @@
 import { api } from '#/lib/axios'
-import type { Expense } from '#/types/expense'
+import type { Expense, PaginatedExpense } from '#/types/expense'
 
 export const getGroupExpenses = async (
   groupId?: number,
@@ -11,4 +11,11 @@ export const getGroupExpenses = async (
 export const createExpense = async (data: FormData): Promise<Expense> => {
   const res = await api.post(`expenses/create/`, data)
   return res.data.expense
+}
+
+export const getUserExpenses = async (
+  pageNumber = 1,
+): Promise<PaginatedExpense> => {
+  const res = await api.get('expenses/', { params: { page: pageNumber } })
+  return res.data
 }
