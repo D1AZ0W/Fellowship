@@ -21,15 +21,7 @@ export const ExpenseIndv = () => {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <ExpenseHeader
-        title={expense.title}
-        amount={expense.amount}
-        category={expense.category}
-        expense_date={expense.expense_date}
-        image={expense.image}
-        paid_by={expense.paid_by}
-        split_type={expense.split_type}
-      />
+      <ExpenseHeader expense={expense} />
       <ExpenseParticipants participants={expense.participants} />
       {expense.note && <ExpenseNote note={expense.note} />}
     </div>

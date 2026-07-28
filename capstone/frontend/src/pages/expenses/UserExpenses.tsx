@@ -33,7 +33,7 @@ export const UserExpense = () => {
           >
             <ExpenseCard
               title={expense.title}
-              paid_by={expense.paid_by}
+              paid_by={expense.paid_by.username}
               amount={expense.amount}
               category={expense.category}
               date={expense.expense_date}

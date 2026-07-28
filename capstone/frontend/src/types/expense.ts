@@ -15,7 +15,7 @@ export type Expense = {
   split_type: 'Equal' | 'Exact' | 'Percentage'
   note: string
   expense_date: string
-  paid_by: string
+  paid_by: User
 }
 
 export type ExpenseParticpiant = User & {
@@ -31,13 +31,13 @@ export type ExpenseDetails = {
     | 'Entertainment'
     | 'Food'
     | 'Transportation'
-    | 'Utlities'
+    | 'Utilities'
     | 'Services'
     | 'General'
   split_type: 'Equal' | 'Exact' | 'Percentage'
-  note: string
+  note: string | null
   expense_date: string
-  paid_by: string
+  paid_by: User
   participants: ExpenseParticpiant[]
 }
 

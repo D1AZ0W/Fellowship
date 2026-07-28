@@ -64,8 +64,20 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 		return expense
 
 
+class PaidBySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = [
+			'id',
+			'username',
+			'first_name',
+			'last_name',
+			'profile_picture',
+		]
+
+
 class GroupExpenseSerializer(serializers.ModelSerializer):
-	paid_by = serializers.CharField(source='paid_by.username', read_only=True)
+	paid_by = PaidBySerializer(read_only=True)
 
 	class Meta:
 		model = Expense
@@ -101,7 +113,7 @@ class ParticipantsSerializer(serializers.ModelSerializer):
 
 class DetailExpenseSerializer(serializers.ModelSerializer):
 	participants = ParticipantsSerializer(many=True, read_only=True)
-	paid_by = serializers.CharField(source='paid_by.username', read_only=True)
+	paid_by = PaidBySerializer(read_only=True)
 
 	class Meta:
 		model = Expense
@@ -119,3 +131,29 @@ class DetailExpenseSerializer(serializers.ModelSerializer):
 			'created_at',
 			'edited_at',
 		]
+
+
+class EditExpenseSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Expense
+		fields = [
+			'title',
+			'image',
+			'amount',
+			'category',
+			'split_type',
+			'expense_date',
+			'note',
+			'paid_by',
+		]
+
+	def validate_paid_by(self, value):
+		expense = self.instance
+		if not ExpenseParticipants.objects.filter(
+			expense=expense,
+			user=value,
+		).exists():
+			raise serializers.ValidationError(
+				'Payer must be one of the participants.'
+			)
+		return value

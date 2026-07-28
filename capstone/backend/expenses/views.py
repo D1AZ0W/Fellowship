@@ -13,6 +13,7 @@ from .renderers import ExpenseRenderer
 from .serializers import (
 	CreateExpenseSerializer,
 	DetailExpenseSerializer,
+	EditExpenseSerializer,
 	GroupExpenseSerializer,
 )
 
@@ -28,7 +29,7 @@ class CreateExpenseView(APIView):
 		expense = serializer.save()
 		return Response(
 			{
-				'message': 'Expense created successfully.',
+				'msg': 'Expense created successfully.',
 				'expense': CreateExpenseSerializer(expense).data,
 			},
 			status=status.HTTP_201_CREATED,
@@ -83,3 +84,34 @@ class DetailExpenseView(APIView):
 		expense = get_object_or_404(Expense, pk=pk)
 		serializer = DetailExpenseSerializer(expense)
 		return Response(serializer.data)
+
+
+class EditExpenseView(APIView):
+	permission_classes = [IsAuthenticated, IsParticipant]
+	renderer_classes = [ExpenseRenderer]
+
+	def patch(self, request, pk):
+		expense = get_object_or_404(Expense, pk=pk)
+		serializer = EditExpenseSerializer(
+			expense, data=request.data, partial=True
+		)
+		serializer.is_valid(raise_exception=True)
+		serializer.save()
+		return Response(
+			{
+				'msg': 'Expense edited!',
+			},
+			status=status.HTTP_200_OK,
+		)
+
+
+class DeleteExpenseView(APIView):
+	permission_classes = [IsAuthenticated, IsParticipant]
+	renderer_classes = [ExpenseRenderer]
+
+	def delete(self, request, pk):
+		expense = get_object_or_404(Expense, pk=pk)
+		expense.delete()
+		return Response(
+			{'msg': 'Expense Deleted Successfullu.'}, status=status.HTTP_200_OK
+		)

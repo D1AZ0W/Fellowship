@@ -24,3 +24,11 @@ export const getExpense = async (id: number): Promise<ExpenseDetails> => {
   const res = await api.get(`expenses/${id}/`)
   return res.data
 }
+
+export const editExpense = async (id: number, fromData: FormData) => {
+  await api.patch(`expenses/${id}/edit/`, fromData)
+}
+
+export const deleteExpense = async (id: number) => {
+  await api.delete(`expenses/${id}/delete/`)
+}

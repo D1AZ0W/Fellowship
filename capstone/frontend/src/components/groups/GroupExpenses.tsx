@@ -61,10 +61,11 @@ export const GroupExpenses = ({ groupId, members }: Props) => {
                   key={expense.id}
                   to="/expenses/$id"
                   params={{ id: expense.id.toString() }}
+                  className="block"
                 >
                   <ExpenseCard
                     title={expense.title}
-                    paid_by={expense.paid_by}
+                    paid_by={expense.paid_by.username}
                     amount={expense.amount}
                     category={expense.category}
                     date={expense.expense_date}

@@ -1,0 +1,241 @@
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useEditExpense } from '#/hooks/expense/useEditExpense'
+import type { CreateExpenseForm } from '#/schemas/createExpenseSchema'
+import { createExpenseSchema } from '#/schemas/createExpenseSchema'
+import type { ExpenseDetails } from '#/types/expense'
+
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+
+type Props = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  expense: ExpenseDetails
+}
+
+export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
+  const [image, setImage] = useState<File | null>(null)
+
+  const editExpenseMutation = useEditExpense(expense.id)
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateExpenseForm>({
+    resolver: zodResolver(createExpenseSchema),
+  })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        title: expense.title,
+        amount: Number(expense.amount),
+        category: expense.category,
+        split_type: expense.split_type,
+        expense_date: expense.expense_date,
+        note: expense.note ?? '',
+        paid_by: expense.paid_by.id,
+      })
+
+      setImage(null)
+    }
+  }, [expense, open, reset])
+
+  const onSubmit = (data: CreateExpenseForm) => {
+    const formData = new FormData()
+
+    formData.append('title', data.title)
+    formData.append('amount', data.amount.toString())
+    formData.append('category', data.category)
+    formData.append('split_type', data.split_type)
+    formData.append('expense_date', data.expense_date)
+    formData.append('note', data.note ?? '')
+    formData.append('paid_by', data.paid_by.toString())
+
+    if (image) {
+      formData.append('image', image)
+    }
+
+    editExpenseMutation.mutate(formData, {
+      onSuccess: () => {
+        setImage(null)
+        onOpenChange(false)
+      },
+    })
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-xl">
+        <DialogHeader>
+          <DialogTitle>Edit Expense</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="space-y-2">
+            <Label>Title</Label>
+
+            <Input {...register('title')} />
+
+            {errors.title && (
+              <p className="text-sm text-destructive">{errors.title.message}</p>
+            )}
+          </div>
+          <div className="space-y-2 grid grid-cols-2">
+            <Label>Current Image</Label>
+
+            {expense.image ? (
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}${expense.image}`}
+                alt={expense.title}
+                className="h-34 w-50 rounded-lg border object-cover"
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">No image uploaded</p>
+            )}
+            <Label>Replace Image (Optional)</Label>
+
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Amount</Label>
+
+              <Input
+                type="number"
+                step="0.01"
+                {...register('amount', {
+                  valueAsNumber: true,
+                })}
+              />
+
+              {errors.amount && (
+                <p className="text-sm text-destructive">
+                  {errors.amount.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Date</Label>
+
+              <Input type="date" {...register('expense_date')} />
+
+              {errors.expense_date && (
+                <p className="text-sm text-destructive">
+                  {errors.expense_date.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Category</Label>
+
+              <select
+                {...register('category')}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3"
+              >
+                <option value="">Select an option</option>
+                <option value="Food">Food</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Services">Services</option>
+                <option value="General">General</option>
+              </select>
+
+              {errors.category && (
+                <p className="text-sm text-destructive">
+                  {errors.category.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Split Type</Label>
+
+              <select
+                {...register('split_type')}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3"
+              >
+                <option value="Equal">Equal</option>
+                <option value="Exact">Exact</option>
+                <option value="Percentage">Percentage</option>
+              </select>
+
+              {errors.split_type && (
+                <p className="text-sm text-destructive">
+                  {errors.split_type.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Paid By</Label>
+
+            <select
+              {...register('paid_by', {
+                valueAsNumber: true,
+              })}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+            >
+              {expense.participants.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.first_name} {p.last_name}
+                </option>
+              ))}
+            </select>
+
+            {errors.paid_by && (
+              <p className="text-sm text-destructive">
+                {errors.paid_by.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Note</Label>
+
+            <Textarea {...register('note')} />
+
+            {errors.note && (
+              <p className="text-sm text-destructive">{errors.note.message}</p>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="submit"
+              disabled={editExpenseMutation.isPending}
+              className="w-full"
+            >
+              {editExpenseMutation.isPending ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
