@@ -1,17 +1,27 @@
 import { GroupExpenses } from '#/components/groups/GroupExpenses'
 import { GroupHeader } from '#/components/groups/GroupHeader'
 import { GroupMembers } from '#/components/groups/GroupMembers'
+import { AlertMessage } from '#/components/shared/AlertMessage'
 import { useGroup } from '#/hooks/groups/useGroup'
 import { useParams } from '@tanstack/react-router'
 
 export const GroupIndv = () => {
   const { id } = useParams({ from: '/_app/groups/$id' })
 
-  const { data: group, isPending } = useGroup(Number(id))
+  const { data: group, isPending, isError, error } = useGroup(Number(id))
 
   if (isPending || !group) {
     return (
       <div className="flex h-64 items-center justify-center">Loading...</div>
+    )
+  }
+  if (isError) {
+    return (
+      <AlertMessage
+        variant="destructive"
+        title="Error occured"
+        message={error}
+      />
     )
   }
 

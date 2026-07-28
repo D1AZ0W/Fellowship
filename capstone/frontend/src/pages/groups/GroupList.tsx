@@ -5,6 +5,7 @@ import { Users } from 'lucide-react'
 import { useState } from 'react'
 import { CreateGroupForm } from '#/components/groups/CreateGroupForm'
 import { Link } from '@tanstack/react-router'
+import { AlertMessage } from '#/components/shared/AlertMessage'
 
 export const GroupList = () => {
   const {
@@ -23,7 +24,13 @@ export const GroupList = () => {
   }
 
   if (isError) {
-    return <p>{error.message}</p>
+    return (
+      <AlertMessage
+        variant="destructive"
+        title="Error occured"
+        message={error}
+      />
+    )
   }
 
   return (

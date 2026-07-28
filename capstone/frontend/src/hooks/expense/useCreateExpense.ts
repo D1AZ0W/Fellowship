@@ -1,5 +1,6 @@
 import { createExpense } from '#/services/expenseService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import { toast } from 'sonner'
 
 export const useCreateExpense = (groupId: number) => {
@@ -11,6 +12,13 @@ export const useCreateExpense = (groupId: number) => {
       queryClient.invalidateQueries({
         queryKey: ['group-expenses', groupId],
       })
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.errors[0] ?? 'Something went wrong'
+        toast.error(message)
+      }
     },
   })
 }

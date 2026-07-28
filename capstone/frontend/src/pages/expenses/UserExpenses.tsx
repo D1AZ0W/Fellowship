@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useUserExpense } from '#/hooks/expense/useUserExpense'
 import { ExpenseCard } from '#/components/expenses/ExpenseCard'
+import { AlertMessage } from '#/components/shared/AlertMessage'
 
 export const UserExpense = () => {
   const {
@@ -18,7 +19,13 @@ export const UserExpense = () => {
   }
 
   if (isError) {
-    return <p>{error.message}</p>
+    return (
+      <AlertMessage
+        variant="destructive"
+        title="Error occured"
+        message={error}
+      />
+    )
   }
 
   return (
