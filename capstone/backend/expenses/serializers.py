@@ -65,10 +65,43 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 
 
 class GroupExpenseSerializer(serializers.ModelSerializer):
-	paid_by = serializers.CharField(
-		source='paid_by.username',
-		read_only=True,
-	)
+	paid_by = serializers.CharField(source='paid_by.username', read_only=True)
+
+	class Meta:
+		model = Expense
+		fields = [
+			'id',
+			'title',
+			'image',
+			'amount',
+			'category',
+			'expense_date',
+			'paid_by',
+		]
+
+
+class ParticipantsSerializer(serializers.ModelSerializer):
+	id = serializers.IntegerField(source='user.id')
+	username = serializers.CharField(source='user.username')
+	first_name = serializers.CharField(source='user.first_name')
+	last_name = serializers.CharField(source='user.last_name')
+	profile_picture = serializers.ImageField(source='user.profile_picture')
+
+	class Meta:
+		model = ExpenseParticipants
+		fields = [
+			'id',
+			'username',
+			'first_name',
+			'last_name',
+			'profile_picture',
+			'amount_owed',
+		]
+
+
+class DetailExpenseSerializer(serializers.ModelSerializer):
+	participants = ParticipantsSerializer(many=True, read_only=True)
+	paid_by = serializers.CharField(source='paid_by.username', read_only=True)
 
 	class Meta:
 		model = Expense
@@ -80,5 +113,9 @@ class GroupExpenseSerializer(serializers.ModelSerializer):
 			'category',
 			'split_type',
 			'expense_date',
+			'note',
 			'paid_by',
+			'participants',
+			'created_at',
+			'edited_at',
 		]

@@ -59,7 +59,7 @@ export const GroupExpenses = ({ groupId, members }: Props) => {
               {expenses?.map((expense) => (
                 <Link
                   key={expense.id}
-                  to="/"
+                  to="/expenses/$id"
                   params={{ id: expense.id.toString() }}
                 >
                   <ExpenseCard

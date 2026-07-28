@@ -5,9 +5,7 @@ import { useGroup } from '#/hooks/groups/useGroup'
 import { useParams } from '@tanstack/react-router'
 
 export const GroupIndv = () => {
-  const { id } = useParams({
-    from: '/_app/groups/$id',
-  })
+  const { id } = useParams({ from: '/_app/groups/$id' })
 
   const { data: group, isPending } = useGroup(Number(id))
 

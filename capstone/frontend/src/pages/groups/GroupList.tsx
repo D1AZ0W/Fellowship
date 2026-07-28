@@ -43,6 +43,7 @@ export const GroupList = () => {
             key={group.id}
             to="/groups/$id"
             params={{ id: group.id.toString() }}
+            className="block"
           >
             <GroupCard
               name={group.name}

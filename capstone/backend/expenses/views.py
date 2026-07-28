@@ -8,8 +8,13 @@ from groups.models import Groups
 
 from .models import Expense
 from .pagination import GroupPagination
+from .permission import IsParticipant
 from .renderers import ExpenseRenderer
-from .serializers import CreateExpenseSerializer, GroupExpenseSerializer
+from .serializers import (
+	CreateExpenseSerializer,
+	DetailExpenseSerializer,
+	GroupExpenseSerializer,
+)
 
 
 # Create your views here.
@@ -62,9 +67,19 @@ class UserExpenseView(APIView):
 
 	def get(self, request):
 		expenses = Expense.objects.filter(
-			participant__user=request.user
+			participants__user=request.user
 		).distinct()
 		paginator = GroupPagination()
 		page = paginator.paginate_queryset(expenses, request)
 		serializer = GroupExpenseSerializer(page, many=True)
 		return paginator.get_paginated_response(serializer.data)
+
+
+class DetailExpenseView(APIView):
+	permission_classes = [IsAuthenticated, IsParticipant]
+	renderer_classes = [ExpenseRenderer]
+
+	def get(self, request, pk):
+		expense = get_object_or_404(Expense, pk=pk)
+		serializer = DetailExpenseSerializer(expense)
+		return Response(serializer.data)

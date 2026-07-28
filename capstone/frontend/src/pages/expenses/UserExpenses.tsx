@@ -25,7 +25,12 @@ export const UserExpense = () => {
     <div className="space-y-4">
       {data.pages.map((page) =>
         page.results.map((expense) => (
-          <Link key={expense.id} to="/" params={{ id: expense.id.toString() }}>
+          <Link
+            key={expense.id}
+            to="/expenses/$id"
+            params={{ id: expense.id.toString() }}
+            className="block"
+          >
             <ExpenseCard
               title={expense.title}
               paid_by={expense.paid_by}

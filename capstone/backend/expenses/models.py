@@ -53,13 +53,13 @@ class Expense(models.Model):
 
 class ExpenseParticipants(models.Model):
 	expense = models.ForeignKey(
-		Expense, on_delete=models.CASCADE, related_name='participant'
+		Expense, on_delete=models.CASCADE, related_name='participants'
 	)
 	amount_owed = models.DecimalField(max_digits=10, decimal_places=2)
 	user = models.ForeignKey(
 		settings.AUTH_USER_MODEL,
 		on_delete=models.CASCADE,
-		related_name='participants',
+		related_name='expense',
 	)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)

@@ -17,6 +17,7 @@ import { Route as GuestIndexRouteImport } from './routes/_guest/index'
 import { Route as GuestLoginRouteImport } from './routes/_guest/login'
 import { Route as GuestRegisterRouteImport } from './routes/_guest/register'
 import { Route as AppExpensesIndexRouteImport } from './routes/_app/expenses/index'
+import { Route as AppExpensesIdRouteImport } from './routes/_app/expenses/$id'
 import { Route as AppGroupsIndexRouteImport } from './routes/_app/groups/index'
 import { Route as AppGroupsIdRouteImport } from './routes/_app/groups/$id'
 
@@ -58,6 +59,11 @@ const AppExpensesIndexRoute = AppExpensesIndexRouteImport.update({
   path: '/expenses/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppExpensesIdRoute = AppExpensesIdRouteImport.update({
+  id: '/expenses/$id',
+  path: '/expenses/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppGroupsIndexRoute = AppGroupsIndexRouteImport.update({
   id: '/groups/',
   path: '/groups/',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AppProfileRoute
   '/login': typeof GuestLoginRoute
   '/register': typeof GuestRegisterRoute
+  '/expenses/$id': typeof AppExpensesIdRoute
   '/groups/$id': typeof AppGroupsIdRoute
   '/expenses/': typeof AppExpensesIndexRoute
   '/groups/': typeof AppGroupsIndexRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AppProfileRoute
   '/login': typeof GuestLoginRoute
   '/register': typeof GuestRegisterRoute
+  '/expenses/$id': typeof AppExpensesIdRoute
   '/groups/$id': typeof AppGroupsIdRoute
   '/expenses': typeof AppExpensesIndexRoute
   '/groups': typeof AppGroupsIndexRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/_guest/login': typeof GuestLoginRoute
   '/_guest/register': typeof GuestRegisterRoute
   '/_guest/': typeof GuestIndexRoute
+  '/_app/expenses/$id': typeof AppExpensesIdRoute
   '/_app/groups/$id': typeof AppGroupsIdRoute
   '/_app/expenses/': typeof AppExpensesIndexRoute
   '/_app/groups/': typeof AppGroupsIndexRoute
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
+    | '/expenses/$id'
     | '/groups/$id'
     | '/expenses/'
     | '/groups/'
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
+    | '/expenses/$id'
     | '/groups/$id'
     | '/expenses'
     | '/groups'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/_guest/login'
     | '/_guest/register'
     | '/_guest/'
+    | '/_app/expenses/$id'
     | '/_app/groups/$id'
     | '/_app/expenses/'
     | '/_app/groups/'
@@ -200,6 +212,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppExpensesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/expenses/$id': {
+      id: '/_app/expenses/$id'
+      path: '/expenses/$id'
+      fullPath: '/expenses/$id'
+      preLoaderRoute: typeof AppExpensesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/groups/': {
       id: '/_app/groups/'
       path: '/groups'
@@ -220,6 +239,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
   AppProfileRoute: typeof AppProfileRoute
+  AppExpensesIdRoute: typeof AppExpensesIdRoute
   AppGroupsIdRoute: typeof AppGroupsIdRoute
   AppExpensesIndexRoute: typeof AppExpensesIndexRoute
   AppGroupsIndexRoute: typeof AppGroupsIndexRoute
@@ -228,6 +248,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
   AppProfileRoute: AppProfileRoute,
+  AppExpensesIdRoute: AppExpensesIdRoute,
   AppGroupsIdRoute: AppGroupsIdRoute,
   AppExpensesIndexRoute: AppExpensesIndexRoute,
   AppGroupsIndexRoute: AppGroupsIndexRoute,

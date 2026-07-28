@@ -1,3 +1,5 @@
+import type { User } from '#/types/auth'
+
 export type Expense = {
   id: number
   title: string
@@ -11,8 +13,32 @@ export type Expense = {
     | 'Services'
     | 'General'
   split_type: 'Equal' | 'Exact' | 'Percentage'
+  note: string
   expense_date: string
   paid_by: string
+}
+
+export type ExpenseParticpiant = User & {
+  amount_owed: number | null
+}
+
+export type ExpenseDetails = {
+  id: number
+  title: string
+  image: string | null
+  amount: string
+  category:
+    | 'Entertainment'
+    | 'Food'
+    | 'Transportation'
+    | 'Utlities'
+    | 'Services'
+    | 'General'
+  split_type: 'Equal' | 'Exact' | 'Percentage'
+  note: string
+  expense_date: string
+  paid_by: string
+  participants: ExpenseParticpiant[]
 }
 
 export type PaginatedExpense = {
