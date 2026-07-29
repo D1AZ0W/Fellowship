@@ -1,4 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.permissions import BasePermission
+
+from groups.models import GroupMembers
 
 from .models import Expense, ExpenseParticipants
 
@@ -16,3 +19,13 @@ class IsParticipant(BasePermission):
 		).exists()
 
 		return participant_check or paid_by_check
+
+
+class IsGroupMember(BasePermission):
+	def has_permission(self, request, view):
+		expense = get_object_or_404(Expense, pk=view.kwargs['pk'])
+
+		return GroupMembers.objects.filter(
+			group=expense.group,
+			user=request.user,
+		).exists()

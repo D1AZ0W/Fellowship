@@ -8,7 +8,7 @@ from groups.models import Groups
 
 from .models import Expense
 from .pagination import GroupPagination
-from .permission import IsParticipant
+from .permission import IsGroupMember, IsParticipant
 from .renderers import ExpenseRenderer
 from .serializers import (
 	CreateExpenseSerializer,
@@ -76,7 +76,7 @@ class UserExpenseView(APIView):
 
 
 class DetailExpenseView(APIView):
-	permission_classes = [IsAuthenticated, IsParticipant]
+	permission_classes = [IsAuthenticated, IsGroupMember]
 	renderer_classes = [ExpenseRenderer]
 
 	def get(self, request, pk):
