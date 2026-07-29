@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -201,11 +203,7 @@ class DetailExpenseSerializer(serializers.ModelSerializer):
 
 
 class EditExpenseSerializer(serializers.ModelSerializer):
-	user_amounts = UserAmountSerializer(
-		many=True,
-		required=False,
-		write_only=True,
-	)
+	user_amounts = serializers.JSONField(required=False)
 
 	class Meta:
 		model = Expense
@@ -269,13 +267,13 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 		for attr, value in validated_data.items():
 			setattr(instance, attr, value)
 		instance.save()
-		ExpenseParticipants.objects.filter(expense=instance).delete()
 
 		participants = list(
 			ExpenseParticipants.objects.filter(expense=instance).values_list(
 				'user_id', flat=True
 			)
 		)
+		ExpenseParticipants.objects.filter(expense=instance).delete()
 
 		if instance.split_type == 'Equal':
 			each_amount = instance.amount / len(participants)
@@ -288,19 +286,21 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 				)
 
 		elif instance.split_type == 'Exact':
-			for user_id, amount in user_amounts:
+			for item in user_amounts:
 				ExpenseParticipants.objects.create(
 					expense=instance,
-					user_id=user_id,
-					amount_owed=amount,
+					user_id=item['user_id'],
+					amount_owed=item['amount'],
 				)
 
 		else:
-			for user_id, amount in user_amounts:
+			for item in user_amounts:
 				ExpenseParticipants.objects.create(
 					expense=instance,
-					user_id=user_id,
-					amount_owed=amount / 100 * instance.amount,
+					user_id=item['user_id'],
+					amount_owed=(
+						instance.amount * item['amount'] / Decimal(100)
+					),
 				)
 
 		return instance

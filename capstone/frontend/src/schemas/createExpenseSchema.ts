@@ -43,6 +43,7 @@ export const createExpenseSchema = z
     paid_by: z.number({
       error: 'Select who paid for expense',
     }),
+    participants: z.array(z.number()).min(1, 'Select at least one participant'),
 
     group: z.number().optional(),
   })

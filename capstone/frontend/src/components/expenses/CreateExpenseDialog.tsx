@@ -47,6 +47,7 @@ export const CreateExpenseDialog = ({
     getValues,
     formState: { errors },
     control,
+    watch,
   } = useForm<CreateExpenseForm>({
     resolver: zodResolver(createExpenseSchema),
   })
@@ -57,9 +58,33 @@ export const CreateExpenseDialog = ({
     defaultValue: 'Equal',
   })
 
+  const watchedAmounts = watch('user_amounts')
+  const totalAmount = watch('amount')
+  const getAmountDifference = (ua: CreateExpenseForm['user_amounts']) => {
+    let amountLeft = 0
+    const total =
+      ua?.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) ?? 0
+    if (watchSplitType == 'Exact') {
+      amountLeft = totalAmount - total
+    } else {
+      amountLeft = 100 - total
+    }
+
+    if (amountLeft === 0) {
+      return {
+        label: 'Perfectly split',
+        color: 'text-green-500',
+      }
+    }
+    return {
+      label: `${amountLeft.toFixed(2)} remaining`,
+      color: 'text-red-500',
+    }
+  }
+  const amountStatus = getAmountDifference(watchedAmounts)
+
   const onSubmit = (data: CreateExpenseForm) => {
     const formData = new FormData()
-
     formData.append('title', data.title)
     formData.append('amount', data.amount.toString())
     formData.append('category', data.category)
@@ -69,8 +94,8 @@ export const CreateExpenseDialog = ({
     formData.append('group', groupId.toString())
     formData.append('paid_by', data.paid_by.toString())
     if (watchSplitType !== 'Equal') {
-      const userAmounts = getValues('user_amounts')
-      userAmounts?.forEach((entry, index) => {
+      const userAmount = getValues('user_amounts')
+      userAmount?.forEach((entry, index) => {
         formData.append(
           `user_amounts[${index}]user_id`,
           entry.user_id.toString(),
@@ -99,22 +124,24 @@ export const CreateExpenseDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl max-h-screen overflow-scroll">
+      <DialogContent className="max-w-3xl max-h-[90vh]  overflow-auto">
         <DialogHeader>
           <DialogTitle>Add Expense</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1 ">
-          <div className="space-y-2">
-            <Label>Title</Label>
-            <Input type="text" {...register('title')} />
-            {errors.title && (
-              <p className="text-sm text-destructive">{errors.title.message}</p>
-            )}
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-4 space-y-2">
+              <Label>Title</Label>
+              <Input type="text" {...register('title')} />
+              {errors.title && (
+                <p className="text-sm text-destructive">
+                  {errors.title.message}
+                </p>
+              )}
+            </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="col-span-2 space-y-2">
               <Label>Amount</Label>
 
               <Input
@@ -131,7 +158,7 @@ export const CreateExpenseDialog = ({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="col-span-2 space-y-2">
               <Label>Date</Label>
               <Input
                 type="date"
@@ -185,50 +212,87 @@ export const CreateExpenseDialog = ({
                 </p>
               )}
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="paid_by">Paid By</Label>
+
+              <select
+                id="paid_by"
+                {...register('paid_by', {
+                  valueAsNumber: true,
+                })}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+              >
+                {members.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.first_name} {member.last_name}
+                  </option>
+                ))}
+              </select>
+
+              {errors.paid_by && (
+                <p className="text-sm text-destructive">
+                  {errors.paid_by.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label>Note</Label>
+              <Textarea {...register('note')} />
+            </div>
           </div>
 
           {watchSplitType !== 'Equal' && (
             <div className="space-y-1">
               <Label>Split Amounts</Label>
 
-              {members.map((member) => {
-                const index = members.findIndex((m) => m.id === member.id)
-                return (
-                  <div key={member.id} className="flex items-center gap-3">
-                    <Label
-                      htmlFor={`user_amounts.${index}.amount`}
-                      className="w-24 shrink-0 truncate"
-                    >
-                      {member.first_name} {member.last_name}
-                    </Label>
+              {watchedAmounts && (
+                <span className={`text-sm ${amountStatus.color}`}>
+                  {amountStatus.label}
+                </span>
+              )}
 
-                    <div className="relative flex-1">
-                      <Input
-                        id={`user_amounts.${index}.amount`}
-                        type="number"
-                        step="0.01"
-                        {...register(`user_amounts.${index}.amount`, {
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                {members.map((member) => {
+                  const index = members.findIndex((m) => m.id === member.id)
+
+                  return (
+                    <div key={member.id} className="flex items-center gap-3">
+                      <Label
+                        htmlFor={`user_amounts.${index}.amount`}
+                        className="w-24 shrink-0 truncate"
+                      >
+                        {member.first_name} {member.last_name}
+                      </Label>
+
+                      <div className="relative flex-1">
+                        <Input
+                          id={`user_amounts.${index}.amount`}
+                          type="number"
+                          step="0.01"
+                          {...register(`user_amounts.${index}.amount`, {
+                            valueAsNumber: true,
+                          })}
+                        />
+
+                        {watchSplitType === 'Percentage' && (
+                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
+                            %
+                          </span>
+                        )}
+                      </div>
+
+                      <input
+                        type="hidden"
+                        defaultValue={member.id}
+                        {...register(`user_amounts.${index}.user_id`, {
                           valueAsNumber: true,
                         })}
                       />
-
-                      {watchSplitType === 'Percentage' && (
-                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
-                          %
-                        </span>
-                      )}
                     </div>
-
-                    <input
-                      type="hidden"
-                      defaultValue={member.id}
-                      {...register(`user_amounts.${index}.user_id`, {
-                        valueAsNumber: true,
-                      })}
-                    />
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           )}
           {errors.user_amounts && (
@@ -236,77 +300,51 @@ export const CreateExpenseDialog = ({
               {errors.user_amounts.message}
             </p>
           )}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label>Participants</Label>
 
-          <div className="space-y-2">
-            <Label htmlFor="paid_by">Paid By</Label>
+              <div className="grid grid-cols-2 gap-3">
+                {members.map((member) => (
+                  <div key={member.id} className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id={`member-${member.id}`}
+                      defaultChecked
+                      className="h-4 w-4 rounded border-input"
+                      onChange={(e) => {
+                        const checked = e.target.checked
 
-            <select
-              id="paid_by"
-              {...register('paid_by', {
-                valueAsNumber: true,
-              })}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              {members.map((member) => (
-                <option key={member.id} value={member.id}>
-                  {member.first_name} {member.last_name}
-                </option>
-              ))}
-            </select>
+                        setParticipantIds((prev) =>
+                          checked
+                            ? [...prev, member.id]
+                            : prev.filter((id) => id !== member.id),
+                        )
+                      }}
+                    />
 
-            {errors.paid_by && (
-              <p className="text-sm text-destructive">
-                {errors.paid_by.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label>Participants</Label>
-
-            <div className="space-y-3">
-              {members.map((member) => (
-                <div key={member.id} className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id={`member-${member.id}`}
-                    defaultChecked
-                    className="h-4 w-4 rounded border-input"
-                    onChange={(e) => {
-                      const checked = e.target.checked
-
-                      setParticipantIds((prev) =>
-                        checked
-                          ? [...prev, member.id]
-                          : prev.filter((id) => id !== member.id),
-                      )
-                    }}
-                  />
-
-                  <Label
-                    htmlFor={`member-${member.id}`}
-                    className="cursor-pointer"
-                  >
-                    {member.first_name} {member.last_name}
-                  </Label>
-                </div>
-              ))}
+                    <Label
+                      htmlFor={`member-${member.id}`}
+                      className="cursor-pointer"
+                    >
+                      {member.first_name} {member.last_name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label>Note</Label>
-            <Textarea {...register('note')} />
-          </div>
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <Label>Receipt (Optional)</Label>
 
-          <div className="space-y-2">
-            <Label>Receipt (Optional)</Label>
-
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-            />
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+                />
+              </div>
+            </div>
           </div>
 
           <DialogFooter>

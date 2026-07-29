@@ -3,8 +3,6 @@ import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useEditExpense } from '#/hooks/expense/useEditExpense'
-import type { CreateExpenseForm } from '#/schemas/createExpenseSchema'
-import { createExpenseSchema } from '#/schemas/createExpenseSchema'
 import type { ExpenseDetails } from '#/types/expense'
 
 import { Button } from '@/components/ui/button'
@@ -18,6 +16,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { editExpenseSchema } from '#/schemas/editExpenseSchema'
+import type { EditExpenseForm } from '#/schemas/editExpenseSchema'
 
 type Props = {
   open: boolean
@@ -36,8 +36,9 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
     reset,
     formState: { errors },
     control,
-  } = useForm<CreateExpenseForm>({
-    resolver: zodResolver(createExpenseSchema),
+    watch,
+  } = useForm<EditExpenseForm>({
+    resolver: zodResolver(editExpenseSchema),
   })
 
   const watchSplitType = useWatch({
@@ -45,6 +46,31 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
     name: 'split_type',
     defaultValue: 'Equal',
   })
+
+  const watchedAmounts = watch('user_amounts')
+  const totalAmount = watch('amount')
+  const getAmountDifference = (ua: EditExpenseForm['user_amounts']) => {
+    let amountLeft = 0
+    const total =
+      ua?.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) ?? 0
+    if (watchSplitType == 'Exact') {
+      amountLeft = totalAmount - total
+    } else {
+      amountLeft = 100 - total
+    }
+
+    if (amountLeft === 0) {
+      return {
+        label: 'Perfectly split',
+        color: 'text-green-500',
+      }
+    }
+    return {
+      label: `${amountLeft.toFixed(2)} remaining`,
+      color: 'text-red-500',
+    }
+  }
+  const amountStatus = getAmountDifference(watchedAmounts)
 
   useEffect(() => {
     if (open) {
@@ -62,7 +88,7 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
     }
   }, [expense, open, reset])
 
-  const onSubmit = (data: CreateExpenseForm) => {
+  const onSubmit = (data: EditExpenseForm) => {
     const formData = new FormData()
 
     formData.append('title', data.title)
@@ -72,9 +98,13 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
     formData.append('expense_date', data.expense_date)
     formData.append('note', data.note ?? '')
     formData.append('paid_by', data.paid_by.toString())
+    formData.append('user_amounts', JSON.stringify(data.user_amounts))
 
     if (image) {
       formData.append('image', image)
+    }
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value)
     }
 
     editExpenseMutation.mutate(formData, {
@@ -87,44 +117,24 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>Edit Expense</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          <div className="space-y-2">
-            <Label>Title</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-4 space-y-2">
+              <Label>Title</Label>
+              <Input type="text" {...register('title')} />
+              {errors.title && (
+                <p className="text-sm text-destructive">
+                  {errors.title.message}
+                </p>
+              )}
+            </div>
 
-            <Input {...register('title')} />
-
-            {errors.title && (
-              <p className="text-sm text-destructive">{errors.title.message}</p>
-            )}
-          </div>
-          <div className="space-y-2 grid grid-cols-2">
-            <Label>Current Image</Label>
-
-            {expense.image ? (
-              <img
-                src={`${import.meta.env.VITE_BASE_URL}${expense.image}`}
-                alt={expense.title}
-                className="h-34 w-50 rounded-lg border object-cover"
-              />
-            ) : (
-              <p className="text-sm text-muted-foreground">No image uploaded</p>
-            )}
-            <Label>Replace Image (Optional)</Label>
-
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="col-span-2 space-y-2">
               <Label>Amount</Label>
 
               <Input
@@ -134,7 +144,6 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
                   valueAsNumber: true,
                 })}
               />
-
               {errors.amount && (
                 <p className="text-sm text-destructive">
                   {errors.amount.message}
@@ -142,11 +151,13 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="col-span-2 space-y-2">
               <Label>Date</Label>
-
-              <Input type="date" {...register('expense_date')} />
-
+              <Input
+                type="date"
+                {...register('expense_date')}
+                defaultValue={new Date().toISOString().split('T')[0]}
+              />
               {errors.expense_date && (
                 <p className="text-sm text-destructive">
                   {errors.expense_date.message}
@@ -171,7 +182,6 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
                 <option value="Services">Services</option>
                 <option value="General">General</option>
               </select>
-
               {errors.category && (
                 <p className="text-sm text-destructive">
                   {errors.category.message}
@@ -181,7 +191,6 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
 
             <div className="space-y-2">
               <Label>Split Type</Label>
-
               <select
                 {...register('split_type')}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3"
@@ -190,101 +199,124 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
                 <option value="Exact">Exact</option>
                 <option value="Percentage">Percentage</option>
               </select>
-
               {errors.split_type && (
                 <p className="text-sm text-destructive">
                   {errors.split_type.message}
                 </p>
               )}
             </div>
-          </div>
-          {watchSplitType !== 'Equal' && (
-            <div className="space-y-3">
-              <Label>Split Amounts</Label>
 
-              {expense.participants.map((participant) => {
-                const index = expense.participants.findIndex(
-                  (p) => p.id === participant.id,
-                )
+            <div className="space-y-2">
+              <Label htmlFor="paid_by">Paid By</Label>
 
-                return (
-                  <div key={participant.id} className="flex items-center gap-3">
-                    <Label
-                      htmlFor={`user_amounts.${index}.amount`}
-                      className="w-32 shrink-0 "
-                    >
-                      {participant.first_name} {participant.last_name} :
-                    </Label>
+              <select
+                id="paid_by"
+                {...register('paid_by', {
+                  valueAsNumber: true,
+                })}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+              >
+                {expense.participants.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.first_name} {member.last_name}
+                  </option>
+                ))}
+              </select>
 
-                    <div className="relative flex-1">
-                      <Input
-                        id={`user_amounts.${index}.amount`}
-                        type="number"
-                        step="0.01"
-                        {...register(`user_amounts.${index}.amount`, {
-                          valueAsNumber: true,
-                        })}
-                        className="p-5"
-                      />
-
-                      {watchSplitType === 'Percentage' && (
-                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
-                          %
-                        </span>
-                      )}
-                    </div>
-
-                    <input
-                      type="hidden"
-                      defaultValue={participant.id}
-                      {...register(`user_amounts.${index}.user_id`, {
-                        valueAsNumber: true,
-                      })}
-                    />
-                  </div>
-                )
-              })}
-              {errors.user_amounts && (
+              {errors.paid_by && (
                 <p className="text-sm text-destructive">
-                  {errors.user_amounts.message}
+                  {errors.paid_by.message}
                 </p>
               )}
             </div>
+            <div className="space-y-2">
+              <Label>Note</Label>
+              <Textarea {...register('note')} />
+            </div>
+          </div>
+
+          {watchSplitType !== 'Equal' && (
+            <div className="space-y-1">
+              <Label>Split Amounts</Label>
+
+              {watchedAmounts && (
+                <span className={`text-sm ${amountStatus.color}`}>
+                  {amountStatus.label}
+                </span>
+              )}
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                {expense.participants.map((member) => {
+                  const index = expense.participants.findIndex(
+                    (m) => m.id === member.id,
+                  )
+                  return (
+                    <div key={member.id} className="flex items-center gap-3">
+                      <Label
+                        htmlFor={`user_amounts.${index}.amount`}
+                        className="w-24 shrink-0 truncate"
+                      >
+                        {member.first_name} {member.last_name}
+                      </Label>
+
+                      <div className="relative flex-1">
+                        <Input
+                          id={`user_amounts.${index}.amount`}
+                          type="number"
+                          step="0.01"
+                          {...register(`user_amounts.${index}.amount`, {
+                            valueAsNumber: true,
+                          })}
+                        />
+
+                        {watchSplitType === 'Percentage' && (
+                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
+                            %
+                          </span>
+                        )}
+                      </div>
+
+                      <input
+                        type="hidden"
+                        defaultValue={member.id}
+                        {...register(`user_amounts.${index}.user_id`, {
+                          valueAsNumber: true,
+                        })}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           )}
-
-          <div className="space-y-2">
-            <Label>Paid By</Label>
-
-            <select
-              {...register('paid_by', {
-                valueAsNumber: true,
-              })}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              {expense.participants.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.first_name} {p.last_name}
-                </option>
-              ))}
-            </select>
-
-            {errors.paid_by && (
-              <p className="text-sm text-destructive">
-                {errors.paid_by.message}
-              </p>
-            )}
+          {errors.user_amounts && (
+            <p className="text-sm text-destructive">
+              {errors.user_amounts.message}
+            </p>
+          )}
+          <div className="space-y-2 grid grid-cols-2">
+            <div className="row-span-2">
+              <Label>Current Image</Label>{' '}
+              {expense.image ? (
+                <img
+                  src={`${import.meta.env.VITE_BASE_URL}${expense.image}`}
+                  alt={expense.title}
+                  className="h-34 w-50 rounded-lg border object-cover"
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No image uploaded
+                </p>
+              )}{' '}
+            </div>
+            <div className="row-span-2">
+              <Label>Replace Image (Optional)</Label>{' '}
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+              />{' '}
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <Label>Note</Label>
-
-            <Textarea {...register('note')} />
-
-            {errors.note && (
-              <p className="text-sm text-destructive">{errors.note.message}</p>
-            )}
-          </div>
-
           <DialogFooter>
             <Button
               type="submit"
