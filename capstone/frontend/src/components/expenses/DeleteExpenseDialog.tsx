@@ -1,4 +1,4 @@
-import { useDeleteGroup } from '#/hooks/groups/useDeleteGroup'
+import { useDeleteExpense } from '#/hooks/expense/useDeleteExpense'
 
 import {
   AlertDialog,
@@ -22,13 +22,13 @@ export const DeleteExpenseDialog = ({
   onOpenChange,
   expenseId,
 }: Props) => {
-  const deleteMutation = useDeleteGroup()
+  const deleteMutation = useDeleteExpense()
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Group?</AlertDialogTitle>
+          <AlertDialogTitle>Delete Expense?</AlertDialogTitle>
 
           <AlertDialogDescription>
             This action cannot be undone.

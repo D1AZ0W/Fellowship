@@ -55,7 +55,11 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		participants = validated_data.pop('participants')
 		expense = Expense.objects.create(**validated_data)
-		each_amount = expense.amount / len(participants)
+		if validated_data['split_type'] == 'Equal':
+			each_amount = expense.amount / len(participants)
+		# elif validated_data['split_type']== 'Exact':
+		# elif validated_data['split_type'] == 'Percentage':
+
 		for user_id in participants:
 			user = User.objects.get(pk=user_id)
 			ExpenseParticipants.objects.create(
