@@ -13,20 +13,21 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { Logout } from '../auth/Logout'
+import { useAuth } from '#/hooks/auth/useAuth'
 
 export function AppSidebar() {
+  const user = useAuth()
+  const username = user.user?.username
   return (
     <Sidebar>
-      <SidebarHeader className="border-b p-4">
+      <SidebarHeader className="border-b p-4 bg-linear-to-r from-primary  to-amber-950">
         <div className="flex items-center gap-3">
-          <img
-            src="/logo512.png"
-            alt="BillDiv"
-            className="h-12 w-20 rounded-md"
-          />
+          <img src="/logo512.png" alt="BillDiv" className="h-8 w-16 " />
 
           <div>
-            <h2 className="font-semibold">BillDiv</h2>
+            <h1 className="font-bold text-3xl font-sans text-primary-foreground scale-x-140">
+              BillDiv
+            </h1>
           </div>
         </div>
       </SidebarHeader>
@@ -34,10 +35,13 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-5 mt-3 transition-all duration-200">
               <SidebarMenuItem>
-                <Link to="/dashboard">
-                  <SidebarMenuButton>
+                <Link
+                  to="/dashboard"
+                  className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
+                >
+                  <SidebarMenuButton className="text-xl p-7">
                     <Home />
                     <span>Home</span>
                   </SidebarMenuButton>
@@ -45,8 +49,11 @@ export function AppSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <Link to="/groups">
-                  <SidebarMenuButton>
+                <Link
+                  to="/groups"
+                  className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
+                >
+                  <SidebarMenuButton className="text-xl p-7">
                     <Users />
                     <span>Groups</span>
                   </SidebarMenuButton>
@@ -54,8 +61,11 @@ export function AppSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <Link to="/expenses">
-                  <SidebarMenuButton>
+                <Link
+                  to="/expenses"
+                  className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
+                >
+                  <SidebarMenuButton className="text-xl p-7">
                     <Receipt />
                     <span>Expenses</span>
                   </SidebarMenuButton>
@@ -63,8 +73,11 @@ export function AppSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <Link to="/profile">
-                  <SidebarMenuButton>
+                <Link
+                  to="/profile"
+                  className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
+                >
+                  <SidebarMenuButton className="text-xl p-7">
                     <User />
                     <span>Profile</span>
                   </SidebarMenuButton>
@@ -74,7 +87,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
+      <SidebarGroup>{username}</SidebarGroup>
       <SidebarFooter className="border-t p-2">
         <SidebarMenu>
           <SidebarMenuItem>

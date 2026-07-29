@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator'
 import type { Members } from '#/types/group'
 import { Link } from '@tanstack/react-router'
 import { ExpenseCard } from '../expenses/ExpenseCard'
+import { AlertMessage } from '../shared/AlertMessage'
 
 type Props = {
   groupId: number
@@ -17,7 +18,7 @@ type Props = {
 
 export const GroupExpenses = ({ groupId, members }: Props) => {
   const [open, setOpen] = useState(false)
-  const { data: expenses, isPending } = useGroupExpense(groupId)
+  const { data: expenses, isPending, isError, error } = useGroupExpense(groupId)
 
   if (isPending) {
     return (
@@ -28,13 +29,22 @@ export const GroupExpenses = ({ groupId, members }: Props) => {
       </Card>
     )
   }
+  if (isError) {
+    return (
+      <AlertMessage
+        variant="destructive"
+        title="Error while fetching expenses"
+        message={error}
+      />
+    )
+  }
 
   return (
     <>
       <Card className="lg:col-span-2">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Expenses</CardTitle>
-          {expenses?.length !== 0 && (
+          {expenses.length !== 0 && (
             <Button onClick={() => setOpen(true)}>Add Expense</Button>
           )}
         </CardHeader>
@@ -42,7 +52,7 @@ export const GroupExpenses = ({ groupId, members }: Props) => {
         <Separator />
 
         <CardContent className="max-h-96 overflow-y-auto p-4">
-          {expenses?.length === 0 ? (
+          {expenses.length === 0 ? (
             <div className="flex h-72 flex-col items-center justify-center text-center">
               <p className="text-lg font-medium">No expenses yet</p>
 
@@ -56,7 +66,7 @@ export const GroupExpenses = ({ groupId, members }: Props) => {
             </div>
           ) : (
             <div className="space-y-3">
-              {expenses?.map((expense) => (
+              {expenses.map((expense) => (
                 <Link
                   key={expense.id}
                   to="/expenses/$id"

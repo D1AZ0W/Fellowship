@@ -10,7 +10,7 @@ export const GroupIndv = () => {
 
   const { data: group, isPending, isError, error } = useGroup(Number(id))
 
-  if (isPending || !group) {
+  if (isPending) {
     return (
       <div className="flex h-64 items-center justify-center">Loading...</div>
     )

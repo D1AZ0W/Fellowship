@@ -14,7 +14,7 @@ export const ExpenseIndv = () => {
 
   const { data: expense, isPending, isError, error } = useExpense(Number(id))
 
-  if (isPending || !expense) {
+  if (isPending) {
     return (
       <div className="flex h-64 items-center justify-center">Loading...</div>
     )

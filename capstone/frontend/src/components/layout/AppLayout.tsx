@@ -13,7 +13,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       <AppSidebar />
 
       <main className="flex min-h-screen flex-1 flex-col">
-        <header className="border-b p-4">
+        <header className="border-b p-4 md:hidden">
           <SidebarTrigger />
         </header>
 
