@@ -8,9 +8,22 @@ from .models import Expense, ExpenseParticipants
 User = get_user_model()
 
 
+class UserAmountSerializer(serializers.Serializer):
+	user_id = serializers.IntegerField()
+	amount = serializers.DecimalField(
+		max_digits=10,
+		decimal_places=2,
+	)
+
+
 class CreateExpenseSerializer(serializers.ModelSerializer):
 	participants = serializers.ListField(
-		child=serializers.IntegerField(), write_only=True
+		child=serializers.IntegerField(),
+		write_only=True,
+	)
+
+	user_amounts = UserAmountSerializer(
+		many=True, required=False, write_only=True
 	)
 
 	class Meta:
@@ -21,6 +34,7 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 			'amount',
 			'category',
 			'split_type',
+			'user_amounts',
 			'expense_date',
 			'note',
 			'created_at',
@@ -32,39 +46,88 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 		read_only_fields = ['id', 'created_at', 'edited_at']
 
 	def validate(self, attrs):
-		group = attrs.get('group')
-		paid_by = attrs.get('paid_by')
-		participants = self.initial_data.get('participants', [])
+		group = attrs['group']
+		paid_by = attrs['paid_by']
+		participants = attrs.get('participants', [])
+		user_amounts = attrs.get('user_amounts', [])
+		split_type = attrs['split_type']
+		total_amount = attrs['amount']
+
 		if not participants:
 			raise serializers.ValidationError(
 				{'Select at least one participant.'}
 			)
+
 		if not GroupMembers.objects.filter(group=group, user=paid_by).exists():
 			raise serializers.ValidationError(
 				{'Selected payer is not a member of this group.'}
 			)
+
 		for user_id in participants:
 			if not GroupMembers.objects.filter(
-				group=group, user_id=user_id
+				group=group,
+				user_id=user_id,
 			).exists():
 				raise serializers.ValidationError(
 					{f'User {user_id} is not a member of this group.'}
 				)
+
+		if split_type != 'Equal':
+			if len(user_amounts) != len(participants):
+				raise serializers.ValidationError(
+					{'Provide values for every participant.'}
+				)
+
+			for item in user_amounts:
+				if item['user_id'] not in participants:
+					raise serializers.ValidationError(
+						{'Every user_amount must belong to a participant.'}
+					)
+
+		if split_type == 'Exact':
+			total = sum(item['amount'] for item in user_amounts)
+			if total != total_amount:
+				raise serializers.ValidationError(
+					{'Exact amounts must equal the total expense.'}
+				)
+
+		elif split_type == 'Percentage':
+			total = sum(item['amount'] for item in user_amounts)
+			if total != 100:
+				raise serializers.ValidationError(
+					{'Percentages must add up to 100.'}
+				)
+
 		return attrs
 
 	def create(self, validated_data):
 		participants = validated_data.pop('participants')
+		user_amounts = validated_data.pop('user_amounts', [])
+		split_type = validated_data['split_type']
+		total_amount = validated_data['amount']
 		expense = Expense.objects.create(**validated_data)
-		if validated_data['split_type'] == 'Equal':
-			each_amount = expense.amount / len(participants)
-		# elif validated_data['split_type']== 'Exact':
-		# elif validated_data['split_type'] == 'Percentage':
-
-		for user_id in participants:
-			user = User.objects.get(pk=user_id)
-			ExpenseParticipants.objects.create(
-				expense=expense, user=user, amount_owed=each_amount
-			)
+		if split_type == 'Equal':
+			each_amount = total_amount / len(participants)
+			for user_id in participants:
+				ExpenseParticipants.objects.create(
+					expense=expense,
+					user_id=user_id,
+					amount_owed=each_amount,
+				)
+		elif split_type == 'Exact':
+			for item in user_amounts:
+				ExpenseParticipants.objects.create(
+					expense=expense,
+					user_id=item['user_id'],
+					amount_owed=item['amount'],
+				)
+		elif split_type == 'Percentage':
+			for item in user_amounts:
+				ExpenseParticipants.objects.create(
+					expense=expense,
+					user_id=item['user_id'],
+					amount_owed=(item['amount'] / 100) * total_amount,
+				)
 		return expense
 
 
@@ -138,6 +201,12 @@ class DetailExpenseSerializer(serializers.ModelSerializer):
 
 
 class EditExpenseSerializer(serializers.ModelSerializer):
+	user_amounts = UserAmountSerializer(
+		many=True,
+		required=False,
+		write_only=True,
+	)
+
 	class Meta:
 		model = Expense
 		fields = [
@@ -146,18 +215,92 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 			'amount',
 			'category',
 			'split_type',
+			'user_amounts',
 			'expense_date',
 			'note',
 			'paid_by',
 		]
 
-	def validate_paid_by(self, value):
+	def validate(self, attrs):
 		expense = self.instance
-		if not ExpenseParticipants.objects.filter(
-			expense=expense,
-			user=value,
-		).exists():
-			raise serializers.ValidationError(
-				'Payer must be one of the participants.'
+		participants = list(
+			ExpenseParticipants.objects.filter(expense=expense).values_list(
+				'user_id', flat=True
 			)
-		return value
+		)
+		paid_by = attrs.get('paid_by', expense.paid_by)
+		if paid_by.id not in participants:
+			raise serializers.ValidationError(
+				{'Payer must be one of the participants.'}
+			)
+		split_type = attrs.get('split_type', expense.split_type)
+		user_amounts = attrs.get('user_amounts', [])
+		total_amount = attrs.get('amount', expense.amount)
+
+		if split_type != 'Equal':
+			if len(user_amounts) != len(participants):
+				raise serializers.ValidationError(
+					{'Provide values for every participant.'}
+				)
+			for item in user_amounts:
+				if item['user_id'] not in participants:
+					raise serializers.ValidationError(
+						{'Cannot add or remove participants.'}
+					)
+
+		if split_type == 'Exact':
+			total = sum(item['amount'] for item in user_amounts)
+			if total != total_amount:
+				raise serializers.ValidationError(
+					{'Exact amounts must equal the expense amount.'}
+				)
+
+		elif split_type == 'Percentage':
+			total = sum(item['amount'] for item in user_amounts)
+			if total != 100:
+				raise serializers.ValidationError(
+					{'Percentages must add up to 100.'}
+				)
+
+		return attrs
+
+	def update(self, instance, validated_data):
+		user_amounts = validated_data.pop('user_amounts', [])
+		for attr, value in validated_data.items():
+			setattr(instance, attr, value)
+		instance.save()
+		ExpenseParticipants.objects.filter(expense=instance).delete()
+
+		participants = list(
+			ExpenseParticipants.objects.filter(expense=instance).values_list(
+				'user_id', flat=True
+			)
+		)
+
+		if instance.split_type == 'Equal':
+			each_amount = instance.amount / len(participants)
+
+			for user_id in participants:
+				ExpenseParticipants.objects.create(
+					expense=instance,
+					user_id=user_id,
+					amount_owed=each_amount,
+				)
+
+		elif instance.split_type == 'Exact':
+			for user_id, amount in user_amounts:
+				ExpenseParticipants.objects.create(
+					expense=instance,
+					user_id=user_id,
+					amount_owed=amount,
+				)
+
+		else:
+			for user_id, amount in user_amounts:
+				ExpenseParticipants.objects.create(
+					expense=instance,
+					user_id=user_id,
+					amount_owed=amount / 100 * instance.amount,
+				)
+
+		return instance

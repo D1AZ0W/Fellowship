@@ -26,11 +26,10 @@ class CreateExpenseView(APIView):
 	def post(self, request):
 		serializer = CreateExpenseSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
-		expense = serializer.save()
+		serializer.save()
 		return Response(
 			{
 				'msg': 'Expense created successfully.',
-				'expense': CreateExpenseSerializer(expense).data,
 			},
 			status=status.HTTP_201_CREATED,
 		)
@@ -99,7 +98,7 @@ class EditExpenseView(APIView):
 		serializer.save()
 		return Response(
 			{
-				'msg': 'Expense edited!',
+				'msg': 'Expense Edited Successfully!',
 			},
 			status=status.HTTP_200_OK,
 		)

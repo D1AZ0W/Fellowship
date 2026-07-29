@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useCreateExpense } from '#/hooks/expense/useCreateExpense'
@@ -44,9 +44,17 @@ export const CreateExpenseDialog = ({
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
+    control,
   } = useForm<CreateExpenseForm>({
     resolver: zodResolver(createExpenseSchema),
+  })
+
+  const watchSplitType = useWatch({
+    control,
+    name: 'split_type',
+    defaultValue: 'Equal',
   })
 
   const onSubmit = (data: CreateExpenseForm) => {
@@ -60,14 +68,24 @@ export const CreateExpenseDialog = ({
     formData.append('note', data.note ?? '')
     formData.append('group', groupId.toString())
     formData.append('paid_by', data.paid_by.toString())
-
-    participantIds.forEach((id) =>
-      formData.append('participants', id.toString()),
-    )
+    if (watchSplitType !== 'Equal') {
+      const userAmounts = getValues('user_amounts')
+      userAmounts?.forEach((entry, index) => {
+        formData.append(
+          `user_amounts[${index}]user_id`,
+          entry.user_id.toString(),
+        )
+        formData.append(`user_amounts[${index}]amount`, entry.amount.toString())
+      })
+    }
 
     if (image) {
       formData.append('image', image)
     }
+
+    participantIds.forEach((id) =>
+      formData.append('participants', id.toString()),
+    )
 
     createExpenseMutation.mutate(formData, {
       onSuccess: () => {
@@ -81,15 +99,15 @@ export const CreateExpenseDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-xl max-h-screen overflow-scroll">
         <DialogHeader>
           <DialogTitle>Add Expense</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1 ">
           <div className="space-y-2">
             <Label>Title</Label>
-            <Input {...register('title')} />
+            <Input type="text" {...register('title')} />
             {errors.title && (
               <p className="text-sm text-destructive">{errors.title.message}</p>
             )}
@@ -168,6 +186,56 @@ export const CreateExpenseDialog = ({
               )}
             </div>
           </div>
+
+          {watchSplitType !== 'Equal' && (
+            <div className="space-y-1">
+              <Label>Split Amounts</Label>
+
+              {members.map((member) => {
+                const index = members.findIndex((m) => m.id === member.id)
+                return (
+                  <div key={member.id} className="flex items-center gap-3">
+                    <Label
+                      htmlFor={`user_amounts.${index}.amount`}
+                      className="w-24 shrink-0 truncate"
+                    >
+                      {member.first_name} {member.last_name}
+                    </Label>
+
+                    <div className="relative flex-1">
+                      <Input
+                        id={`user_amounts.${index}.amount`}
+                        type="number"
+                        step="0.01"
+                        {...register(`user_amounts.${index}.amount`, {
+                          valueAsNumber: true,
+                        })}
+                      />
+
+                      {watchSplitType === 'Percentage' && (
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
+                          %
+                        </span>
+                      )}
+                    </div>
+
+                    <input
+                      type="hidden"
+                      defaultValue={member.id}
+                      {...register(`user_amounts.${index}.user_id`, {
+                        valueAsNumber: true,
+                      })}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {errors.user_amounts && (
+            <p className="text-sm text-destructive">
+              {errors.user_amounts.message}
+            </p>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="paid_by">Paid By</Label>

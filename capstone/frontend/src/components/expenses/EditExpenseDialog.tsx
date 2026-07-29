@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useEditExpense } from '#/hooks/expense/useEditExpense'
@@ -35,8 +35,15 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm<CreateExpenseForm>({
     resolver: zodResolver(createExpenseSchema),
+  })
+
+  const watchSplitType = useWatch({
+    control,
+    name: 'split_type',
+    defaultValue: 'Equal',
   })
 
   useEffect(() => {
@@ -191,6 +198,59 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
               )}
             </div>
           </div>
+          {watchSplitType !== 'Equal' && (
+            <div className="space-y-3">
+              <Label>Split Amounts</Label>
+
+              {expense.participants.map((participant) => {
+                const index = expense.participants.findIndex(
+                  (p) => p.id === participant.id,
+                )
+
+                return (
+                  <div key={participant.id} className="flex items-center gap-3">
+                    <Label
+                      htmlFor={`user_amounts.${index}.amount`}
+                      className="w-32 shrink-0 "
+                    >
+                      {participant.first_name} {participant.last_name} :
+                    </Label>
+
+                    <div className="relative flex-1">
+                      <Input
+                        id={`user_amounts.${index}.amount`}
+                        type="number"
+                        step="0.01"
+                        {...register(`user_amounts.${index}.amount`, {
+                          valueAsNumber: true,
+                        })}
+                        className="p-5"
+                      />
+
+                      {watchSplitType === 'Percentage' && (
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
+                          %
+                        </span>
+                      )}
+                    </div>
+
+                    <input
+                      type="hidden"
+                      defaultValue={participant.id}
+                      {...register(`user_amounts.${index}.user_id`, {
+                        valueAsNumber: true,
+                      })}
+                    />
+                  </div>
+                )
+              })}
+              {errors.user_amounts && (
+                <p className="text-sm text-destructive">
+                  {errors.user_amounts.message}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Paid By</Label>
