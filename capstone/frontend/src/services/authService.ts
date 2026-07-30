@@ -19,6 +19,6 @@ export const register = async (
   return res.data
 }
 export const logout = async (): Promise<MessageResponse> => {
-  const res = await api.post('api-auth/logout')
+  const res = await api.post('api-auth/logout/')
   return res.data
 }

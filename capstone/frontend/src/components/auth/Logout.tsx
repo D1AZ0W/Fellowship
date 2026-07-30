@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '#/hooks/auth/useAuth'
 import {
   AlertDialog,
@@ -17,12 +16,10 @@ import { Button } from '../ui/button'
 
 export function Logout() {
   const auth = useAuth()
-  const navigate = useNavigate()
 
   const handleLogout = () => {
     auth.logout()
     toast.success('Logged out successfully')
-    navigate({ to: '/login' })
   }
   return (
     <AlertDialog>

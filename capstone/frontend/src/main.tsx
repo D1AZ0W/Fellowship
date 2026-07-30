@@ -22,10 +22,8 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-        <Toaster position="top-right" />
-      </AuthProvider>
+      <RouterProvider router={router} />
+      <Toaster position="top-right" />
     </QueryClientProvider>,
   )
 }

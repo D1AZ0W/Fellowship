@@ -6,6 +6,7 @@ import { logout as logoutService } from '#/services/authService'
 import { profile as profileGet } from '#/services/profileService'
 import { useProfile } from '#/hooks/profile/useProfile'
 import type { User } from '#/types/auth'
+import { useNavigate } from '@tanstack/react-router'
 
 interface AuthContextType {
   user: User | null
@@ -21,6 +22,7 @@ type Props = {
 }
 
 export const AuthProvider = ({ children }: Props) => {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const { data: user } = useProfile()
@@ -40,6 +42,7 @@ export const AuthProvider = ({ children }: Props) => {
     queryClient.removeQueries({
       queryKey: ['profile'],
     })
+    navigate({ to: '/' })
   }
 
   const value = useMemo(
