@@ -17,7 +17,7 @@ import { useAuth } from '#/hooks/auth/useAuth'
 
 export function AppSidebar() {
   const user = useAuth()
-  const username = user.user?.username
+  user.refreshUser()
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4 bg-linear-to-r from-primary  to-amber-950">
@@ -87,7 +87,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarGroup>{username}</SidebarGroup>
       <SidebarFooter className="border-t p-2">
         <SidebarMenu>
           <SidebarMenuItem>

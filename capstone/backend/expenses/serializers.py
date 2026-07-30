@@ -1,11 +1,12 @@
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers
 
 from groups.models import GroupMembers
 
-from .models import Expense, ExpenseParticipants
+from .models import Expense, ExpenseParticipants, Settlement, SettlementImage
 
 User = get_user_model()
 
@@ -226,11 +227,6 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 				'user_id', flat=True
 			)
 		)
-		paid_by = attrs.get('paid_by', expense.paid_by)
-		if paid_by.id not in participants:
-			raise serializers.ValidationError(
-				{'Payer must be one of the participants.'}
-			)
 		split_type = attrs.get('split_type', expense.split_type)
 		user_amounts = attrs.get('user_amounts', [])
 		total_amount = attrs.get('amount', expense.amount)
@@ -304,3 +300,55 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 				)
 
 		return instance
+
+
+class ImageSettlementSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = SettlementImage
+		fields = ['id', 'image', 'created_at']
+		read_only_fields = ['id', 'created_at']
+
+
+class SettlementCreateSerializer(serializers.ModelSerializer):
+	images = serializers.ListField(
+		child=serializers.ImageField(), required=False, write_only=True
+	)
+
+	class Meta:
+		model = Settlement
+		fields = ['group', 'payer', 'recipient', 'amount', 'note', 'images']
+
+	def validate(self, attrs):
+		payer = attrs['payer']
+		recipient = attrs['recipient']
+		group = attrs['group']
+		amount = attrs['amount']
+		if payer == recipient:
+			raise serializers.ValidationError(
+				'You cannot settle payment with yourself.'
+			)
+		if not GroupMembers.objects.filter(user=payer, group=group).exists():
+			raise serializers.ValidationError('Payer not in the group.')
+		if not GroupMembers.objects.filter(user=recipient, group=group):
+			raise serializers.ValidationError('Recipient not in the group')
+		if amount <= Decimal('0.00'):
+			raise serializers.ValidationError(
+				'Settlement amount must be greater than zero.'
+			)
+		return attrs
+
+	@transaction.atomic
+	def create(self, validated_data):
+		images = validated_data.pop('images', [])
+		validated_data['created_by'] = self.context['request'].user
+		settlement = Settlement.objects.create(**validated_data)
+		SettlementImage.objects.bulk_create(
+			[
+				SettlementImage(
+					settlement=settlement,
+					image=image,
+				)
+				for image in images
+			]
+		)
+		return settlement

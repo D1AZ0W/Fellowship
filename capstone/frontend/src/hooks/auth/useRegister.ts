@@ -10,9 +10,9 @@ export const useRegister = () => {
   const auth = useAuth()
   return useMutation({
     mutationFn: register,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast.success(data.msg)
-      auth.login()
+      await auth.login()
       navigate({ to: '/' })
     },
     onError: (error: Error) => {

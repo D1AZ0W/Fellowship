@@ -40,7 +40,7 @@ export const ExpenseParticipants = ({ participants }: ParticipantsProps) => {
               </div>
             </div>
 
-            <Badge variant="outline">Owes ${participant.amount_owed}</Badge>
+            <Badge variant="outline">Owes Rs. {participant.amount_owed}</Badge>
           </div>
         ))}
       </CardContent>

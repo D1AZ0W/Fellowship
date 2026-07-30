@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
-import { createContext, useMemo } from 'react'
+import { createContext, useCallback, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 
 import { logout as logoutService } from '#/services/authService'
-import { profile as profileGet } from '#/services/profileService'
 import { useProfile } from '#/hooks/profile/useProfile'
 import type { User } from '#/types/auth'
-import { useNavigate } from '@tanstack/react-router'
 
 interface AuthContextType {
   user: User | null
@@ -27,23 +26,22 @@ export const AuthProvider = ({ children }: Props) => {
 
   const { data: user } = useProfile()
 
-  const refreshUser = async () => {
-    const profile = await profileGet()
-    queryClient.setQueryData(['profile'], profile)
-  }
+  const refreshUser = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ['profile'] })
+  }, [queryClient])
 
-  const login = async () => {
+  const login = useCallback(async () => {
     await refreshUser()
-  }
+  }, [refreshUser])
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await logoutService()
 
     queryClient.removeQueries({
       queryKey: ['profile'],
     })
     navigate({ to: '/' })
-  }
+  }, [queryClient, navigate])
 
   const value = useMemo(
     () => ({
@@ -52,7 +50,7 @@ export const AuthProvider = ({ children }: Props) => {
       logout,
       refreshUser,
     }),
-    [user],
+    [user, login, logout, refreshUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
