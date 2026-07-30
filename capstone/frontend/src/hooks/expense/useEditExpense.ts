@@ -18,7 +18,7 @@ export const useEditExpense = (id: number) => {
     onError: (error) => {
       if (axios.isAxiosError(error)) {
         const message =
-          error.response?.data?.errors[0] ?? 'Something went wrong'
+          error.response?.data?.errors.detail ?? 'Something went wrong'
         toast.error(message)
       }
     },

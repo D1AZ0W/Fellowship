@@ -30,6 +30,9 @@ export const UserExpense = () => {
 
   return (
     <div className="space-y-4">
+      <h1 className="text-4xl font-extrabold text-accent-foreground">
+        Expenses :
+      </h1>
       {data.pages.map((page) =>
         page.results.map((expense) => (
           <Link

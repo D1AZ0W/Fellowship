@@ -35,6 +35,9 @@ export const GroupList = () => {
 
   return (
     <div className="space-y-4">
+      <h1 className="text-4xl font-extrabold text-accent-foreground">
+        Groups :
+      </h1>
       <Button
         className="p-5 cursor-pointer"
         variant="default"

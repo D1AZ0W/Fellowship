@@ -99,13 +99,13 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
     formData.append('expense_date', data.expense_date)
     formData.append('note', data.note ?? '')
     formData.append('paid_by', data.paid_by.toString())
-    formData.append('user_amounts', JSON.stringify(data.user_amounts))
+
+    if (watchSplitType !== 'Equal' && data.user_amounts) {
+      formData.append('user_amounts', JSON.stringify(data.user_amounts))
+    }
 
     if (image) {
       formData.append('image', image)
-    }
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value)
     }
 
     editExpenseMutation.mutate(formData, {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { formatISO } from 'date-fns'
 
 import { useCreateExpense } from '#/hooks/expense/useCreateExpense'
 import type { CreateExpenseForm } from '#/schemas/createExpenseSchema'
@@ -18,7 +19,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { formatISO } from 'date-fns'
 
 type Props = {
   groupId: number
@@ -35,9 +35,6 @@ export const CreateExpenseDialog = ({
   onOpenChange,
 }: Props) => {
   const [image, setImage] = useState<File | null>(null)
-  const [participantIds, setParticipantIds] = useState<number[]>(
-    members.map((member) => member.id),
-  )
 
   const createExpenseMutation = useCreateExpense(groupId)
 
@@ -46,11 +43,15 @@ export const CreateExpenseDialog = ({
     handleSubmit,
     reset,
     getValues,
+    setValue,
     formState: { errors },
     control,
     watch,
   } = useForm<CreateExpenseForm>({
     resolver: zodResolver(createExpenseSchema),
+    defaultValues: {
+      participants: members.map((member) => member.id),
+    },
   })
 
   const watchSplitType = useWatch({
@@ -59,8 +60,10 @@ export const CreateExpenseDialog = ({
     defaultValue: 'Equal',
   })
 
+  const watchParticipants = watch('participants')
   const watchedAmounts = watch('user_amounts')
   const totalAmount = watch('amount')
+
   const getAmountDifference = (ua: CreateExpenseForm['user_amounts']) => {
     let amountLeft = 0
     const total =
@@ -84,6 +87,15 @@ export const CreateExpenseDialog = ({
   }
   const amountStatus = getAmountDifference(watchedAmounts)
 
+  const toggleParticipant = (id: number, checked: boolean) => {
+    const current = getValues('participants')
+    const next = checked
+      ? [...current, id]
+      : current.filter((pid) => pid !== id)
+
+    setValue('participants', next, { shouldValidate: true })
+  }
+
   const onSubmit = (data: CreateExpenseForm) => {
     const formData = new FormData()
     formData.append('title', data.title)
@@ -94,6 +106,7 @@ export const CreateExpenseDialog = ({
     formData.append('note', data.note ?? '')
     formData.append('group', groupId.toString())
     formData.append('paid_by', data.paid_by.toString())
+
     if (watchSplitType !== 'Equal') {
       const userAmount = getValues('user_amounts')
       userAmount?.forEach((entry, index) => {
@@ -109,15 +122,21 @@ export const CreateExpenseDialog = ({
       formData.append('image', image)
     }
 
-    participantIds.forEach((id) =>
+    data.participants.forEach((id) =>
       formData.append('participants', id.toString()),
     )
 
     createExpenseMutation.mutate(formData, {
       onSuccess: () => {
-        reset()
+        reset({
+          title: '',
+          category: '',
+          image: null,
+          split_type: 'Equal',
+          user_amounts: [],
+          participants: members.map((member) => member.id),
+        })
         setImage(null)
-        setParticipantIds(members.map((member) => member.id))
         onOpenChange(false)
       },
     })
@@ -313,17 +332,11 @@ export const CreateExpenseDialog = ({
                     <input
                       type="checkbox"
                       id={`member-${member.id}`}
-                      defaultChecked
+                      checked={watchParticipants.includes(member.id)}
                       className="h-4 w-4 rounded border-input"
-                      onChange={(e) => {
-                        const checked = e.target.checked
-
-                        setParticipantIds((prev) =>
-                          checked
-                            ? [...prev, member.id]
-                            : prev.filter((id) => id !== member.id),
-                        )
-                      }}
+                      onChange={(e) =>
+                        toggleParticipant(member.id, e.target.checked)
+                      }
                     />
 
                     <Label
@@ -335,6 +348,12 @@ export const CreateExpenseDialog = ({
                   </div>
                 ))}
               </div>
+
+              {errors.participants && (
+                <p className="text-sm text-destructive">
+                  {errors.participants.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-5">
