@@ -22,16 +22,6 @@ export type RegisterRequest = {
   profile_picture?: File | null
 }
 
-export type Token = {
-  access: string
-  refresh: string
-}
-
-export type AuthResponse = {
-  token: Token
-  msg: string
-}
-
 export type ChangePasswordRequest = {
   password: string
   confirm_password: string

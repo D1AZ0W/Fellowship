@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { formatISO } from 'date-fns'
 
 type Props = {
   groupId: number
@@ -163,7 +164,9 @@ export const CreateExpenseDialog = ({
               <Input
                 type="date"
                 {...register('expense_date')}
-                defaultValue={new Date().toISOString().split('T')[0]}
+                defaultValue={formatISO(new Date(), {
+                  representation: 'date',
+                })}
               />
               {errors.expense_date && (
                 <p className="text-sm text-destructive">

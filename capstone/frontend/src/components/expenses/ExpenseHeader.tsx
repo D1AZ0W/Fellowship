@@ -20,20 +20,14 @@ import { useState } from 'react'
 import { EditExpenseDialog } from './EditExpenseDialog'
 import { DeleteExpenseDialog } from './DeleteExpenseDialog'
 import type { ExpenseDetails } from '#/types/expense'
+import { format } from 'date-fns'
 
 type HeaderProps = {
   expense: ExpenseDetails
 }
 
 export const ExpenseHeader = ({ expense }: HeaderProps) => {
-  const formattedDate = new Date(expense.expense_date).toLocaleDateString(
-    'en-US',
-    {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    },
-  )
+  const formattedDate = format(new Date(expense.expense_date), 'MMM d')
 
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)

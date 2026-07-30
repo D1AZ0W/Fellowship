@@ -2,13 +2,12 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { AuthProvider } from './contexts/AuthContext'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
+import { queryClient } from './lib/queryClient'
 
 const router = createRouter({
   routeTree,
-  defaultPreload: 'intent',
-  scrollRestoration: true,
 })
 
 declare module '@tanstack/react-router' {
@@ -16,8 +15,6 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
-
-const queryClient = new QueryClient()
 
 const rootElement = document.getElementById('app')!
 

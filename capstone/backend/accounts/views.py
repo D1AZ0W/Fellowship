@@ -20,12 +20,7 @@ def get_tokens_for_user(user):
 	if not user.is_active:
 		raise AuthenticationFailed('User is not active')
 
-	refresh = RefreshToken.for_user(user)
-
-	return {
-		'refresh': str(refresh),
-		'access': str(refresh.access_token),
-	}
+	return RefreshToken.for_user(user)
 
 
 # Create your views here.
@@ -36,11 +31,27 @@ class RegisterView(APIView):
 		serializer = RegisterSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		user = serializer.save()
-		token = get_tokens_for_user(user)
-		return Response(
-			{'token': token, 'msg': 'Registration Successful'},
+		refresh = get_tokens_for_user(user)
+		response = Response(
+			{'msg': 'Registration Successful'},
 			status=status.HTTP_201_CREATED,
 		)
+		response.set_cookie(
+			key='access_token',
+			value=str(refresh.access_token),
+			httponly=True,
+			secure=False,
+			samesite='Lax',
+		)
+		response.set_cookie(
+			key='refresh_token',
+			value=str(refresh),
+			httponly=True,
+			secure=False,
+			samesite='Lax',
+		)
+
+		return response
 
 
 class LoginView(APIView):
@@ -52,13 +63,7 @@ class LoginView(APIView):
 		username = serializer.validated_data.get('username')
 		password = serializer.validated_data.get('password')
 		user = authenticate(username=username, password=password)
-		if user is not None:
-			token = get_tokens_for_user(user)
-			return Response(
-				{'token': token, 'msg': 'Login Success'},
-				status=status.HTTP_200_OK,
-			)
-		else:
+		if user is None:
 			return Response(
 				{
 					'errors': {
@@ -69,6 +74,29 @@ class LoginView(APIView):
 				},
 				status=status.HTTP_404_NOT_FOUND,
 			)
+
+		refresh = get_tokens_for_user(user)
+		response = Response(
+			{'msg': 'Login Success'},
+			status=status.HTTP_200_OK,
+		)
+		response.set_cookie(
+			key='access_token',
+			value=str(refresh.access_token),
+			httponly=True,
+			secure=False,
+			samesite='Lax',
+			max_age=60 * 45,
+		)
+		response.set_cookie(
+			key='refresh_token',
+			value=str(refresh),
+			httponly=True,
+			secure=False,
+			samesite='Lax',
+		)
+
+		return response
 
 
 class ProfileView(APIView):
@@ -92,3 +120,17 @@ class ChangePasswordView(APIView):
 		return Response(
 			{'msg': 'Password Changed Successfully'}, status=status.HTTP_200_OK
 		)
+
+
+class LogoutView(APIView):
+	renderer_classes = [UserRenderer]
+	permission_classes = [IsAuthenticated]
+
+	def post(self, request):
+		response = Response(
+			{'msg': 'Logged out successfully'},
+			status=status.HTTP_200_OK,
+		)
+		response.delete_cookie('access_token')
+		response.delete_cookie('refresh_token')
+		return response

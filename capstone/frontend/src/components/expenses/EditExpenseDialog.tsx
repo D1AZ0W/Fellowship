@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { editExpenseSchema } from '#/schemas/editExpenseSchema'
 import type { EditExpenseForm } from '#/schemas/editExpenseSchema'
+import { formatISO } from 'date-fns'
 
 type Props = {
   open: boolean
@@ -156,7 +157,9 @@ export const EditExpenseDialog = ({ open, onOpenChange, expense }: Props) => {
               <Input
                 type="date"
                 {...register('expense_date')}
-                defaultValue={new Date().toISOString().split('T')[0]}
+                defaultValue={formatISO(new Date(), {
+                  representation: 'date',
+                })}
               />
               {errors.expense_date && (
                 <p className="text-sm text-destructive">

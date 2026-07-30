@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { iconCategory } from '#/utils/iconCategory'
+import { format } from 'date-fns'
 
 type ExpenseCardProps = {
   title: string
@@ -18,10 +19,7 @@ export const ExpenseCard = ({
   date,
   image,
 }: ExpenseCardProps) => {
-  const formattedDate = new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  })
+  const formattedDate = format(new Date(date), 'MMM d')
 
   return (
     <Card>

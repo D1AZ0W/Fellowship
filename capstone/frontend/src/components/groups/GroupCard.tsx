@@ -1,5 +1,6 @@
 import { iconType } from '#/utils/iconType'
 import { Card, CardContent } from '@/components/ui/card'
+import { format } from 'date-fns'
 
 type GroupCardProps = {
   name: string
@@ -9,11 +10,7 @@ type GroupCardProps = {
 }
 
 export const GroupCard = ({ name, type, image, createdAt }: GroupCardProps) => {
-  const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+  const formattedDate = format(new Date(createdAt), 'MMM d')
 
   return (
     <Card className="cursor-pointer border-border transition-all hover:bg-accent">

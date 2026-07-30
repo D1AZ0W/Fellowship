@@ -62,7 +62,6 @@ ROOT_URLCONF = 'core.urls'
 
 CORS_ALLOWED_ORIGINS = [
 	'http://localhost:3000',
-	'https://yourfrontend.com',
 ]
 
 # Allow frontend to send cookies cross-origin
@@ -130,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kathmandu'
 
 USE_I18N = True
 
@@ -144,16 +143,25 @@ STATIC_URL = 'static/'
 
 REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': (
-		'rest_framework_simplejwt.authentication.JWTAuthentication',
+		'accounts.authentication.CustomJWTAuthentication',
 	),
 	'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 	'PAGE_SIZE': 5,
 }
 
+MEDIA_URL = '/'
+MEDIA_ROOT = BASE_DIR
+
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+SESSION_COOKIE_SECURE = False  # when we use https make it True
+CSRF_COOKIE_SECURE = False
+
 SIMPLE_JWT = {
 	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
 	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
-
-MEDIA_URL = '/'
-MEDIA_ROOT = BASE_DIR

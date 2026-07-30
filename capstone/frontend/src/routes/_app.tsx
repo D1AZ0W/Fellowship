@@ -1,13 +1,12 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { AppLayout } from '#/components/layout/AppLayout'
+import { isAuthenticated } from '#/lib/auth'
 
 export const Route = createFileRoute('/_app')({
-  beforeLoad: () => {
-    const token = localStorage.getItem('access_token')
-    if (!token) {
-      throw redirect({
-        to: '/login',
-      })
+  beforeLoad: async () => {
+    const authenticated = await isAuthenticated()
+    if (!authenticated) {
+      throw redirect({ to: '/login' })
     }
   },
   component: AppRoute,

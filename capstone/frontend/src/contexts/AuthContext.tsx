@@ -1,15 +1,17 @@
 import type { ReactNode } from 'react'
-import { createContext, useMemo, useState } from 'react'
+import { createContext, useMemo } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 
-import type { User, Token } from '#/types/auth'
+import { logout as logoutService } from '#/services/authService'
+import { profile as profileGet } from '#/services/profileService'
+import { useProfile } from '#/hooks/profile/useProfile'
+import type { User } from '#/types/auth'
 
 interface AuthContextType {
   user: User | null
-  token: Token | null
-  isAuthenticated: boolean
-  login: (token: Token) => void
-  logout: () => void
-  setUser: (user: User | null) => void
+  login: () => Promise<void>
+  logout: () => Promise<void>
+  refreshUser: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -19,32 +21,35 @@ type Props = {
 }
 
 export const AuthProvider = ({ children }: Props) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<Token | null>(null)
+  const queryClient = useQueryClient()
 
-  const login = (tokenR: Token) => {
-    setToken(tokenR)
-    localStorage.setItem('access_token', tokenR.access)
-    localStorage.setItem('refresh_token', tokenR.refresh)
+  const { data: user } = useProfile()
+
+  const refreshUser = async () => {
+    const profile = await profileGet()
+    queryClient.setQueryData(['profile'], profile)
   }
 
-  const logout = () => {
-    setUser(null)
-    setToken(null)
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
+  const login = async () => {
+    await refreshUser()
+  }
+
+  const logout = async () => {
+    await logoutService()
+
+    queryClient.removeQueries({
+      queryKey: ['profile'],
+    })
   }
 
   const value = useMemo(
     () => ({
-      user,
-      token,
-      isAuthenticated: !!token,
+      user: user ?? null,
       login,
       logout,
-      setUser,
+      refreshUser,
     }),
-    [token],
+    [user],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
