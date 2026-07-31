@@ -16,7 +16,7 @@ export const ExpenseIndv = () => {
 
   if (isPending) {
     return (
-      <div className="flex h-64 items-center justify-center">Loading...</div>
+      <div className="flex h-64 items-center justify-center ">Loading...</div>
     )
   }
   if (isError) {

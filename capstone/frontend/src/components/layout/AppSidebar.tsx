@@ -20,13 +20,13 @@ export function AppSidebar() {
   user.refreshUser()
   return (
     <Sidebar>
-      <SidebarHeader className="border-b p-4 bg-linear-to-r from-primary  to-amber-950">
+      <SidebarHeader className="border-b p-4 bg-primary ">
         <div className="flex items-center gap-3">
-          <img src="/logo512.png" alt="BillDiv" className="h-8 w-16 " />
+          {/* <img src="/logo512.png" alt="BillDiv" className="h-8 w-16 " /> */}
 
           <div>
-            <h1 className="font-bold text-3xl font-sans text-primary-foreground scale-x-140">
-              BillDiv
+            <h1 className="pl-5 font-bold text-xl font-sans text-primary-foreground scale-x-140">
+              Bill/Div
             </h1>
           </div>
         </div>
@@ -41,7 +41,7 @@ export function AppSidebar() {
                   to="/dashboard"
                   className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
                 >
-                  <SidebarMenuButton className="text-xl p-7">
+                  <SidebarMenuButton className="text-lg p-5">
                     <Home />
                     <span>Home</span>
                   </SidebarMenuButton>
@@ -53,7 +53,7 @@ export function AppSidebar() {
                   to="/groups"
                   className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
                 >
-                  <SidebarMenuButton className="text-xl p-7">
+                  <SidebarMenuButton className="text-lg p-5">
                     <Users />
                     <span>Groups</span>
                   </SidebarMenuButton>
@@ -65,7 +65,7 @@ export function AppSidebar() {
                   to="/expenses"
                   className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
                 >
-                  <SidebarMenuButton className="text-xl p-7">
+                  <SidebarMenuButton className="text-lg p-5">
                     <Receipt />
                     <span>Expenses</span>
                   </SidebarMenuButton>
@@ -77,7 +77,7 @@ export function AppSidebar() {
                   to="/profile"
                   className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
                 >
-                  <SidebarMenuButton className="text-xl p-7">
+                  <SidebarMenuButton className="text-lg p-5">
                     <User />
                     <span>Profile</span>
                   </SidebarMenuButton>
