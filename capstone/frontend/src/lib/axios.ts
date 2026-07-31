@@ -5,9 +5,5 @@ export const api = axios.create({
   withCredentials: true,
 })
 api.interceptors.request.use((config) => {
-  if (config.data instanceof FormData) {
-    delete config.headers['Content-Type']
-  }
-
   return config
 })
