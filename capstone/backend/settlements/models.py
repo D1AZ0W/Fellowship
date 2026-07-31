@@ -27,11 +27,13 @@ class Settlement(models.Model):
 		related_name='settlement_created',
 	)
 	created_at = models.DateTimeField(auto_now_add=True)
+	class Meta:
+		ordering = ['-created_at']
 
 
 class SettlementImage(models.Model):
 	settlement = models.ForeignKey(
 		Settlement, on_delete=models.CASCADE, related_name='images'
 	)
-	image = models.ImageField(upload_to='settlements/')
+	image = models.ImageField(upload_to='media/settlements/')
 	created_at = models.DateTimeField(auto_now_add=True)

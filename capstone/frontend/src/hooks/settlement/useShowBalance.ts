@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 export const useBalance = (id: number) => {
   return useQuery({
-    queryKey: ['balance'],
+    queryKey: ['settlements', id],
     queryFn: () => getBalance(id),
     enabled: !!id,
   })

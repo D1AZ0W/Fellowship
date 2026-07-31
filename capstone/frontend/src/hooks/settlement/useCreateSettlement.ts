@@ -13,6 +13,12 @@ export const useCreateSettlement = () => {
       queryClient.invalidateQueries({
         queryKey: ['settlements'],
       })
+      queryClient.invalidateQueries({
+        queryKey: ['balance'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['suggested'],
+      })
     },
     onError: (error) => {
       if (axios.isAxiosError(error)) {

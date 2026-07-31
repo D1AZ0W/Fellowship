@@ -7,6 +7,7 @@ from expenses.serializers import PaidBySerializer
 from groups.models import GroupMembers
 
 from .models import Settlement, SettlementImage
+from .services import group_balance
 
 
 class ImageSettlementSerializer(serializers.ModelSerializer):
@@ -51,6 +52,21 @@ class CreateSettlementSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError(
 				'Settlement amount must be greater than zero.'
 			)
+
+		for balance in group_balance(group.id):
+			if balance['user_id'] == payer.id:
+				payer_balance = Decimal(balance['balance'])
+				break
+		if payer_balance >= 0:
+			raise serializers.ValidationError(
+				'You do not owe any money in this group.'
+			)
+		max_allowed = Decimal(str(abs(payer_balance)))
+		if amount > max_allowed:
+			raise serializers.ValidationError(
+				f'You cannot settle more than what you owe (Rs. {abs(payer_balance):.2f}).'
+			)
+
 		return attrs
 
 	@transaction.atomic  # so that incomplete transaction dont commit

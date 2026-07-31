@@ -14,3 +14,9 @@ export const listSuggested = async (id: number) => {
   const res = await api.get(`settlements/transactions/${id}/`)
   return res.data
 }
+
+export const getGroupBalance = async (id: number) => {
+  const res = await api.get(`settlements/balance/${id}/`)
+  return res.data
+}
+
