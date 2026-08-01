@@ -20,16 +20,14 @@ def group_balance(group):
 	for s in settlements:
 		balances[s.payer.id] += s.amount
 		balances[s.recipient.id] -= s.amount
-	data = []
-	for member in members:
-		data.append(
-			{
-				'user_id': member.user.id,
-				'username': member.user.username,
-				'balance': float(balances[member.user.id]),
-			}
-		)
-	return data
+	return [
+		{
+			'user_id': member.user.id,
+			'username': member.user.username,
+			'balance': float(balances[member.user.id]),
+		}
+		for member in members
+	]
 
 
 def get_transactions(group):
