@@ -1,4 +1,5 @@
 import heapq
+from collections import defaultdict
 from decimal import Decimal
 
 from expenses.models import Expense
@@ -9,14 +10,15 @@ from .models import Settlement
 
 def group_balance(group):
 	members = GroupMembers.objects.filter(group=group)
-	balances = {member.user.id: Decimal('0.00') for member in members}
+	balances = defaultdict(Decimal)
+	for member in members:
+		balances[member.user.id] = Decimal('0.00')
 	expenses = Expense.objects.filter(group=group)
 	for expense in expenses:
 		balances[expense.paid_by.id] += expense.amount
 		for participant in expense.participants.all():
 			balances[participant.user.id] -= participant.amount_owed
 	settlements = Settlement.objects.filter(group=group)
-
 	for s in settlements:
 		balances[s.payer.id] += s.amount
 		balances[s.recipient.id] -= s.amount
@@ -34,6 +36,7 @@ def get_transactions(group):
 	to_give = []
 	to_receive = []
 	balances = group_balance(group)
+	user_names = {b['user_id']: b['username'] for b in balances}
 	for b in balances:
 		user_id = b['user_id']
 		balance = Decimal(b['balance'])
@@ -51,7 +54,13 @@ def get_transactions(group):
 		give = -give
 		amount = min(receive, give)
 		transactions.append(
-			{'payer': payer, 'recipient': receiver, 'amount': float(amount)}
+			{
+				'payer': payer, 
+				'payer_username': user_names.get(payer, 'Unknown'),
+				'recipient': receiver, 
+				'recipient_username': user_names.get(receiver, 'Unknown'),
+				'amount': float(amount)
+			}
 		)
 		receive -= amount
 		give -= amount

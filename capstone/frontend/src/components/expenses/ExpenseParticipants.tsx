@@ -25,7 +25,6 @@ export const ExpenseParticipants = ({ participants }: ParticipantsProps) => {
             <div className="flex items-center gap-3">
               <Avatar>
                 <AvatarImage src={participant.profile_picture ?? undefined} />
-
                 <AvatarFallback>{participant.first_name[0]}</AvatarFallback>
               </Avatar>
 

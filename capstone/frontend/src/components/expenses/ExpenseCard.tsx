@@ -22,8 +22,8 @@ export const ExpenseCard = ({
   const formattedDate = format(new Date(date), 'MMM d')
 
   return (
-    <Card>
-      <CardContent className="flex items-center gap-4 p-3">
+    <Card className="hover:bg-accent">
+      <CardContent className="flex items-center gap-4 p-3 ">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary text-primary-foreground">
           {image ? (
             <img
