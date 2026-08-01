@@ -37,9 +37,7 @@ export const AuthProvider = ({ children }: Props) => {
   const logout = useCallback(async () => {
     await logoutService()
 
-    queryClient.removeQueries({
-      queryKey: ['profile'],
-    })
+    queryClient.clear()
     navigate({ to: '/' })
   }, [queryClient, navigate])
 

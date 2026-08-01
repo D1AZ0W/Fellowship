@@ -27,14 +27,17 @@ export const createExpenseSchema = z
 
     split_type: z.enum(['Equal', 'Exact', 'Percentage']),
 
+    // each slot can be a hole (unticked participant) or a valid entry
     user_amounts: z
       .array(
-        z.object({
-          user_id: z.number(),
-          amount: z.number({
-            error: 'Amount is required',
-          }),
-        }),
+        z
+          .object({
+            user_id: z.number(),
+            amount: z.number({
+              error: 'Amount is required',
+            }),
+          })
+          .optional(),
       )
       .optional(),
 
@@ -49,7 +52,13 @@ export const createExpenseSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.split_type !== 'Equal') {
-      if (!data.user_amounts || data.user_amounts.length === 0) {
+      // only keep entries that belong to a ticked participant
+      const relevantAmounts = (data.user_amounts ?? []).filter(
+        (u): u is { user_id: number; amount: number } =>
+          !!u && data.participants.includes(u.user_id),
+      )
+
+      if (relevantAmounts.length !== data.participants.length) {
         ctx.addIssue({
           code: 'custom',
           path: ['user_amounts'],
@@ -59,7 +68,7 @@ export const createExpenseSchema = z
       }
 
       if (data.split_type === 'Percentage') {
-        const total = data.user_amounts.reduce((sum, u) => sum + u.amount, 0)
+        const total = relevantAmounts.reduce((sum, u) => sum + u.amount, 0)
         if (total !== 100) {
           ctx.addIssue({
             code: 'custom',
@@ -70,7 +79,7 @@ export const createExpenseSchema = z
       }
 
       if (data.split_type === 'Exact') {
-        const total = data.user_amounts.reduce((sum, u) => sum + u.amount, 0)
+        const total = relevantAmounts.reduce((sum, u) => sum + u.amount, 0)
         if (total - data.amount !== 0) {
           ctx.addIssue({
             code: 'custom',

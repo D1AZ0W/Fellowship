@@ -51,7 +51,7 @@ export const GroupMembers = ({ members, groupId, currentRole }: Props) => {
 
         <Separator />
 
-        <CardContent className="max-h-96 space-y-4 overflow-y-auto p-4">
+        <CardContent className="max-h-108 space-y-4 overflow-y-auto p-4">
           {members.map((member) => (
             <div
               key={member.id}

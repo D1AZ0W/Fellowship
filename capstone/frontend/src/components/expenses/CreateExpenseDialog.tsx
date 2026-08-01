@@ -67,7 +67,7 @@ export const CreateExpenseDialog = ({
   const getAmountDifference = (ua: CreateExpenseForm['user_amounts']) => {
     let amountLeft = 0
     const total =
-      ua?.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) ?? 0
+      ua?.reduce((sum, item) => sum + (Number(item?.amount) || 0), 0) ?? 0
     if (watchSplitType == 'Exact') {
       amountLeft = totalAmount - total
     } else {
@@ -109,13 +109,18 @@ export const CreateExpenseDialog = ({
 
     if (watchSplitType !== 'Equal') {
       const userAmount = getValues('user_amounts')
-      userAmount?.forEach((entry, index) => {
-        formData.append(
-          `user_amounts[${index}]user_id`,
-          entry.user_id.toString(),
-        )
-        formData.append(`user_amounts[${index}]amount`, entry.amount.toString())
-      })
+      userAmount
+        ?.filter((entry): entry is NonNullable<typeof entry> => !!entry)
+        .forEach((entry, index) => {
+          formData.append(
+            `user_amounts[${index}]user_id`,
+            entry.user_id.toString(),
+          )
+          formData.append(
+            `user_amounts[${index}]amount`,
+            entry.amount.toString(),
+          )
+        })
     }
 
     if (image) {
@@ -275,45 +280,47 @@ export const CreateExpenseDialog = ({
               )}
 
               <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                {members.map((member) => {
-                  const index = members.findIndex((m) => m.id === member.id)
+                {members
+                  .filter((member) => watchParticipants.includes(member.id))
+                  .map((member) => {
+                    const index = members.findIndex((m) => m.id === member.id)
 
-                  return (
-                    <div key={member.id} className="flex items-center gap-3">
-                      <Label
-                        htmlFor={`user_amounts.${index}.amount`}
-                        className="w-24 shrink-0 truncate"
-                      >
-                        {member.first_name} {member.last_name}
-                      </Label>
+                    return (
+                      <div key={member.id} className="flex items-center gap-3">
+                        <Label
+                          htmlFor={`user_amounts.${index}.amount`}
+                          className="w-24 shrink-0 truncate"
+                        >
+                          {member.first_name} {member.last_name}
+                        </Label>
 
-                      <div className="relative flex-1">
-                        <Input
-                          id={`user_amounts.${index}.amount`}
-                          type="number"
-                          step="0.01"
-                          {...register(`user_amounts.${index}.amount`, {
+                        <div className="relative flex-1">
+                          <Input
+                            id={`user_amounts.${index}.amount`}
+                            type="number"
+                            step="0.01"
+                            {...register(`user_amounts.${index}.amount`, {
+                              valueAsNumber: true,
+                            })}
+                          />
+
+                          {watchSplitType === 'Percentage' && (
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
+                              %
+                            </span>
+                          )}
+                        </div>
+
+                        <input
+                          type="hidden"
+                          defaultValue={member.id}
+                          {...register(`user_amounts.${index}.user_id`, {
                             valueAsNumber: true,
                           })}
                         />
-
-                        {watchSplitType === 'Percentage' && (
-                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-md text-muted-foreground">
-                            %
-                          </span>
-                        )}
                       </div>
-
-                      <input
-                        type="hidden"
-                        defaultValue={member.id}
-                        {...register(`user_amounts.${index}.user_id`, {
-                          valueAsNumber: true,
-                        })}
-                      />
-                    </div>
-                  )
-                })}
+                    )
+                  })}
               </div>
             </div>
           )}

@@ -12,6 +12,12 @@ export const useCreateExpense = (groupId: number) => {
       queryClient.invalidateQueries({
         queryKey: ['group-expenses', groupId],
       })
+      queryClient.invalidateQueries({
+        queryKey: ['group', groupId],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['suggested', groupId],
+      })
     },
     onError: (error) => {
       if (axios.isAxiosError(error)) {

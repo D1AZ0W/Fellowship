@@ -3,6 +3,7 @@ import { useGroupBalance } from '#/hooks/settlement/useGroupBalance'
 import { useSuggestedTransactions } from '#/hooks/settlement/useSuggestedTransactions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 type Props = {
   groupId: number
@@ -44,20 +45,31 @@ export const GroupBalanceSummary = ({ groupId, onSettleUpClick }: Props) => {
         {suggestions.length > 0 && (
           <div className="mt-4 border-t border-border pt-4">
             <p className="mb-2 text-sm font-semibold text-muted-foreground">
-              Suggested Settlements
+              Settlements To Perform:
             </p>
             <div className="space-y-1">
               {suggestions.map((t: any, index: number) => {
                 const isPayer = t.payer.id === user?.id
                 if (isPayer) {
                   return (
-                    <p key={index} className="text-sm text-red-500">
-                      You owe{' '}
-                      <span className="font-semibold text-foreground">
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 text-sm text-red-500"
+                    >
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage
+                          src={t.recipient.profile_picture ?? undefined}
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          {t.recipient.first_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>You owe</span>
+                      <span className="text-foreground">
                         {t.recipient.first_name} {t.recipient.last_name}
-                      </span>{' '}
-                      Rs. {Number(t.amount).toFixed(2)}
-                    </p>
+                      </span>
+                      <span>Rs. {Number(t.amount).toFixed(2)}</span>
+                    </div>
                   )
                 } else {
                   return (
