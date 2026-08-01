@@ -3,6 +3,7 @@ import { loginSchema } from '#/schemas/loginSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
+import React from 'react'
 import {
   Card,
   CardAction,
@@ -15,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useLogin } from '#/hooks/auth/useLogin'
 import { useNavigate } from '@tanstack/react-router'
+import { ResetPasswordDialog } from './ResetPasswordDialog'
 
 export function LoginCard() {
   const navigate = useNavigate()
@@ -31,65 +33,78 @@ export function LoginCard() {
   })
 
   const loginMutation = useLogin()
+  const [resetOpen, setResetOpen] = React.useState(false)
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation.mutate(data)
   }
 
   return (
-    <Card className="w-full max-w-sm mt-20">
-      <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
-        <CardDescription>
-          Enter your username below to login to your account.
-        </CardDescription>
-        <CardAction>
-          <Button variant="link" onClick={() => navigate({ to: '/register' })}>
-            Sign Up
-          </Button>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <div className="grid gap-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              placeholder="Enter your username"
-              {...register('username')}
-            />
+    <>
+      <Card className="w-full max-w-sm mt-20">
+        <CardHeader>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>
+            Enter your username below to login to your account.
+          </CardDescription>
+          <CardAction>
+            <Button variant="link" onClick={() => navigate({ to: '/register' })}>
+              Sign Up
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                placeholder="Enter your username"
+                {...register('username')}
+              />
 
-            {errors.username && (
-              <p className="text-sm text-red-400">{errors.username.message}</p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+              {errors.username && (
+                <p className="text-sm text-red-400">{errors.username.message}</p>
+              )}
             </div>
 
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              {...register('password')}
-            />
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Button
+                  variant="link"
+                  className="px-0 py-0 h-auto font-normal text-xs"
+                  type="button"
+                  onClick={() => setResetOpen(true)}
+                >
+                  Forgot Password?
+                </Button>
+              </div>
 
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
-            )}
-          </div>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                {...register('password')}
+              />
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loginMutation.isPending}
-          >
-            {loginMutation.isPending ? 'Logging in...' : 'Login'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password.message}</p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loginMutation.isPending}
+            >
+              {loginMutation.isPending ? 'Logging in...' : 'Login'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <ResetPasswordDialog open={resetOpen} onOpenChange={setResetOpen} />
+    </>
   )
 }

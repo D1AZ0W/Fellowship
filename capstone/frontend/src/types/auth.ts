@@ -23,10 +23,20 @@ export type RegisterRequest = {
 }
 
 export type ChangePasswordRequest = {
+  old_password: string
   password: string
   confirm_password: string
 }
 
 export type MessageResponse = {
   msg: string
+}
+
+export type SendResetPasswordEmailRequest = {
+  email: string
+}
+
+export type ResetPasswordRequest = {
+  password: string
+  confirm_password: string
 }

@@ -10,8 +10,11 @@ from .renderers import UserRenderer
 from .serializers import (
 	ChangePasswordSerializer,
 	LoginSerializer,
+	PasswordResetSerializer,
 	ProfileSerializer,
 	RegisterSerializer,
+	SendPasswordResetEmailSerializer,
+	UpdateProfileSerializer,
 )
 
 
@@ -134,3 +137,42 @@ class LogoutView(APIView):
 		response.delete_cookie('access_token')
 		response.delete_cookie('refresh_token')
 		return response
+
+
+class EditProfileView(APIView):
+	permission_classes = [IsAuthenticated]
+	renderer_classes = [UserRenderer]
+
+	def patch(self, request):
+		serializer = UpdateProfileSerializer(
+			request.user,
+			data=request.data,
+			partial=True,
+		)
+		serializer.is_valid(raise_exception=True)
+		serializer.save()
+		return Response(serializer.data)
+
+
+class SendPasswordResetEmailView(APIView):
+	renderer_classes = [UserRenderer]
+
+	def post(self, request):
+		serializer = SendPasswordResetEmailSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		return Response(
+			{'msg': 'Password Reset lik sent'}, status=status.HTTP_200_OK
+		)
+
+
+class PasswordResetView(APIView):
+	renderer_classes = [UserRenderer]
+
+	def post(self, request, id, token):
+		serializer = PasswordResetSerializer(
+			data=request.data, context={'id': id, 'token': token}
+		)
+		serializer.is_valid(raise_exception=True)
+		return Response(
+			{'msg': 'Password Changed Successfully'}, status=status.HTTP_200_OK
+		)

@@ -20,6 +20,7 @@ import { Route as AppExpensesIndexRouteImport } from './routes/_app/expenses/ind
 import { Route as AppExpensesIdRouteImport } from './routes/_app/expenses/$id'
 import { Route as AppGroupsIndexRouteImport } from './routes/_app/groups/index'
 import { Route as AppGroupsIdRouteImport } from './routes/_app/groups/$id'
+import { Route as GuestResetPasswordIdTokenRouteImport } from './routes/_guest/reset-password.$id.$token'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -74,6 +75,12 @@ const AppGroupsIdRoute = AppGroupsIdRouteImport.update({
   path: '/groups/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const GuestResetPasswordIdTokenRoute =
+  GuestResetPasswordIdTokenRouteImport.update({
+    id: '/reset-password/$id/$token',
+    path: '/reset-password/$id/$token',
+    getParentRoute: () => GuestRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof GuestIndexRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/groups/$id': typeof AppGroupsIdRoute
   '/expenses/': typeof AppExpensesIndexRoute
   '/groups/': typeof AppGroupsIndexRoute
+  '/reset-password/$id/$token': typeof GuestResetPasswordIdTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof GuestIndexRoute
@@ -96,6 +104,7 @@ export interface FileRoutesByTo {
   '/groups/$id': typeof AppGroupsIdRoute
   '/expenses': typeof AppExpensesIndexRoute
   '/groups': typeof AppGroupsIndexRoute
+  '/reset-password/$id/$token': typeof GuestResetPasswordIdTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,6 +119,7 @@ export interface FileRoutesById {
   '/_app/groups/$id': typeof AppGroupsIdRoute
   '/_app/expenses/': typeof AppExpensesIndexRoute
   '/_app/groups/': typeof AppGroupsIndexRoute
+  '/_guest/reset-password/$id/$token': typeof GuestResetPasswordIdTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/groups/$id'
     | '/expenses/'
     | '/groups/'
+    | '/reset-password/$id/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/groups/$id'
     | '/expenses'
     | '/groups'
+    | '/reset-password/$id/$token'
   id:
     | '__root__'
     | '/_app'
@@ -147,6 +159,7 @@ export interface FileRouteTypes {
     | '/_app/groups/$id'
     | '/_app/expenses/'
     | '/_app/groups/'
+    | '/_guest/reset-password/$id/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGroupsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_guest/reset-password/$id/$token': {
+      id: '/_guest/reset-password/$id/$token'
+      path: '/reset-password/$id/$token'
+      fullPath: '/reset-password/$id/$token'
+      preLoaderRoute: typeof GuestResetPasswordIdTokenRouteImport
+      parentRoute: typeof GuestRoute
+    }
   }
 }
 
@@ -260,12 +280,14 @@ interface GuestRouteChildren {
   GuestLoginRoute: typeof GuestLoginRoute
   GuestRegisterRoute: typeof GuestRegisterRoute
   GuestIndexRoute: typeof GuestIndexRoute
+  GuestResetPasswordIdTokenRoute: typeof GuestResetPasswordIdTokenRoute
 }
 
 const GuestRouteChildren: GuestRouteChildren = {
   GuestLoginRoute: GuestLoginRoute,
   GuestRegisterRoute: GuestRegisterRoute,
   GuestIndexRoute: GuestIndexRoute,
+  GuestResetPasswordIdTokenRoute: GuestResetPasswordIdTokenRoute,
 }
 
 const GuestRouteWithChildren = GuestRoute._addFileChildren(GuestRouteChildren)

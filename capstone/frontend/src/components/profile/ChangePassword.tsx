@@ -51,10 +51,24 @@ export const ChangePassword = ({ open, onOpenChange }: Props) => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
+            <Label htmlFor="old_password">Old Password</Label>
+
+            <Input
+              id="old_password"
+              type="password"
+              {...register('old_password')}
+            />
+
+            {errors.old_password && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.old_password.message}
+              </p>
+            )}
+          </div>
+
+          <div>
             <Label htmlFor="password">New Password</Label>
-
             <Input id="password" type="password" {...register('password')} />
-
             {errors.password && (
               <p className="mt-1 text-sm text-red-500">
                 {errors.password.message}

@@ -12,3 +12,8 @@ export const changePassword = async (
   const res = await api.post('api-auth/changepassword/', passwordField)
   return res.data
 }
+
+export const editProfile = async (formData: FormData): Promise<User> => {
+  const res = await api.patch<User>('api-auth/edit/', formData)
+  return res.data
+}
