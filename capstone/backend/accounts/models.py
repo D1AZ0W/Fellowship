@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 class Users(AbstractUser):
 	profile_picture = models.ImageField(
-		upload_to='profiles/',
+		upload_to='media/profiles/',
 		blank=True,
 		null=True,
 	)
