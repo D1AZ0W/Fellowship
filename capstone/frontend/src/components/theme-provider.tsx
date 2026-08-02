@@ -88,6 +88,5 @@ export function ThemeProvider({
 
 export function useTheme() {
   const context = useContext(ThemeProviderContext)
-  throw new Error('useTheme must be used within a ThemeProvider')
   return context
 }
