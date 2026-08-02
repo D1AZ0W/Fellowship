@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from activity.services import create_activity
 from groups.models import GroupMembers
 
 from .models import Expense, ExpenseParticipants
@@ -130,6 +131,13 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 					user_id=item['user_id'],
 					amount_owed=(item['amount'] / 100) * total_amount,
 				)
+		create_activity(
+			group=expense.group,
+			done_by=expense.paid_by,
+			activity_type='EC',
+			description=f'Added expense {expense.title} (Rs. {expense.amount})',
+		)
+
 		return expense
 
 
@@ -297,5 +305,10 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 						instance.amount * item['amount'] / Decimal(100)
 					),
 				)
-
+		create_activity(
+			group=instance.group,
+			done_by=instance.paid_by,
+			activity_type='EU',
+			description=f'Updated expense {instance.title} (Rs. {instance.amount})',
+		)
 		return instance

@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from activity.services import create_activity
+
 from .models import Groups
 from .pagination import GroupPagination
 from .permissions import IsOwner
@@ -74,6 +76,12 @@ class EditGroupView(APIView):
 
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
+		create_activity(
+			group=group,
+			done_by=request.user,
+			activity_type='GU',
+			description='Updated group details',
+		)
 		return Response(
 			{
 				'msg': 'Group updated successfully.',
@@ -90,7 +98,7 @@ class InviteGroupView(APIView):
 		group = get_object_or_404(Groups, pk=pk)
 		serializer = InviteGroupSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
-		user = serializer.save(group=group)
+		user = serializer.save(group=group, done_by=request.user)
 
 		return Response(
 			{'msg': f'{user.username} was added successfully'},
@@ -136,7 +144,7 @@ class KickMemberView(APIView):
 		group = get_object_or_404(Groups, pk=pk)
 		serializer = GroupKickSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
-		user = serializer.save(group=group)
+		user = serializer.save(group=group, done_by=request.user)
 		return Response(
 			{'msg': f'{user.username} was removed from the group'},
 			status=status.HTTP_200_OK,

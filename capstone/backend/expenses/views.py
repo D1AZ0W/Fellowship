@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from activity.services import create_activity
 from groups.models import Groups
 
 from .models import Expense
@@ -112,6 +113,12 @@ class DeleteExpenseView(APIView):
 	def delete(self, request, pk):
 		expense = get_object_or_404(Expense, pk=pk)
 		expense.delete()
+		create_activity(
+			group=expense.group,
+			done_by=request.user,
+			activity_type='ED',
+			description=f'Deleted expense {expense.title} (Rs. {expense.amount})',
+		)
 		return Response(
 			{'msg': 'Expense Deleted Successfullu.'}, status=status.HTTP_200_OK
 		)

@@ -71,7 +71,6 @@ export const CreateSettlementDialog = ({
     })
   }
 
-  // Filter out the logged-in user from the recipient choices
   const recipients = members.filter((m) => m.id !== currentUserId)
 
   return (

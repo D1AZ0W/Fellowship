@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.db import transaction
 from rest_framework import serializers
 
+from activity.services import create_activity
 from expenses.serializers import PaidBySerializer
 from groups.models import GroupMembers
 
@@ -84,6 +85,16 @@ class CreateSettlementSerializer(serializers.ModelSerializer):
 				for image in images
 			]
 		)
+		create_activity(
+			group=settlement.group,
+			done_by=settlement.created_by,
+			activity_type='SC',
+			description=(
+				f'Settled Rs. {settlement.amount:.2f} '
+				f'with {settlement.recipient.username}'
+			),
+		)
+
 		return settlement
 
 

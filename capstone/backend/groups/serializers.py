@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers
+
+from activity.services import create_activity
 
 from .models import GroupMembers, Groups
 
@@ -12,6 +15,7 @@ class CreateGroupSerializer(serializers.ModelSerializer):
 		fields = ['name', 'image', 'type', 'created_at', 'edited_at']
 		read_only_fields = ['id', 'created_at', 'edited_at']
 
+	@transaction.atomic
 	def create(self, validated_data):
 		created_by = validated_data.pop('created_by')
 		group = Groups.objects.create(**validated_data)
@@ -19,6 +23,12 @@ class CreateGroupSerializer(serializers.ModelSerializer):
 			user=created_by,
 			group=group,
 			role='Owner',
+		)
+		create_activity(
+			group=group,
+			activity_type='GC',
+			done_by=created_by,
+			description='Created a group named ' + validated_data['name'],
 		)
 
 		return group
@@ -81,6 +91,7 @@ class InviteGroupSerializer(serializers.Serializer):
 		except User.DoesNotExist:
 			raise serializers.ValidationError('User does not exist')
 
+	@transaction.atomic
 	def save(self, **kwargs):
 		group = kwargs['group']
 		user = self.validated_data['username']
@@ -89,6 +100,12 @@ class InviteGroupSerializer(serializers.Serializer):
 				'User is already a member of this group'
 			)
 		GroupMembers.objects.create(user=user, group=group, role='Member')
+		create_activity(
+			group=group,
+			done_by=kwargs['done_by'],
+			activity_type='MA',
+			description=f'Added {user.username} to the group',
+		)
 		return user
 
 
@@ -107,6 +124,7 @@ class MakeOwnerSerializer(serializers.Serializer):
 		except User.DoesNotExist:
 			raise serializers.ValidationError('User does not exist')
 
+	@transaction.atomic
 	def save(self, **kwargs):
 		group = kwargs['group']
 		current_owner = kwargs['owner']
@@ -121,6 +139,12 @@ class MakeOwnerSerializer(serializers.Serializer):
 			)
 		current_owner_group = GroupMembers.objects.get(
 			user=current_owner, group=group
+		)
+		create_activity(
+			group=group,
+			done_by=current_owner,
+			activity_type='TO',
+			description=f'Transferred ownership to {new_owner.username}',
 		)
 		current_owner_group.role = 'Member'
 		new_owner_group.role = 'Owner'
@@ -139,6 +163,7 @@ class GroupKickSerializer(serializers.Serializer):
 		except User.DoesNotExist:
 			raise serializers.ValidationError('User does not exist')
 
+	@transaction.atomic
 	def save(self, **kwargs):
 		group = kwargs['group']
 		user = self.validated_data['username']
@@ -149,11 +174,18 @@ class GroupKickSerializer(serializers.Serializer):
 		if member.role == 'Owner':
 			raise serializers.ValidationError('Owner cannot be removed')
 		member.delete()
+		create_activity(
+			group=group,
+			done_by=kwargs['done_by'],
+			activity_type='MR',
+			description=f'Removed {user.username} from the group',
+		)
 
 		return user
 
 
 class LeaveGroupSerializer(serializers.Serializer):
+	@transaction.atomic
 	def save(self, **kwargs):
 		group = kwargs['group']
 		user = kwargs['user']
@@ -171,4 +203,10 @@ class LeaveGroupSerializer(serializers.Serializer):
 			)
 
 		member.delete()
+		create_activity(
+			group=group,
+			done_by=user,
+			activity_type='ML',
+			description='Left the group',
+		)
 		return user
