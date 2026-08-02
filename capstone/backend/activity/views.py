@@ -12,7 +12,7 @@ from .serializers import ActivitySerializer
 
 # Create your views here.
 class GroupActivityView(APIView):
-	permission_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated, IsGroupMember]
 
 	def get(self, request, pk):
 		group = get_object_or_404(Groups, pk=pk)
@@ -22,7 +22,7 @@ class GroupActivityView(APIView):
 
 
 class UserActivityView(APIView):
-	permission_classes = [IsAuthenticated, IsGroupMember]
+	permission_classes = [IsAuthenticated]
 
 	def get(self, request):
 		activities = Activity.objects.filter(group__members__user=request.user)
