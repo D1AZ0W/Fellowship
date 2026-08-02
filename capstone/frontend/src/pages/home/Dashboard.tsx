@@ -52,10 +52,10 @@ export const Dashboard = () => {
   } = data
 
   return (
-    <div className="flex flex-col gap-6 p-2">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-4xl font-extrabold text-accent-foreground">
             Welcome back, {user?.first_name},
           </h1>
           <p className="text-muted-foreground">Here are your overall stats</p>

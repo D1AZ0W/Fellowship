@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as GuestRouteImport } from './routes/_guest'
+import { Route as AppActivityRouteImport } from './routes/_app/activity'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as GuestIndexRouteImport } from './routes/_guest/index'
@@ -29,6 +30,11 @@ const AppRoute = AppRouteImport.update({
 const GuestRoute = GuestRouteImport.update({
   id: '/_guest',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppActivityRoute = AppActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
@@ -84,6 +90,7 @@ const GuestResetPasswordIdTokenRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof GuestIndexRoute
+  '/activity': typeof AppActivityRoute
   '/dashboard': typeof AppDashboardRoute
   '/profile': typeof AppProfileRoute
   '/login': typeof GuestLoginRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof GuestIndexRoute
+  '/activity': typeof AppActivityRoute
   '/dashboard': typeof AppDashboardRoute
   '/profile': typeof AppProfileRoute
   '/login': typeof GuestLoginRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_guest': typeof GuestRouteWithChildren
+  '/_app/activity': typeof AppActivityRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/profile': typeof AppProfileRoute
   '/_guest/login': typeof GuestLoginRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activity'
     | '/dashboard'
     | '/profile'
     | '/login'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activity'
     | '/dashboard'
     | '/profile'
     | '/login'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_guest'
+    | '/_app/activity'
     | '/_app/dashboard'
     | '/_app/profile'
     | '/_guest/login'
@@ -182,6 +194,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof GuestRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/activity': {
+      id: '/_app/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AppActivityRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/dashboard': {
       id: '/_app/dashboard'
@@ -257,6 +276,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppActivityRoute: typeof AppActivityRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppProfileRoute: typeof AppProfileRoute
   AppExpensesIdRoute: typeof AppExpensesIdRoute
@@ -266,6 +286,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppActivityRoute: AppActivityRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppProfileRoute: AppProfileRoute,
   AppExpensesIdRoute: AppExpensesIdRoute,

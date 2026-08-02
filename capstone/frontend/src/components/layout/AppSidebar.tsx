@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Home, Receipt, User, Users } from 'lucide-react'
+import { Activity, Home, Receipt, User, Users } from 'lucide-react'
 
 import {
   Sidebar,
@@ -72,6 +72,17 @@ export function AppSidebar() {
                 </Link>
               </SidebarMenuItem>
 
+              <SidebarMenuItem>
+                <Link
+                  to="/activity"
+                  className="[&.active]:[&>button]:bg-primary [&.active]:[&>button]:text-primary-foreground"
+                >
+                  <SidebarMenuButton className="text-lg p-5">
+                    <Activity />
+                    <span>Activity</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link
                   to="/profile"

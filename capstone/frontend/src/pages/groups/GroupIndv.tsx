@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { GroupExpenses } from '#/components/groups/GroupExpenses'
+import { GroupActivity } from '#/components/groups/GroupActivity'
 import { GroupHeader } from '#/components/groups/GroupHeader'
 import { GroupMembers } from '#/components/groups/GroupMembers'
 import { GroupSettlements } from '#/components/groups/GroupSettlements'
@@ -10,14 +11,12 @@ import { useAuth } from '#/hooks/auth/useAuth'
 import { useParams } from '@tanstack/react-router'
 import { GroupBalanceSummary } from '#/components/groups/GroupBalanceSummary'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+
 
 export const GroupIndv = () => {
   const { id } = useParams({ from: '/_app/groups/$id' })
   const { user } = useAuth()
-  const [activeTab, setActiveTab] = useState<
-    'Activity' | 'Expenses' | 'Settlements'
-  >('Expenses')
+  const [activeTab, setActiveTab] = useState<'Activity' | 'Expenses' | 'Settlements'>('Activity')
   const [settleUpOpen, setSettleUpOpen] = useState(false)
 
   const { data: group, isPending, isError, error } = useGroup(Number(id))
@@ -61,13 +60,7 @@ export const GroupIndv = () => {
           </div>
 
           {activeTab === 'Activity' && (
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-muted-foreground text-center py-10">
-                  Building :)
-                </p>
-              </CardContent>
-            </Card>
+            <GroupActivity groupId={group.id} />
           )}
 
           {activeTab === 'Expenses' && (

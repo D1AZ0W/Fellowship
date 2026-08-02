@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from expenses.permission import IsGroupMember
 from groups.models import Groups
+from settlements.permissions import IsGroupMember
 
 from .models import Activity
 from .serializers import ActivitySerializer
