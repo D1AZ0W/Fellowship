@@ -24,7 +24,7 @@ class Groups(models.Model):
 	edited_at = models.DateTimeField(auto_now=True)
 
 	class Meta:
-		ordering = ['-created_at']
+		ordering = ['-edited_at']
 
 	def __str__(self):
 		return self.name
