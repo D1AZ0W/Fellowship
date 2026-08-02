@@ -18,6 +18,12 @@ export const useCreateExpense = (groupId: number) => {
       queryClient.invalidateQueries({
         queryKey: ['suggested', groupId],
       })
+      queryClient.invalidateQueries({
+        queryKey: ['balance', groupId],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['group-activity', groupId],
+      })
     },
     onError: (error) => {
       if (axios.isAxiosError(error)) {
