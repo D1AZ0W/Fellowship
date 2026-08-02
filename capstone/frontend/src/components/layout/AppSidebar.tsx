@@ -14,21 +14,17 @@ import {
 } from '@/components/ui/sidebar'
 import { Logout } from '../auth/Logout'
 import { useAuth } from '#/hooks/auth/useAuth'
+import { ModeToggle } from '@/components/shared/mode-toggle'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export function AppSidebar() {
   const user = useAuth()
-  user.refreshUser()
+
   return (
     <Sidebar>
-      <SidebarHeader className="border-b p-4 bg-primary ">
-        <div className="flex items-center gap-3">
-          {/* <img src="/logo512.png" alt="BillDiv" className="h-8 w-16 " /> */}
-
-          <div>
-            <h1 className="pl-5 font-bold text-xl font-sans text-primary-foreground scale-x-140">
-              Bill/Div
-            </h1>
-          </div>
+      <SidebarHeader className="border-b p-2 bg-primary ">
+        <div className="flex items-center justify-center gap-3">
+          <img src="/logo512.png" alt="BillDiv" className="w-40 h-12" />
         </div>
       </SidebarHeader>
 
@@ -98,7 +94,35 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t p-2">
+      <SidebarFooter className="border-t p-4 flex flex-col gap-4">
+        {user.user && (
+          <div className="flex items-center gap-3 w-full">
+            <Avatar className="w-10 h-10 shrink-0">
+              {user.user.profile_picture && (
+                <AvatarImage
+                  src={`${import.meta.env.VITE_BASE_URL}${user.user.profile_picture}`}
+                  alt={user.user.username}
+                  className="object-cover"
+                />
+              )}
+              <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+                {user.user.first_name[0].toUpperCase()}
+                {user.user.last_name[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col flex-1 overflow-hidden">
+              <span className="text-sm font-medium truncate">
+                {user.user.first_name} {user.user.last_name}
+              </span>
+              <span className="text-xs text-muted-foreground truncate">
+                @{user.user.username}
+              </span>
+            </div>
+            <div className="shrink-0">
+              <ModeToggle />
+            </div>
+          </div>
+        )}
         <SidebarMenu>
           <SidebarMenuItem>
             <Logout />

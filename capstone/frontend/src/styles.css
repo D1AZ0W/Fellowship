@@ -132,8 +132,8 @@ body {
   --secondary: #22332a;
   --secondary-foreground: #ddefe4;
 
-  --accent: #ffc933;
-  --accent-foreground: #14231d;
+  --accent: #3e5c46;
+  --accent-foreground: #ffffff;
 
   --muted: #22332a;
   --muted-foreground: #9aa79f;
@@ -168,12 +168,15 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
+
   h1,
   h2,
   h3,
