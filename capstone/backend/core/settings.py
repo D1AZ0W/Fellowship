@@ -178,7 +178,7 @@ SESSION_COOKIE_SECURE = False  # when we use https make it True
 CSRF_COOKIE_SECURE = False
 
 SIMPLE_JWT = {
-	'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
 	'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 

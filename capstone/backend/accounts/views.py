@@ -47,6 +47,7 @@ class RegisterView(APIView):
 			httponly=True,
 			secure=False,
 			samesite='Lax',
+			max_age=60 * 30,
 		)
 		response.set_cookie(
 			key='refresh_token',
@@ -54,6 +55,7 @@ class RegisterView(APIView):
 			httponly=True,
 			secure=False,
 			samesite='Lax',
+			max_age=60 * 60 * 24 * 7,
 		)
 
 		return response
@@ -91,7 +93,7 @@ class LoginView(APIView):
 			httponly=True,
 			secure=False,
 			samesite='Lax',
-			max_age=60 * 45,
+			max_age=60 * 30,
 		)
 		response.set_cookie(
 			key='refresh_token',
@@ -99,6 +101,7 @@ class LoginView(APIView):
 			httponly=True,
 			secure=False,
 			samesite='Lax',
+			max_age=60 * 60 * 24 * 7,
 		)
 
 		return response
@@ -182,7 +185,7 @@ class PasswordResetView(APIView):
 
 class RefreshTokenView(APIView):
 	def post(self, request):
-		refresh = request.COOKIES.get('refresh')
+		refresh = request.COOKIES.get('refresh_token')
 		if not refresh:
 			return Response(
 				{'msg': 'Refresh token is missing'},
@@ -203,5 +206,6 @@ class RefreshTokenView(APIView):
 			httponly=True,
 			secure=False,
 			samesite='Lax',
+			max_age=60 * 30,
 		)
 		return response

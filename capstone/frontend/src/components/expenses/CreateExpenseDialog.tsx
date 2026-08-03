@@ -248,7 +248,7 @@ export const CreateExpenseDialog = ({
                 {...register('paid_by', {
                   valueAsNumber: true,
                 })}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 "
               >
                 {members.map((member) => (
                   <option key={member.id} value={member.id}>
