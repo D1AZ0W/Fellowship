@@ -7,6 +7,7 @@ from .views import (
 	LogoutView,
 	PasswordResetView,
 	ProfileView,
+	RefreshTokenView,
 	RegisterView,
 	SendPasswordResetEmailView,
 )
@@ -30,4 +31,5 @@ urlpatterns = [
 		PasswordResetView.as_view(),
 		name='resetpassword',
 	),
+	path('refresh/', RefreshTokenView.as_view(), name='refreshtoken'),
 ]

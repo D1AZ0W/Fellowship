@@ -3,7 +3,10 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import (
+	AuthenticationFailed,
+	TokenError,
+)
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .renderers import UserRenderer
@@ -36,8 +39,7 @@ class RegisterView(APIView):
 		user = serializer.save()
 		refresh = get_tokens_for_user(user)
 		response = Response(
-			{'msg': 'Registration Successful'},
-			status=status.HTTP_201_CREATED,
+			{'msg': 'Registration Successful'}, status=status.HTTP_201_CREATED
 		)
 		response.set_cookie(
 			key='access_token',
@@ -176,3 +178,30 @@ class PasswordResetView(APIView):
 		return Response(
 			{'msg': 'Password Changed Successfully'}, status=status.HTTP_200_OK
 		)
+
+
+class RefreshTokenView(APIView):
+	def post(self, request):
+		refresh = request.COOKIES.get('refresh')
+		if not refresh:
+			return Response(
+				{'msg': 'Refresh token is missing'},
+				status=status.HTTP_401_UNAUTHORIZED,
+			)
+		try:
+			token = RefreshToken(refresh)
+			access = str(token.access_token)
+		except TokenError:
+			return Response(
+				{'msg': 'Refresh token is missing'},
+				status=status.HTTP_401_UNAUTHORIZED,
+			)
+		response = Response({'msg': 'Refresh Successful'})
+		response.set_cookie(
+			key='access_token',
+			value=access,
+			httponly=True,
+			secure=False,
+			samesite='Lax',
+		)
+		return response
