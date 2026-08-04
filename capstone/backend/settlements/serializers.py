@@ -62,11 +62,11 @@ class CreateSettlementSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError(
 				'You do not owe any money in this group.'
 			)
-		max_allowed = Decimal(str(abs(payer_balance)))
-		if amount > max_allowed:
-			raise serializers.ValidationError(
-				f'You cannot settle more than what you owe (Rs. {abs(payer_balance):.2f}).'
-			)
+		# max_allowed = Decimal(str(abs(payer_balance)))
+		# if amount > max_allowed:
+		# 	raise serializers.ValidationError(
+		# 		f'You cannot settle more than what you owe (Rs. {abs(payer_balance):.2f}).'
+		# 	)
 
 		return attrs
 

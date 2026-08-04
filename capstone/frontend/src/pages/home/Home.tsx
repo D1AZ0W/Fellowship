@@ -21,7 +21,7 @@ export const Home = () => {
           </p>
           <Button
             variant="default"
-            className="p-6 rounded-md text-md"
+            className="p-6 rounded-md text-md cursor-pointer"
             onClick={() => {
               navigate({ to: '/login' })
             }}

@@ -24,7 +24,7 @@ class CreateSettlementView(APIView):
 		serializer = CreateSettlementSerializer(
 			data=request.data, context={'request': request}
 		)
-		serializer.is_valid(raise_excSettlementRenderereption=True)
+		serializer.is_valid(raise_exception=True)
 		settlement = serializer.save()
 		return Response(
 			{'msg': 'Settlement created.', 'id': settlement.id},
