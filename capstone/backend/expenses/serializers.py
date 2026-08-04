@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -7,6 +5,7 @@ from activity.services import create_activity
 from groups.models import GroupMembers
 
 from .models import Expense, ExpenseParticipants
+from .services import expense_participants_create
 
 User = get_user_model()
 
@@ -109,28 +108,9 @@ class CreateExpenseSerializer(serializers.ModelSerializer):
 		split_type = validated_data['split_type']
 		total_amount = validated_data['amount']
 		expense = Expense.objects.create(**validated_data)
-		if split_type == 'Equal':
-			each_amount = total_amount / len(participants)
-			for user_id in participants:
-				ExpenseParticipants.objects.create(
-					expense=expense,
-					user_id=user_id,
-					amount_owed=each_amount,
-				)
-		elif split_type == 'Exact':
-			for item in user_amounts:
-				ExpenseParticipants.objects.create(
-					expense=expense,
-					user_id=item['user_id'],
-					amount_owed=item['amount'],
-				)
-		elif split_type == 'Percentage':
-			for item in user_amounts:
-				ExpenseParticipants.objects.create(
-					expense=expense,
-					user_id=item['user_id'],
-					amount_owed=(item['amount'] / 100) * total_amount,
-				)
+		expense_participants_create(
+			expense, split_type, total_amount, participants, user_amounts, True
+		)
 		create_activity(
 			group=expense.group,
 			done_by=expense.paid_by,
@@ -270,41 +250,19 @@ class EditExpenseSerializer(serializers.ModelSerializer):
 		for attr, value in validated_data.items():
 			setattr(instance, attr, value)
 		instance.save()
-
 		participants = list(
 			ExpenseParticipants.objects.filter(expense=instance).values_list(
 				'user_id', flat=True
 			)
 		)
-		ExpenseParticipants.objects.filter(expense=instance).delete()
-
-		if instance.split_type == 'Equal':
-			each_amount = instance.amount / len(participants)
-
-			for user_id in participants:
-				ExpenseParticipants.objects.create(
-					expense=instance,
-					user_id=user_id,
-					amount_owed=each_amount,
-				)
-
-		elif instance.split_type == 'Exact':
-			for item in user_amounts:
-				ExpenseParticipants.objects.create(
-					expense=instance,
-					user_id=item['user_id'],
-					amount_owed=item['amount'],
-				)
-
-		else:
-			for item in user_amounts:
-				ExpenseParticipants.objects.create(
-					expense=instance,
-					user_id=item['user_id'],
-					amount_owed=(
-						instance.amount * item['amount'] / Decimal(100)
-					),
-				)
+		expense_participants_create(
+			instance,
+			instance.split_type,
+			instance.amount,
+			participants,
+			user_amounts,
+			False,
+		)
 		create_activity(
 			group=instance.group,
 			done_by=instance.paid_by,

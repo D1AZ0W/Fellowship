@@ -91,7 +91,6 @@ class EditExpenseView(APIView):
 	renderer_classes = [ExpenseRenderer]
 
 	def patch(self, request, pk):
-		print(request.data)
 		expense = get_object_or_404(Expense, pk=pk)
 		serializer = EditExpenseSerializer(
 			expense, data=request.data, partial=True

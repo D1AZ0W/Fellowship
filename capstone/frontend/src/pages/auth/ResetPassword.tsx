@@ -17,7 +17,6 @@ import { Label } from '@/components/ui/label'
 
 export function ResetPassword() {
   const navigate = useNavigate()
-  // @ts-ignore: Strict params typing is disabled here because tanstack router can be tricky for dynamic routes without extra boilerplate
   const { id, token } = useParams({ strict: false })
 
   const {
