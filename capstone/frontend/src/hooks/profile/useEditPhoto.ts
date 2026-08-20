@@ -1,6 +1,6 @@
+import { getErrorMessage } from '../../utils/errorHandler'
 import { editProfile } from '#/services/profileService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { toast } from 'sonner'
 
 export const useEditPhoto = () => {
@@ -19,11 +19,8 @@ export const useEditPhoto = () => {
       })
     },
     onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.errors?.[0] ?? 'Failed to update photo.'
-        toast.error(message)
-      }
+      const message = getErrorMessage(error);
+      toast.error(message);
     },
   })
 }

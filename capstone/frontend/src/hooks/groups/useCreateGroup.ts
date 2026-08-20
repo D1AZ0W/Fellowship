@@ -1,8 +1,7 @@
+import { getErrorMessage } from '../../utils/errorHandler'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { createGroup } from '#/services/groupService'
-import axios from 'axios'
-
 export const useCreateGroup = () => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -15,11 +14,8 @@ export const useCreateGroup = () => {
       })
     },
     onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.errors[0] ?? 'Something went wrong'
-        toast.error(message)
-      }
+      const message = getErrorMessage(error);
+      toast.error(message);
     },
   })
 }

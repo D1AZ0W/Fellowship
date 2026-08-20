@@ -1,9 +1,8 @@
+import { getErrorMessage } from '../../utils/errorHandler'
 import { resetPassword } from '#/services/authService'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import axios from 'axios'
-
 export const useResetPassword = () => {
   const navigate = useNavigate()
 
@@ -22,12 +21,8 @@ export const useResetPassword = () => {
       navigate({ to: '/login' })
     },
     onError: (error: Error) => {
-      if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.errors?.non_field_errors?.[0] ??
-          'Something went wrong'
-        toast.error(message)
-      } else {
+      const message = getErrorMessage(error);
+      toast.error(message); else {
         toast.error('An unexpected error occurred')
       }
     },

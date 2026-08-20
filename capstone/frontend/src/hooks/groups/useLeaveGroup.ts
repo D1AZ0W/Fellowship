@@ -1,7 +1,7 @@
+import { getErrorMessage } from '../../utils/errorHandler'
 import { leaveGroup } from '#/services/groupService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import axios from 'axios'
 import { toast } from 'sonner'
 
 export const useLeaveGroup = (groupId: number) => {
@@ -26,11 +26,8 @@ export const useLeaveGroup = (groupId: number) => {
       })
     },
     onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.errors[0] ?? 'Something went wrong'
-        toast.error(message)
-      }
+      const message = getErrorMessage(error);
+      toast.error(message);
     },
   })
 }

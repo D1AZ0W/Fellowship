@@ -1,6 +1,6 @@
+import { getErrorMessage } from '../../utils/errorHandler'
 import { editExpense } from '#/services/expenseService'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { toast } from 'sonner'
 
 export const useEditExpense = (id: number) => {
@@ -16,11 +16,8 @@ export const useEditExpense = (id: number) => {
     },
 
     onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.errors.detail ?? 'Something went wrong'
-        toast.error(message)
-      }
+      const message = getErrorMessage(error);
+      toast.error(message);
     },
   })
 }
