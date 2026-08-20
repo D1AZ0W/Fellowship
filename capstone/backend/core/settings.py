@@ -27,14 +27,15 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
+SECRET_KEY = os.environ.get(
+	'SECRET_KEY',
 	'django-insecure-%%)49p^c=xq48207w%a_mv0ij_kerpkcx5rh!^0)cwx_4vd@b1'
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -103,11 +104,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': 'billsplit',
-		'USER': 'user_bill',
-		'PASSWORD': 'accessbydjango123',
-		'HOST': 'localhost',
-		'PORT': '5432',
+		'NAME': os.environ.get('DB_NAME', 'billsplit'),
+		'USER': os.environ.get('DB_USER', 'user_bill'),
+		'PASSWORD': os.environ.get('DB_PASSWORD', 'accessbydjango123'),
+		'HOST': os.environ.get('DB_HOST', 'localhost'),
+		'PORT': os.environ.get('DB_PORT', '5432'),
 	}
 }
 
