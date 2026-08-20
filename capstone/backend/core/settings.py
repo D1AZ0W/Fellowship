@@ -10,32 +10,34 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-import os
 from datetime import timedelta
 from pathlib import Path
 
-from dotenv import load_dotenv
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from .env file
-load_dotenv(BASE_DIR / '.env')
+# Initialize environ and load .env
+env = environ.Env(
+	DEBUG=(bool, False),
+)
+environ.Env.read_env(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
+SECRET_KEY = env(
 	'SECRET_KEY',
-	'django-insecure-%%)49p^c=xq48207w%a_mv0ij_kerpkcx5rh!^0)cwx_4vd@b1'
+	default='django-insecure-%%)49p^c=xq48207w%a_mv0ij_kerpkcx5rh!^0)cwx_4vd@b1'
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # Application definition
@@ -102,14 +104,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': os.environ.get('DB_NAME', 'billsplit'),
-		'USER': os.environ.get('DB_USER', 'user_bill'),
-		'PASSWORD': os.environ.get('DB_PASSWORD', 'accessbydjango123'),
-		'HOST': os.environ.get('DB_HOST', 'localhost'),
-		'PORT': os.environ.get('DB_PORT', '5432'),
-	}
+	'default': env.db(
+		'DATABASE_URL',
+		default='postgresql://user_bill:accessbydjango123@localhost:5432/billsplit',
+	)
 }
 
 
@@ -133,12 +131,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Email COnfiguration
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+EMAIL_HOST_USER = env('EMAIL_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASS', default='')
 EMAIL_USE_TLS = True
 
 # Internationalization
