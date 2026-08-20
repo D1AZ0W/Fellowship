@@ -54,7 +54,7 @@ class GroupExpenseView(APIView):
 			Groups.objects.filter(members__user=request.user),
 			pk=pk,
 		)
-		expenses = Expense.objects.filter(group=group)
+		expenses = Expense.objects.filter(group=group).select_related('paid_by')
 		serializer = GroupExpenseSerializer(
 			expenses,
 			many=True,
@@ -69,7 +69,7 @@ class UserExpenseView(APIView):
 	def get(self, request):
 		expenses = Expense.objects.filter(
 			participants__user=request.user
-		).distinct()
+		).select_related('paid_by').distinct()
 		paginator = GroupPagination()
 		page = paginator.paginate_queryset(expenses, request)
 		serializer = GroupExpenseSerializer(page, many=True)
@@ -81,7 +81,10 @@ class DetailExpenseView(APIView):
 	renderer_classes = [ExpenseRenderer]
 
 	def get(self, request, pk):
-		expense = get_object_or_404(Expense, pk=pk)
+		expense = get_object_or_404(
+			Expense.objects.select_related('paid_by').prefetch_related('participants', 'participants__user'),
+			pk=pk
+		)
 		serializer = DetailExpenseSerializer(expense)
 		return Response(serializer.data)
 

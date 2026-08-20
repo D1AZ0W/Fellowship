@@ -58,7 +58,7 @@ class GroupView(APIView):
 
 	def get(self, request, pk):
 		group = get_object_or_404(
-			Groups.objects.filter(members__user=request.user), pk=pk
+			Groups.objects.prefetch_related('members', 'members__user').filter(members__user=request.user), pk=pk
 		)
 		serializer = ViewGroupSerializer(group, context={'request': request})
 		return Response(serializer.data, status=status.HTTP_200_OK)
