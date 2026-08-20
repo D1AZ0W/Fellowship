@@ -29,10 +29,7 @@ environ.Env.read_env(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env(
-	'SECRET_KEY',
-	default='django-insecure-%%)49p^c=xq48207w%a_mv0ij_kerpkcx5rh!^0)cwx_4vd@b1'
-)
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -63,7 +60,7 @@ MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
-	# 'django.middleware.csrf.CsrfViewMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -71,16 +68,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
-CORS_ALLOWED_ORIGINS = [
-	'http://localhost:3000',
-]
+CORS_ALLOWED_ORIGINS = env.list(
+    'CORS_ALLOWED_ORIGINS',
+    default=[],
+)
+
+CSRF_TRUSTED_ORIGINS = env.list(
+    'CSRF_TRUSTED_ORIGINS',
+    default=[],
+)
 
 # Allow frontend to send cookies cross-origin
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
-	'http://localhost:3000',
-]
 
 TEMPLATES = [
 	{
@@ -104,10 +104,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-	'default': env.db(
-		'DATABASE_URL',
-		default='postgresql://user_bill:accessbydjango123@localhost:5432/billsplit',
-	)
+    'default': env.db('DATABASE_URL')
 }
 
 
@@ -167,14 +164,30 @@ REST_FRAMEWORK = {
 MEDIA_URL = '/'
 MEDIA_ROOT = BASE_DIR
 
-SESSION_COOKIE_ = True
 CSRF_COOKIE_HTTPONLY = False
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-SESSION_COOKIE_SECURE = False  # when we use https make it True
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = env.bool(
+    'SESSION_COOKIE_SECURE',
+    default=False,
+)
+
+CSRF_COOKIE_SECURE = env.bool(
+    'CSRF_COOKIE_SECURE',
+    default=False,
+)
+
+SECURE_SSL_REDIRECT = env.bool(
+    'SECURE_SSL_REDIRECT',
+    default=False,
+)
+
+SECURE_PROXY_SSL_HEADER = (
+    'HTTP_X_FORWARDED_PROTO',
+    'https',
+)
 
 SIMPLE_JWT = {
 	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
